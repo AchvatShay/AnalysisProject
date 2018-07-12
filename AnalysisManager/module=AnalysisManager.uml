@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>SpringLocalModels</ID>
+  <OriginalElement>module=AnalysisManager</OriginalElement>
+  <nodes>
+    <node x="0.0" y="30.0">module=AnalysisManager</node>
+    <node x="210.5" y="0.0">fileset=AnalysisManager/MVC application context</node>
+    <node x="461.0" y="0.0">filePath=D:/Shay/work/AnalysisProject/AnalysisManager/web/WEB-INF/applicationContext.xml</node>
+    <node x="194.0" y="60.0">fileset=AnalysisManager/MVC dispatcher servlet context</node>
+    <node x="464.0" y="60.0">filePath=D:/Shay/work/AnalysisProject/AnalysisManager/web/WEB-INF/dispatcher-servlet.xml</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="fileset=AnalysisManager/MVC application context" target="filePath=D:/Shay/work/AnalysisProject/AnalysisManager/web/WEB-INF/applicationContext.xml">
+      <point x="77.0" y="-0.0" />
+      <point x="-73.0" y="-0.0" />
+    </edge>
+    <edge source="fileset=AnalysisManager/MVC dispatcher servlet context" target="filePath=D:/Shay/work/AnalysisProject/AnalysisManager/web/WEB-INF/dispatcher-servlet.xml">
+      <point x="93.5" y="-0.0" />
+      <point x="-70.0" y="-0.0" />
+    </edge>
+    <edge source="module=AnalysisManager" target="fileset=AnalysisManager/MVC application context">
+      <point x="57.0" y="-5.0" />
+      <point x="194.0" y="10.0" />
+      <point x="-77.0" y="-0.0" />
+    </edge>
+    <edge source="module=AnalysisManager" target="fileset=AnalysisManager/MVC dispatcher servlet context">
+      <point x="57.0" y="5.0" />
+      <point x="-93.5" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="303.5" y="40.0" />
+  <SelectedNodes>
+    <node>module=AnalysisManager</node>
+    <node>filePath=D:/Shay/work/AnalysisProject/AnalysisManager/web/WEB-INF/dispatcher-servlet.xml</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Show filesets as groups</Category>
+  </Categories>
+</Diagram>
+
