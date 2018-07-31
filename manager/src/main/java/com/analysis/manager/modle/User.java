@@ -1,10 +1,6 @@
 package com.analysis.manager.modle;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -19,28 +15,28 @@ public class User {
     // ------------------------
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull
-    private String email;
+    private String password;
 
     @NotNull
     private String name;
+
+    @ManyToOne
+    private Permissions permissions;
 
     // ------------------------
     // PUBLIC METHODS
     // ------------------------
 
-    public User() { }
+    public User(){}
 
-    public User(long id) {
-        this.id = id;
-    }
-
-    public User(String email, String name) {
-        this.email = email;
+    public User(String password, String name, Permissions permissions) {
+        this.password = password;
         this.name = name;
+        this.permissions = permissions;
     }
 
     public long getId() {
@@ -51,16 +47,24 @@ public class User {
         this.id = value;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
-    public void setEmail(String value) {
-        this.email = value;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Permissions getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Permissions permissions) {
+        this.permissions = permissions;
     }
 
     public void setName(String value) {

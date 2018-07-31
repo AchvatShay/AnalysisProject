@@ -111,6 +111,4 @@ public class DatabaseConfig {
 
     @Autowired
     private LocalContainerEntityManagerFactoryBean entityManagerFactory;
-
-
 } // class DatabaseConfig
