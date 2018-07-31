@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GeneralProperty>
+  <Experiment>
+	<name>shay</name>
+	<Condition>
+		<Type>
+			<lick is_active='False'></lick>
+			<hand_reach is_active='True'></hand_reach>
+			<pedal is_active='False'></pedal>
+		</Type>
+		<Depth>100</Depth>
+		<ImagingSamplingRate>30</ImagingSamplingRate>
+		<BehavioralSamplingRate>200</BehavioralSamplingRate>
+        <BehavioralDelay>20</BehavioralDelay>
+		<ToneTime>4</ToneTime>
+		<Duration>12</Duration>
+		<Injection>
+			<None is_active='True'></None>
+			<Saline is_active='False'></Saline>
+			<CNO is_active='False'></CNO>
+		</Injection>
+        <PelletPertubation>
+			<None is_active='True'></None>
+			<Ommisions is_active='False'></Ommisions>
+			<Taste is_active='False'></Taste>
+		</PelletPertubation>
+	</Condition>
+	<NeuronesToPut>
+		<Neuron>
+			<name>1</name>
+		</Neuron>
+		<Neuron>
+			<name>2</name>
+		</Neuron>
+		<Neuron>
+			<name>3</name>
+		</Neuron>
+		<Neuron>
+			<name>4</name>
+		</Neuron>
+	</NeuronesToPut>
+	<TrialsToPut>
+		<Trial>
+			<name>0</name>
+		</Trial>
+		<Trial>
+			<name>0</name>
+		</Trial>
+	</TrialsToPut>
+    <visualization>
+        <legend Location='Best'></legend>
+        <labelsFontSize>14</labelsFontSize>        
+    </visualization>
+  </Experiment>    
+</GeneralProperty>
+
+
