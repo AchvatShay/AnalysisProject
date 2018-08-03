@@ -32,16 +32,25 @@ public class Project {
     @OneToMany(targetEntity = Animal.class)
     private List animals;
 
+
+    @OneToMany(targetEntity = Analysis.class)
+    private List Analyzes;
+
     public Project(){
     }
 
-    public Project(String name, String description, List layers, List experiments, List animals)
+    public Project(String name, String description, List layers, List experiments, List animals, List Analyzes)
     {
         this.description = description;
         this.name = name;
         this.animals = animals;
         this.layers = layers;
         this.experiments = experiments;
+        this.Analyzes = Analyzes;
+    }
+
+    public List getAnalyzes() {
+        return Analyzes;
     }
 
     public List getAnimals() {

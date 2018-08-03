@@ -30,7 +30,7 @@ public class ProjectsController {
     @RequestMapping("/projects/create")
     public String create(String name, String Description)
     {
-        Project project = new Project(name, Description, null, null, null);
+        Project project = new Project(name, Description, null, null, null, null);
         projects.add(project);
         projectDao.create(project);
         return "projects";
@@ -59,13 +59,6 @@ public class ProjectsController {
             projects.remove(projectToDelete);
         }
 
-        return "redirect:projects";
-    }
-
-
-    @RequestMapping(value = "projects/edit/{id}")
-    public String edit(@PathVariable long id)
-    {
-        return "project/" + id;
+        return "redirect:/projects";
     }
 }

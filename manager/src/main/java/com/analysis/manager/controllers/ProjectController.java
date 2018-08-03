@@ -17,7 +17,7 @@ public class ProjectController {
     public String view(@PathVariable long id, Model m)
     {
         Project project = projectDao.getById(id);
-        m.addAttribute("current_project", project);
+        m.addAttribute("project", project);
 
         return "project";
     }

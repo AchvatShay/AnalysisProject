@@ -11,9 +11,15 @@
   <meta name="author" content="">
   <title>SB Admin - Start Bootstrap Template</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="../../resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+
+  <link href="../../resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+
+  <link href="../../resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
   <link href="../../resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
@@ -68,10 +74,10 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Analysis System</a>
+          <a href="/" class="elements">Analysis System</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="projects">My Projects</a>
+          <a href="/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
           ${project.getName()}
@@ -110,11 +116,11 @@
                     <td>${experiment.getDescription()}</td>
                     <td>${experiment.getAnimal().getName()}</td>
                     <td>
-                       <a href="experiments/delete/${experiment.getId()}">
+                       <a href="/experiments/delete/${experiment.getId()}">
                         <i id="experiments-delete-${experiment.getId()}" class="fa fa-trash"></i>
                       </a>
-                      <a href="experiments/edit/${experiment.getId()}">
-                        <i id="experiments-edit-${experiment.getId()}" class="fa fa-edit"></i>
+                      <a href="/experiments/${experiment.getId()}">
+                        <i id="experiments-open-${experiment.getId()}" class="fa fa-arrow-circle-right"></i>
                       </a>
                     </td>
                   </tr>
@@ -157,11 +163,11 @@
                   <td>${animal.getName()}</td>
                   <td>${animal.getDescription()}</td>
                   <td>
-                    <a href="animals/delete/${animal.getId()}">
+                    <a href="/animals/delete/${animal.getId()}">
                       <i id="animals-delete-${animal.getId()}" class="fa fa-trash"></i>
                     </a>
-                    <a href="animals/edit/${animal.getId()}">
-                      <i id="animals-edit-${animal.getId()}" class="fa fa-edit"></i>
+                    <a href="/animals/${animal.getId()}">
+                      <i id="animals-open-${animal.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
                 </tr>
@@ -204,8 +210,8 @@
                     <a href="layers/delete/${layer.getId()}">
                       <i id="layers-delete-${layer.getId()}" class="fa fa-trash"></i>
                     </a>
-                    <a href="layers/edit/${layer.getId()}">
-                      <i id="layers-edit-${layer.getId()}" class="fa fa-edit"></i>
+                    <a href="layers/${layer.getId()}">
+                      <i id="layers-open-${layer.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
                 </tr>
@@ -216,6 +222,53 @@
         </div>
         <div class="card-footer small text-muted">
           <input type="submit" id="create_layer" value="Add Layer" class="btn btn-primary fa-plus">
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-line-chart"></i> All Analysis</div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTableAnalysis" width="100%" cellspacing="0">
+              <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tfoot>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+              </tr>
+              </tfoot>
+              <tbody>
+              <c:forEach var="analysis" items="${project.getAnalyzes()}">
+                <tr>
+                  <td>${analysis.getId()}</td>
+                  <td>${analysis.getName()}</td>
+                  <td>${analysis.getDescription()}</td>
+                  <td>
+                    <a href="/analysis/delete/${analysis.getId()}">
+                      <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
+                    </a>
+                    <a href="/analysis/${analysis.getId()}">
+                      <i id="analysis-open-${analysis.getId()}" class="fa fa-arrow-circle-right"></i>
+                    </a>
+                  </td>
+                </tr>
+              </c:forEach>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer small text-muted">
+          <input type="submit" id="create_analysis" value="Add Analysis" class="btn btn-primary fa-plus">
         </div>
       </div>
 
@@ -255,7 +308,7 @@
     <!-- Bootstrap core JavaScript-->
 
     <script src="../../resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
     <script src="../../resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->

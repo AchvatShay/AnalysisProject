@@ -8,31 +8,31 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class ExperimentInjectionsDao extends BasicDao<ExperimentInjections>{
+public class AnalysisDao extends BasicDao<Analysis>{
 
     /**
      * Return all the users stored in the database.
      */
     @SuppressWarnings("unchecked")
-    public List<ExperimentInjections> getAll() {
-        return entityManager.createQuery("from ExperimentInjections").getResultList();
+    public List<Analysis> getAll() {
+        return entityManager.createQuery("from Analysis").getResultList();
     }
 
 
     /**
      * Return the user having the passed id.
      */
-    public ExperimentInjections getById(long id) {
-        return entityManager.find(ExperimentInjections.class, id);
+    public Analysis getById(long id) {
+        return entityManager.find(Analysis.class, id);
     }
 
     /**
      * Return the user having the passed name.
      */
-    public ExperimentInjections getByName(String name) {
+    public Analysis getByName(String name) {
         try {
-            return (ExperimentInjections) entityManager.createQuery(
-                    "from ExperimentInjections where name = :name")
+            return (Analysis) entityManager.createQuery(
+                    "from Analysis where name = :name")
                     .setParameter("name", name)
                     .getSingleResult();
         }

@@ -74,57 +74,43 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Analysis System</a>
+          <a href="/" class="elements">Analysis System</a>
         </li>
-        <li class="breadcrumb-item active">My Projects</li>
+        <li class="breadcrumb-item active">
+          <a href="/projects">My Projects</a>
+        </li>
+        <li class="breadcrumb-item active">
+          <a href="/project/${experiment.getProject().getId()}">${experiment.getProject().getName()}</a>
+        </li>
+        <li class="breadcrumb-item active">
+          ${experiment.getName()}
+        </li>
       </ol>
 
-      <div class="card mb-3">
-        <div class="card-header">
-          <i class="fa fa-line-chart"></i> All Projects</div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </tfoot>
-              <tbody>
-                <c:forEach var="project" items="${my_projects}">
-                  <tr>
-                    <td>${project.getId()}</td>
-                    <td>${project.getName()}</td>
-                    <td>${project.getDescription()}</td>
-                    <td>
-                       <a href="projects/delete/${project.getId()}">
-                        <i id="project-delete-${project.getId()}" class="fa fa-trash"></i>
-                      </a>
-                      <a href="project/${project.getId()}">
-                        <i id="project-edit-${project.getId()}" class="fa fa-arrow-circle-right"></i>
-                      </a>
-                    </td>
-                  </tr>
-                </c:forEach>
-              </tbody>
-            </table>
+      <div class="row">
+        <div class="col-12">
+          <h1>${experiment.getName()}</h1>
+          <p>${experiment.getDescription()}</p>
+
+          <div class="col-md-5">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fa fa-area-chart"></i> Experiment Conditions</div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">Type : </div>
+                  <div class="col-md-3">${experiment.getExperimentType()} </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">Injections : </div>
+                  <div class="col-md-3">${experiment.getExperimentInjections()} </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="card-footer small text-muted">
-          <input type="submit" id="create_project" value="Add Project" class="btn btn-primary fa-plus">
-        </div>
-        </div>
+      </div>
+
       </div>
     </div>
     <!-- /.container-fluid-->
@@ -175,7 +161,9 @@
     <script src="../../resources/js/sb-admin-charts.min.js"></script>
 
     <script>
+      $(document).ready(function () {
 
+      });
     </script>
 
   </div>

@@ -28,6 +28,10 @@ public class ManagerApplication {
     @Autowired
     private ExperimentInjectionsDao experimentInjectionsDao;
 
+
+    @Autowired
+    private ExperimentPelletPertubationDao experimentPelletPertubationDao;
+
     @Autowired
     private PermissionsDao permissionsDao;
 
@@ -37,6 +41,7 @@ public class ManagerApplication {
         LoadExperimentType();
         LoadExperimentInjections();
         LoadUsersPermissions();
+        LoadExperimentPelletPertubation();
 
         return true;
     }
@@ -57,6 +62,16 @@ public class ManagerApplication {
             if (experimentInjectionsDao.getByName(type) == null)
             {
                 experimentInjectionsDao.create(new ExperimentInjections(type));
+            }
+        }
+    }
+
+    public void LoadExperimentPelletPertubation()
+    {
+        for (String type: env.getProperty("db.experiment.pelletPertubation").split(",")) {
+            if (experimentPelletPertubationDao.getByName(type) == null)
+            {
+                experimentPelletPertubationDao.create(new ExperimentPelletPertubation(type));
             }
         }
     }

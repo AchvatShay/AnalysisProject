@@ -29,15 +29,75 @@ public class Experiment {
     @ManyToOne
     private Animal animal;
 
+    @ManyToOne
+    private Project project;
+
     public Experiment(){
     }
 
-    public Experiment(String description, String name, ExperimentCondition experimentCondition, List<Trial> trials, Animal animal)
+    public Experiment(String description, String name, ExperimentCondition experimentCondition, List<Trial> trials, Animal animal, Project project)
     {
         this.description = description;
+        this.project = project;
         this.name = name;
         this.experimentCondition = experimentCondition;
         this.trials = trials;
+        this.animal = animal;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ExperimentCondition getExperimentCondition() {
+        return experimentCondition;
+    }
+
+    public void setExperimentCondition(ExperimentCondition experimentCondition) {
+        this.experimentCondition = experimentCondition;
+    }
+
+    public List getTrials() {
+        return trials;
+    }
+
+    public void setTrials(List trials) {
+        this.trials = trials;
+    }
+
+    public Animal getAnimal() {
+        return animal;
+    }
+
+    public void setAnimal(Animal animal) {
         this.animal = animal;
     }
 }

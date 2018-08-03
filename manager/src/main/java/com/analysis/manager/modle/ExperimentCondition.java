@@ -16,11 +16,16 @@ public class ExperimentCondition {
     @ManyToOne
     private ExperimentInjections experimentInjections;
 
+    @ManyToOne
+    private ExperimentPelletPertubation experimentPelletPertubation;
+
+
     private int depth;
     private int imaging_sampling_rate;
     private int behavioral_sampling_rate;
     private long tone_time;
     private long duration;
+    private long behavioral_delay;
 
     public ExperimentCondition() {}
 

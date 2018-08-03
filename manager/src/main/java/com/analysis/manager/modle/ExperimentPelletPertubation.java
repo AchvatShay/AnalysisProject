@@ -1,12 +1,11 @@
 package com.analysis.manager.modle;
 
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "analysis_type")
-public class AnalysisType {
+@Table(name = "experiment_pellet_Pertubation")
+public class ExperimentPelletPertubation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -14,10 +13,10 @@ public class AnalysisType {
     @NotNull
     private String name;
 
-    public AnalysisType() {
+    public ExperimentPelletPertubation() {
     }
 
-    public AnalysisType(String name) {
+    public ExperimentPelletPertubation(String name) {
         this.name = name;
     }
 

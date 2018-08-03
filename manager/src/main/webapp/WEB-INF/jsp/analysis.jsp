@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>Analysis System</title>
+  <title>SB Admin - Start Bootstrap Template</title>
   <!-- Bootstrap core CSS-->
   <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
@@ -74,57 +74,81 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Analysis System</a>
+          <a href="/" class="elements">Analysis System</a>
         </li>
-        <li class="breadcrumb-item active">My Projects</li>
+        <li class="breadcrumb-item active">
+          <a href="/projects">My Projects</a>
+        </li>
+        <li class="breadcrumb-item active">
+          <a href="/project/${analysis.getProject().getId()}">${analysis.getProject().getName()}</a>
+        </li>
+        <li class="breadcrumb-item active">
+          ${analysis.getName()}
+        </li>
       </ol>
 
-      <div class="card mb-3">
-        <div class="card-header">
-          <i class="fa fa-line-chart"></i> All Projects</div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </tfoot>
-              <tbody>
-                <c:forEach var="project" items="${my_projects}">
-                  <tr>
-                    <td>${project.getId()}</td>
-                    <td>${project.getName()}</td>
-                    <td>${project.getDescription()}</td>
-                    <td>
-                       <a href="projects/delete/${project.getId()}">
-                        <i id="project-delete-${project.getId()}" class="fa fa-trash"></i>
-                      </a>
-                      <a href="project/${project.getId()}">
-                        <i id="project-edit-${project.getId()}" class="fa fa-arrow-circle-right"></i>
-                      </a>
-                    </td>
-                  </tr>
-                </c:forEach>
-              </tbody>
-            </table>
+      <div class="row">
+        <div class="col-12">
+          <h1>Analysis ${analysis.getName()} results</h1>
+          <p>${analysis.getDescription()}</p>
+
+          <div id="myCarousel" class="carousel slide align-self-center" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators" id="slidPicOL">
+              <%
+                int count1 = 0;
+              %>
+              <c:forEach var="tifFile" items="${tif}">
+                <%
+                  if (count1 == 0)
+                  { %>
+                    <li data-target="#myCarousel" data-slide-to="" class="li-carousel active"></li>
+                  <%
+                  } else { %>
+                <li data-target="#myCarousel" data-slide-to="" class="li-carousel"></li>
+                 <% }
+                 count1++;
+                %>
+              </c:forEach>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <%
+              count1 = 0;
+            %>
+            <div class="carousel-inner align-self-center" role="listbox" style="left: 25%;">
+              <c:forEach var="tifFile" items="${analysis.getAllTifResults()}">
+                <%
+                  if (count1 == 0)
+                  { %>
+                <div class="carousel-item active">
+                  <img src="../../resources/analysis_results/${tifFile.getName()}">
+                </div>
+                <%
+                } else { %>
+                  <div class="carousel-item">
+                    <img src="../../resources/analysis_results/${tifFile.getName()}">
+                  </div>
+                  <% }
+
+                  count1++;
+                %>
+              </c:forEach>
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+              <span class="fa fa-angle-left" style="color: black;font-size: 32px;" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+              <span class="fa fa-angle-right" style="color: black;font-size: 32px;" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
           </div>
         </div>
-        <div class="card-footer small text-muted">
-          <input type="submit" id="create_project" value="Add Project" class="btn btn-primary fa-plus">
-        </div>
-        </div>
+      </div>
+
       </div>
     </div>
     <!-- /.container-fluid-->
@@ -175,7 +199,19 @@
     <script src="../../resources/js/sb-admin-charts.min.js"></script>
 
     <script>
+      $(document).ready(function () {
+          var c = 0;
 
+          $(".li-carousel").each(function () {
+              $(this).attr("data-slide-to", c.toString());
+              c = c + 1;
+          });
+
+          if (c == 0)
+          {
+            $("#myCarousel").attr("hidden", "hidden");
+          }
+      });
     </script>
 
   </div>
