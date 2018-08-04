@@ -2,6 +2,10 @@ package com.analysis.manager.modle;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "trail")
@@ -24,11 +28,11 @@ public class Trial {
     @OneToOne
     private BDA bda;
 
-    @ManyToOne
-    private Animal animal;
-
     @OneToOne
     private Behavioral behavioral;
+
+    @ManyToOne
+    private Experiment experiment;
 
     // ---------------------
     // Public Methods
@@ -36,13 +40,21 @@ public class Trial {
 
     public Trial(){}
 
-    public Trial(TPA tpa, Imaging imaging, BDA bda, Behavioral behavioral, Animal animal)
+    public Trial(TPA tpa, Imaging imaging, BDA bda, Behavioral behavioral, Experiment experiment)
     {
         this.bda = bda;
-        this.animal = animal;
         this.behavioral = behavioral;
         this.imaging = imaging;
         this.tpa = tpa;
+        this.experiment = experiment;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
     }
 
     public TPA getTpa() {

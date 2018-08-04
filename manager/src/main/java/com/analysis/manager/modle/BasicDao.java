@@ -18,7 +18,6 @@ public abstract class BasicDao<T>   implements InterfaceDao<T>{
      */
     public void create(T t) {
         entityManager.persist(t);
-        return;
     }
 
     /**
@@ -29,7 +28,6 @@ public abstract class BasicDao<T>   implements InterfaceDao<T>{
             entityManager.remove(t);
         else
             entityManager.remove(entityManager.merge(t));
-        return;
     }
 
     /**

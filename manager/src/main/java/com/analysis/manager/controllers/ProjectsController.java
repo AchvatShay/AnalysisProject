@@ -16,7 +16,7 @@ public class ProjectsController {
 
     private List<Project> projects;
 
-    @RequestMapping(value = {"", "projects"})
+    @GetMapping(value = {"", "projects"})
     public String index(Model m) {
         if (projects == null)
         {
@@ -27,13 +27,40 @@ public class ProjectsController {
         return "projects";
     }
 
-    @RequestMapping("/projects/create")
-    public String create(String name, String Description)
+    @PostMapping("/projects")
+    public String create(@ModelAttribute Project project, Model model)
     {
-        Project project = new Project(name, Description, null, null, null, null);
+        if (project.getName() == null || project.getName().equals(""))
+        {
+            model.addAttribute("error_massage", "The Project name is empty");
+            return index(model);
+        }
+
+        if (project.getDescription() == null || project.getDescription().equals(""))
+        {
+            model.addAttribute("error_massage", "The Project description is empty");
+            return index(model);
+        }
+
+        for (Project p: projects) {
+            if (p.getName().equals(project.getName()))
+            {
+                model.addAttribute("error_massage", "The Project name already exists");
+                return index(model);
+            }
+        }
+
         projects.add(project);
-        projectDao.create(project);
-        return "projects";
+
+        try {
+            projectDao.create(project);
+        } catch (Exception e)
+        {
+            model.addAttribute("error_massage", "The Project DB creation failed");
+            return index(model);
+        }
+
+        return "redirect:project/" + project.getId();
     }
 
     @RequestMapping(value = "projects/delete/{id}")

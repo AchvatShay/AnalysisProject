@@ -4,16 +4,21 @@ import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 @SpringBootApplication
-public class ManagerApplication {
+public class ManagerApplication  extends SpringBootServletInitializer {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(ManagerApplication.class, args);
-
+        try {
+            SpringApplication.run(ManagerApplication.class, args);
+        }
+        catch (Exception e) {
+            System.out.println("Your Message : " + e.getMessage());
+        }
 
     }
 

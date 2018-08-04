@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="input" uri="http://www.springframework.org/tags/form" %>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -11,23 +11,23 @@
   <meta name="author" content="">
   <title>Analysis System</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
-  <link href="../../resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../resources/css/sb-admin.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
-  <!-- Navigation-->
+<!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
     <a class="navbar-brand" href="projects">Analysis System</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,60 +71,90 @@
   </nav>
   <div class="content-wrapper">
     <div class="container-fluid">
+
+      <c:if test="${not empty error_massage}">
+        <div class="alert alert-danger">
+          <strong>Error!</strong> ${error_massage}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </c:if>
+
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Analysis System</a>
+          <a href="${pageContext.request.contextPath}/">Analysis System</a>
         </li>
         <li class="breadcrumb-item active">My Projects</li>
       </ol>
 
-      <div class="card mb-3">
-        <div class="card-header">
-          <i class="fa fa-line-chart"></i> All Projects</div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </tfoot>
-              <tbody>
+      <c:if test="${!my_projects.isEmpty()}">
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fa fa-line-chart"></i> All Projects</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
                 <c:forEach var="project" items="${my_projects}">
                   <tr>
                     <td>${project.getId()}</td>
                     <td>${project.getName()}</td>
                     <td>${project.getDescription()}</td>
                     <td>
-                       <a href="projects/delete/${project.getId()}">
+                      <a href="${pageContext.request.contextPath}/projects/delete/${project.getId()}">
                         <i id="project-delete-${project.getId()}" class="fa fa-trash"></i>
                       </a>
-                      <a href="project/${project.getId()}">
+                      <a href="${pageContext.request.contextPath}/project/${project.getId()}">
                         <i id="project-edit-${project.getId()}" class="fa fa-arrow-circle-right"></i>
                       </a>
                     </td>
                   </tr>
                 </c:forEach>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-        <div class="card-footer small text-muted">
-          <input type="submit" id="create_project" value="Add Project" class="btn btn-primary fa-plus">
+      </c:if>
+
+
+      <button id="createProjectBtn" data-toggle="collapse" href="#collapse1" type="button" class="btn btn-info" aria-expanded="true">
+        <i id="createProjectIcon" class="fa fa-plus-circle"></i> Create New Project
+      </button>
+
+      <div id="collapse1" class="collapse col-md-6" style="padding-top:1%;">
+        <div class="card md-3">
+          <div class="card-body">
+            <div class="row">
+                <form action="${pageContext.request.contextPath}/projects" method="post" class="col-md-6">
+                  <div class="form-group">
+                    <label for="projectName">Name</label>
+                    <input type="text" name="name" required="required" data-error="Project name is required" class="form-control" id="projectName" aria-describedby="NameHelp" placeholder="Enter Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="projectDescription">Description</label>
+                    <input type="text" name="description" required="required" data-error="Project description is required" class="form-control" id="projectDescription" aria-describedby="DescriptionHelp" placeholder="Enter Name">
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+
+          </div>
+
         </div>
-        </div>
+      </div>
+
       </div>
     </div>
     <!-- /.container-fluid-->
@@ -160,22 +190,32 @@
     </div>
     <!-- Bootstrap core JavaScript-->
 
-    <script src="../../resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="../../resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="../../resources/vendor/chart.js/Chart.min.js"></script>
-    <script src="../../resources/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="../../resources/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="../../resources/js/sb-admin.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="../../resources/js/sb-admin-datatables.min.js"></script>
-    <script src="../../resources/js/sb-admin-charts.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-datatables.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
-
+      $(document).ready(function () {
+          $("#createProjectBtn").click(function () {
+              if ($("#createProjectIcon").hasClass("fa-plus-circle")) {
+                  $("#createProjectIcon").removeClass("fa-plus-circle");
+                  $("#createProjectIcon").addClass("fa-minus-circle");
+              } else {
+                  $("#createProjectIcon").removeClass("fa-minus-circle");
+                  $("#createProjectIcon").addClass("fa-plus-circle");
+              }
+          });
+      })
     </script>
 
   </div>

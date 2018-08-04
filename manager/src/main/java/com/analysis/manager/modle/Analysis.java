@@ -4,6 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "analysis")
@@ -70,22 +72,17 @@ public class Analysis {
         this.description = description;
     }
 
-    public File[] getAllTifResults()
+    public List<String> getAllTifResults(String resultsLocation)
     {
 
-        File file = new File( "src\\main\\webapp\\resources\\analysis_results_folder" + File.separator + project.getName() + "_" + getName() + "_" + getAnalysisType().getName());
-        File[] tifFiles = file.listFiles(new FilenameFilter() {
+        File file = new File( resultsLocation + File.separator + project.getName() + File.separator + getName() + File.separator + getAnalysisType().getName());
+        File[] tifFiles = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".tif"));
+        LinkedList<String> results = new LinkedList<>();
 
-            @Override
-            public boolean accept(File dir, String name) {
-                if(name.toLowerCase().endsWith(".tif")){
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
+        for (File f: tifFiles != null ? tifFiles : new File[0]) {
+            results.add(f.getPath().replace(resultsLocation, ""));
+        }
 
-        return tifFiles;
+        return results;
     }
 }

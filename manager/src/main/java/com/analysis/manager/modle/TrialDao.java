@@ -25,4 +25,7 @@ public class TrialDao extends BasicDao<Trial>{
     public Trial getById(long id) {
         return entityManager.find(Trial.class, id);
     }
+
+
+
 } // class UserDao

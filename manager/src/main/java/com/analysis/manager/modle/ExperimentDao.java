@@ -1,5 +1,6 @@
 package com.analysis.manager.modle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,4 @@ public class ExperimentDao extends BasicDao<Experiment>{
     public Experiment getById(long id) {
         return entityManager.find(Experiment.class, id);
     }
-
-
 } // class UserDao

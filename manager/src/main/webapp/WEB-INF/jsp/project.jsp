@@ -11,19 +11,19 @@
   <meta name="author" content="">
   <title>SB Admin - Start Bootstrap Template</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
-  <link href="../../resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../resources/css/sb-admin.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -74,16 +74,17 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="/" class="elements">Analysis System</a>
+          <a href="${pageContext.request.contextPath}/" class="elements">Analysis System</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="/projects">My Projects</a>
+          <a href="${pageContext.request.contextPath}/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
           ${project.getName()}
         </li>
       </ol>
 
+    <c:if test="${!project.getExperiments().isEmpty()}">
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-flask"></i> All Experiments</div>
@@ -99,15 +100,6 @@
                 <th></th>
               </tr>
               </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Animal</th>
-                <th></th>
-              </tr>
-              </tfoot>
               <tbody>
                 <c:forEach var="experiment" items="${project.getExperiments()}">
                   <tr>
@@ -116,10 +108,10 @@
                     <td>${experiment.getDescription()}</td>
                     <td>${experiment.getAnimal().getName()}</td>
                     <td>
-                       <a href="/experiments/delete/${experiment.getId()}">
+                       <a href="${pageContext.request.contextPath}/experiments/delete/${experiment.getId()}">
                         <i id="experiments-delete-${experiment.getId()}" class="fa fa-trash"></i>
                       </a>
-                      <a href="/experiments/${experiment.getId()}">
+                      <a href="${pageContext.request.contextPath}/experiments/${experiment.getId()}">
                         <i id="experiments-open-${experiment.getId()}" class="fa fa-arrow-circle-right"></i>
                       </a>
                     </td>
@@ -133,10 +125,12 @@
           <input type="submit" id="create_experiment" value="Add Experiment" class="btn btn-primary fa-plus">
         </div>
         </div>
+    </c:if>
 
+      <c:if test="${!project.getAnimals().isEmpty()}">
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-optin-monster"></i> All Animals</div>
+          <i class="fa fa-frog"></i> All Animals</div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-bordered" id="dataTableAnimal" width="100%" cellspacing="0">
@@ -148,14 +142,6 @@
                 <th></th>
               </tr>
               </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </tfoot>
               <tbody>
               <c:forEach var="animal" items="${project.getAnimals()}">
                 <tr>
@@ -163,10 +149,10 @@
                   <td>${animal.getName()}</td>
                   <td>${animal.getDescription()}</td>
                   <td>
-                    <a href="/animals/delete/${animal.getId()}">
+                    <a href="${pageContext.request.contextPath}/animals/delete/${animal.getId()}">
                       <i id="animals-delete-${animal.getId()}" class="fa fa-trash"></i>
                     </a>
-                    <a href="/animals/${animal.getId()}">
+                    <a href="${pageContext.request.contextPath}/animals/${animal.getId()}">
                       <i id="animals-open-${animal.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
@@ -180,7 +166,9 @@
           <input type="submit" id="create_animal" value="Add Animal" class="btn btn-primary fa-plus">
         </div>
       </div>
+      </c:if>
 
+        <c:if test="${!project.getLayers().isEmpty()}">
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-layer-group"></i> All Layers</div>
@@ -194,23 +182,16 @@
                 <th></th>
               </tr>
               </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th></th>
-              </tr>
-              </tfoot>
               <tbody>
               <c:forEach var="layer" items="${project.getLayers()}">
                 <tr>
                   <td>${layer.getId()}</td>
                   <td>${layer.getName()}</td>
                   <td>
-                    <a href="layers/delete/${layer.getId()}">
+                    <a href="${pageContext.request.contextPath}/layers/delete/${layer.getId()}">
                       <i id="layers-delete-${layer.getId()}" class="fa fa-trash"></i>
                     </a>
-                    <a href="layers/${layer.getId()}">
+                    <a href="${pageContext.request.contextPath}/layers/${layer.getId()}">
                       <i id="layers-open-${layer.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
@@ -224,7 +205,9 @@
           <input type="submit" id="create_layer" value="Add Layer" class="btn btn-primary fa-plus">
         </div>
       </div>
+        </c:if>
 
+          <c:if test="${!project.getAnalyzes().isEmpty()}">
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-line-chart"></i> All Analysis</div>
@@ -239,14 +222,6 @@
                 <th></th>
               </tr>
               </thead>
-              <tfoot>
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-              </tr>
-              </tfoot>
               <tbody>
               <c:forEach var="analysis" items="${project.getAnalyzes()}">
                 <tr>
@@ -254,10 +229,10 @@
                   <td>${analysis.getName()}</td>
                   <td>${analysis.getDescription()}</td>
                   <td>
-                    <a href="/analysis/delete/${analysis.getId()}">
+                    <a href="${pageContext.request.contextPath}/analysis/delete/${analysis.getId()}">
                       <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
                     </a>
-                    <a href="/analysis/${analysis.getId()}">
+                    <a href="${pageContext.request.contextPath}/analysis/${analysis.getId()}">
                       <i id="analysis-open-${analysis.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
@@ -271,6 +246,7 @@
           <input type="submit" id="create_analysis" value="Add Analysis" class="btn btn-primary fa-plus">
         </div>
       </div>
+          </c:if>
 
       </div>
     </div>
@@ -307,19 +283,19 @@
     </div>
     <!-- Bootstrap core JavaScript-->
 
-    <script src="../../resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="../../resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="../../resources/vendor/chart.js/Chart.min.js"></script>
-    <script src="../../resources/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="../../resources/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="../../resources/js/sb-admin.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="../../resources/js/sb-admin-datatables.min.js"></script>
-    <script src="../../resources/js/sb-admin-charts.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-datatables.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
 

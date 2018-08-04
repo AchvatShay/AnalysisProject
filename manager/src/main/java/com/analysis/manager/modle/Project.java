@@ -37,6 +37,10 @@ public class Project {
     private List Analyzes;
 
     public Project(){
+        this.Analyzes = new LinkedList<Analysis>();
+        this.animals = new LinkedList<Animal>();
+        this.experiments = new LinkedList();
+        this.layers = new LinkedList();
     }
 
     public Project(String name, String description, List layers, List experiments, List animals, List Analyzes)

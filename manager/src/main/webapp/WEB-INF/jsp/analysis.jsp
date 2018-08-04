@@ -11,19 +11,19 @@
   <meta name="author" content="">
   <title>SB Admin - Start Bootstrap Template</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
-  <link href="../../resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../resources/css/sb-admin.css" rel="stylesheet">
+  <link href="../../${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -74,13 +74,13 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="/" class="elements">Analysis System</a>
+          <a href="${pageContext.request.contextPath}/" class="elements">Analysis System</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="/projects">My Projects</a>
+          <a href="${pageContext.request.contextPath}/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="/project/${analysis.getProject().getId()}">${analysis.getProject().getName()}</a>
+          <a href="${pageContext.request.contextPath}/project/${analysis.getProject().getId()}">${analysis.getProject().getName()}</a>
         </li>
         <li class="breadcrumb-item active">
           ${analysis.getName()}
@@ -117,17 +117,17 @@
               count1 = 0;
             %>
             <div class="carousel-inner align-self-center" role="listbox" style="left: 25%;">
-              <c:forEach var="tifFile" items="${analysis.getAllTifResults()}">
+              <c:forEach var="tifFile" items="${tif}">
                 <%
                   if (count1 == 0)
                   { %>
                 <div class="carousel-item active">
-                  <img src="../../resources/analysis_results/${tifFile.getName()}">
+                  <img src="../../../${pageContext.request.contextPath}/resources/analysis_results/${tifFile}">
                 </div>
                 <%
                 } else { %>
                   <div class="carousel-item">
-                    <img src="../../resources/analysis_results/${tifFile.getName()}">
+                    <img src="../../../${pageContext.request.contextPath}/resources/analysis_results/${tifFile}">
                   </div>
                   <% }
 
@@ -184,19 +184,19 @@
     </div>
     <!-- Bootstrap core JavaScript-->
 
-    <script src="../../resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="../../resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="../../resources/vendor/chart.js/Chart.min.js"></script>
-    <script src="../../resources/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="../../resources/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="../../resources/js/sb-admin.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="../../resources/js/sb-admin-datatables.min.js"></script>
-    <script src="../../resources/js/sb-admin-charts.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-datatables.min.js"></script>
+    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
       $(document).ready(function () {
