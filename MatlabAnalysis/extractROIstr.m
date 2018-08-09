@@ -1,10 +1,14 @@
-function roiStr = extractROIstr(fullstr)
+function roiNum = extractROIstr(fullstr)
 
-roiStr=sscanf(fullstr, 'ROI:%d Z:1');
-if isempty(roiStr)
-    roiStr=sscanf(fullstr, 'ROI:Z:1:%d');
+roiNum=sscanf(fullstr, 'ROI:%d Z:1');
+if isempty(roiNum)
+    roiNum=sscanf(fullstr, 'ROI:Z:1:%d');
 end
-if isempty(roiStr)
-    roiStr=sscanf(fullstr, 'ROI:Z:2:%d');
+if isempty(roiNum)
+    roiNum=sscanf(fullstr, 'ROI:Z:2:%d');
+end
+if isempty(roiNum)
+    roiNum=0;
+    warning('Unrecognized neuron name');
 end
 

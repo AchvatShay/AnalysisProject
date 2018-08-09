@@ -77,7 +77,7 @@ for trial_i = 1:fileNumRoi
         timeInd     = max(1,min(framNum,timeInd));
         % assign to vector
         BehaveData.(eventname).indicator(trial_i, timeInd(1):timeInd(2)) = 1;
-        BehaveData.(eventname).eventTimeStamps = timeInd;
+        BehaveData.(eventname).eventTimeStamps{trial_i} = timeInd;
     end
 end
 if isfield(BehaveData, 'failure')

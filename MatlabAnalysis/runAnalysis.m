@@ -1,9 +1,8 @@
 function runAnalysis(outputPath, xmlfile, BdaTpaList, analysisName)
-    mkNewFolder(outputPath);
+mkNewFolder(outputPath);
 
-    generalProperty = Experiment(xmlfile);
-    [imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
-    for k = 1:length(analysisName)
-    analysis(analysisName{k}, outputPath, generalProperty, imagingData, BehaveData);
-    end
+generalProperty = Experiment(xmlfile);
+[imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
+analysis(analysisName, outputPath, generalProperty, imagingData, BehaveData);
+
 end

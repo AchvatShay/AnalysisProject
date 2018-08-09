@@ -14,9 +14,11 @@ BdaTpaList(3).BDA = 'C:\Users\Hadas\Dropbox\biomedData\PT3\3_13_18\3_13_18_1\BDA
 BdaTpaList(4).BDA = 'C:\Users\Hadas\Dropbox\biomedData\PT3\3_13_18\3_13_18_1\BDA_TSeries_03132018_0944_004_Cycle00001_Ch2_000001_ome.mat';
 BdaTpaList(5).BDA = 'C:\Users\Hadas\Dropbox\biomedData\PT3\3_13_18\3_13_18_1\BDA_TSeries_03132018_0944_005_Cycle00001_Ch2_000001_ome.mat';
 
-mkNewFolder(outputPath);
+% this is just an example to see how to extract the neurons' names from a
+% tpa file
+[Neurons] = getAllExperimentNeurons(BdaTpaList(1).TPA);
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 
-generalProperty = Experiment(xmlfile);
-[imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
-analysis('Pca2D', outputPath, generalProperty, imagingData, BehaveData);
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+
 
