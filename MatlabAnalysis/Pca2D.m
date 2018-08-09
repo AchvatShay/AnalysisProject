@@ -1,7 +1,8 @@
 function pcares = Pca2D(outputPath, generalProperty, imagingData, BehaveData)
 % analysis
-for k=1:size(imagingData,3)
-    alldata(:, k) = reshape(imagingData(:,:,k), size(imagingData,1)*size(imagingData,2),1);
+X = imagingData.samples;
+for k=1:size(X,3)
+    alldata(:, k) = reshape(X(:,:,k), size(X,1)*size(X,2),1);
 end
 
 [pcares.embedding, ~, vals] = pca(alldata);

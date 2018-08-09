@@ -47,9 +47,34 @@
 			<name>0</name>
 		</Trial>
 	</TrialsToPut>
+    <analysisParams>
+        <time2startCountGrabs>4</time2startCountGrabs>
+        <time2endCountGrabs>6</time2endCountGrabs> 
+        <NeuronesToPlot>
+		<Neuron>
+			<name>1</name>
+		</Neuron>
+		<Neuron>
+			<name>2</name>
+		</Neuron>
+		<Neuron>
+			<name>3</name>
+		</Neuron>
+		<Neuron>
+			<name>4</name>
+		</Neuron>
+	</NeuronesToPlot>
+    </analysisParams>
     <visualization>
         <legend Location='Best'></legend>
-        <labelsFontSize>14</labelsFontSize>        
+        <labelsFontSize>14</labelsFontSize>
+        <startTime2plot>1.5</startTime2plot>
+        <Events2plot>
+			<grab is_active='True'></grab>
+			<lift is_active='True'></lift>
+			<atmouth is_active='True'></atmouth>
+            <lick is_active='True'></lick>
+		</Events2plot>
     </visualization>
   </Experiment>    
 </GeneralProperty>
