@@ -11,19 +11,20 @@
   <meta name="author" content="">
   <title>SB Admin - Start Bootstrap Template</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/css/gallery.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -71,6 +72,16 @@
   </nav>
   <div class="content-wrapper">
     <div class="container-fluid">
+
+      <c:if test="${not empty error_massage}">
+        <div class="alert alert-danger">
+          <strong>Error!</strong> ${error_massage}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </c:if>
+
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -80,7 +91,7 @@
           <a href="${pageContext.request.contextPath}/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="${pageContext.request.contextPath}/project/${analysis.getProject().getId()}">${analysis.getProject().getName()}</a>
+          <a href="${pageContext.request.contextPath}/projects/${analysis.getProject().getId()}">${analysis.getProject().getName()}</a>
         </li>
         <li class="breadcrumb-item active">
           ${analysis.getName()}
@@ -89,63 +100,40 @@
 
       <div class="row">
         <div class="col-12">
-          <h1>Analysis ${analysis.getName()} results</h1>
-          <p>${analysis.getDescription()}</p>
+          <div class="card-title">Analysis ${analysis.getName()} results</div>
+          <div class="card-text">
+            <label class="card-title" for="description">Description : </label>
+            <p id="description">${analysis.getDescription()}</p>
+          </div>
 
-          <div id="myCarousel" class="carousel slide align-self-center" data-ride="carousel">
-            <!-- Indicators -->
-            <ol class="carousel-indicators" id="slidPicOL">
-              <%
-                int count1 = 0;
-              %>
-              <c:forEach var="tifFile" items="${tif}">
-                <%
-                  if (count1 == 0)
-                  { %>
-                    <li data-target="#myCarousel" data-slide-to="" class="li-carousel active"></li>
-                  <%
-                  } else { %>
-                <li data-target="#myCarousel" data-slide-to="" class="li-carousel"></li>
-                 <% }
-                 count1++;
-                %>
-              </c:forEach>
-            </ol>
+          <c:if test="${tif != null and !tif.isEmpty()}">
+          <div class="card text-center">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs" id="mainType">
 
-            <!-- Wrapper for slides -->
-            <%
-              count1 = 0;
-            %>
-            <div class="carousel-inner align-self-center" role="listbox" style="left: 25%;">
-              <c:forEach var="tifFile" items="${tif}">
-                <%
-                  if (count1 == 0)
-                  { %>
-                <div class="carousel-item active">
-                  <img src="../../../${pageContext.request.contextPath}/resources/analysis_results/${tifFile}">
-                </div>
-                <%
-                } else { %>
-                  <div class="carousel-item">
-                    <img src="../../../${pageContext.request.contextPath}/resources/analysis_results/${tifFile}">
-                  </div>
-                  <% }
-
-                  count1++;
-                %>
-              </c:forEach>
+                <c:forEach var="tif_map" items="${tif}">
+                  <li class="nav-item">
+                    <a class="nav-link active btn clickType" id="click${tif_map.key.getName()}">${tif_map.key.getName()}</a>
+                  </li>
+                </c:forEach>
+              </ul>
             </div>
 
-            <!-- Left and right controls -->
-            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-              <span class="fa fa-angle-left" style="color: black;font-size: 32px;" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-              <span class="fa fa-angle-right" style="color: black;font-size: 32px;" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-            </a>
+            <c:forEach var="tif_map" items="${tif}">
+              <div id="${tif_map.key.getName()}" class="card-body">
+                <div class="gallery" id="gallery">
+                  <c:forEach var="tifFile" items="${tif_map.value}">
+                    <div class="mb-3 pics animation ">
+                      <img class="img-fluid" src="${tifFile}">
+                    </div>
+                  </c:forEach>
+                </div>
+              </div>
+            </c:forEach>
+            </div>
+          </c:if>
           </div>
+
         </div>
       </div>
 
@@ -184,34 +172,42 @@
     </div>
     <!-- Bootstrap core JavaScript-->
 
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-datatables.min.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin-datatables.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
-      $(document).ready(function () {
-          var c = 0;
+        $(document).ready(function () {
+            var count = 0;
+            var currentType;
+            <c:forEach var="tif_map" items="${tif}">
+              if (count == 0) {
+                  $('#${tif_map.key.getName()}').show();
+                  count = count + 1;
+                  currentType = '${tif_map.key.getName()}';
+              } else {
+                  $('#${tif_map.key.getName()}').hide();
+              }
+            </c:forEach>
 
-          $(".li-carousel").each(function () {
-              $(this).attr("data-slide-to", c.toString());
-              c = c + 1;
-          });
+            $('#mainType .clickType').click(function () {
+                   var newType = this.text;
+                   $('#' + currentType).hide();
+                   $('#' + newType).show();
+                   currentType = newType;
+            });
 
-          if (c == 0)
-          {
-            $("#myCarousel").attr("hidden", "hidden");
-          }
-      });
+        });
     </script>
 
   </div>

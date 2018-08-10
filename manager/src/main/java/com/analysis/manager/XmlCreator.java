@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 public class XmlCreator {
@@ -29,28 +30,40 @@ public class XmlCreator {
     private ExperimentInjectionsDao experimentInjectionsDao;
 
     @Autowired
+    private ExperimentEventsDao experimentEventsDao;
+
+    @Autowired
     private Environment environment;
 
-    public boolean createXml(Analysis analysis, double font_size) throws Exception {
+    public boolean createXml(Analysis analysis, double font_size, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2startCountGrabs, double time2endCountGrabs) throws Exception {
         String dropboxPathLocal = environment.getProperty("dropbox.local.location");
         boolean results = true;
 
         for (AnalysisType type : analysis.getAnalysisType())
         {
-            String path = dropboxPathLocal + File.separator + analysis.getProject().getName() + File.separator + analysis.getName() +
-                    File.separator + type.getName();
-            File type_folder = new File(path);
-            if (!type_folder.exists()) {
-                if (!type_folder.mkdirs()) {
+            String path = dropboxPathLocal + File.separator + analysis.getProject().getName() + File.separator + analysis.getName();
+
+            File xml_folder = new File(path);
+            if (!xml_folder.exists()) {
+                if (!xml_folder.mkdirs()) {
                     results = false;
                     break;
                 }
             }
 
-            File xml = new File(type_folder.getAbsolutePath() + File.separator + "XmlAnalysis.xml");
+            File type_folder = new File(path + File.separator + type.getName());
+            if (!type_folder.exists()) {
+                if (!type_folder.mkdirs()) {
+                    results = false;
+                    break;
+
+                }
+            }
+
+            File xml = new File(xml_folder.getAbsolutePath() + File.separator + "XmlAnalysis.xml");
             if (!xml.exists())
             {
-                results = createXmlDoc(analysis.getExperiment(), type_folder, font_size);
+                results = createXmlDoc(analysis.getExperiment(), xml_folder, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2endCountGrabs, time2startCountGrabs, font_size);
 
                 if (!results)
                 {
@@ -62,15 +75,10 @@ public class XmlCreator {
         return results;
     }
 
-    private boolean createXmlDoc(Experiment experiment, File type_folder, double font_size){
+    private boolean createXmlDoc(Experiment experiment, File type_folder, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2endCountGrabs, double time2startCountGrabs, double font_size){
 
 
         try {
-
-            List<ExperimentInjections> experimentInjections = experimentInjectionsDao.getAll();
-            List<ExperimentPelletPertubation> experimentPelletPertubations = experimentPelletPertubationDao.getAll();
-            List<ExperimentType> experimentTypes = experimentTypeDao.getAll();
-
             DocumentBuilderFactory dbFactory =
                     DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -90,7 +98,7 @@ public class XmlCreator {
 
 
             Element typeE = doc.createElement("Type");
-            for (ExperimentType experimentType : experimentTypes) {
+            for (ExperimentType experimentType : experimentTypeDao.getAll()) {
                 Element obj = doc.createElement(experimentType.getName());
                 String value = experiment.getExperimentCondition().getExperimentType().getId() == experimentType.getId() ? "True" : "False";
                 obj.setAttribute("is_active", value);
@@ -99,7 +107,7 @@ public class XmlCreator {
             experimentCondition.appendChild(typeE);
 
             Element injectionE = doc.createElement("Injection");
-            for (ExperimentInjections experimentIn : experimentInjections) {
+            for (ExperimentInjections experimentIn : experimentInjectionsDao.getAll()) {
                 Element obj = doc.createElement(experimentIn.getName());
                 String value = experiment.getExperimentCondition().getExperimentInjections().getId() == experimentIn.getId() ? "True" : "False";
                 obj.setAttribute("is_active", value);
@@ -108,7 +116,7 @@ public class XmlCreator {
             experimentCondition.appendChild(injectionE);
 
             Element pelletPertubationE = doc.createElement("PelletPertubation");
-            for (ExperimentPelletPertubation experimentP : experimentPelletPertubations) {
+            for (ExperimentPelletPertubation experimentP : experimentPelletPertubationDao.getAll()) {
                 Element obj = doc.createElement(experimentP.getName());
                 String value = experiment.getExperimentCondition().getExperimentPelletPertubation().getId() == experimentP.getId() ? "True" : "False";
                 obj.setAttribute("is_active", value);
@@ -145,16 +153,40 @@ public class XmlCreator {
 
             Element NeuronesToPut = doc.createElement("NeuronesToPut");
 
-            for (Neuron name : experiment.getNeurons_names()) {
+            for (String name : neurons_forAnalysis) {
                 Element neuron = doc.createElement("Neuron");
                 Element nameE = doc.createElement("name");
-                nameE.appendChild(doc.createTextNode(name.getName()));
+                nameE.appendChild(doc.createTextNode(name));
                 neuron.appendChild(nameE);
                 NeuronesToPut.appendChild(neuron);
             }
 
             experimentElement.appendChild(NeuronesToPut);
 
+            Element analysisParams = doc.createElement("analysisParams");
+
+            Element time2startCountGrabsE = doc.createElement("time2startCountGrabs");
+            time2startCountGrabsE.appendChild(doc.createTextNode(String.valueOf(time2startCountGrabs)));
+            analysisParams.appendChild(time2startCountGrabsE);
+
+
+            Element time2endCountGrabsE = doc.createElement("time2endCountGrabs");
+            time2endCountGrabsE.appendChild(doc.createTextNode(String.valueOf(time2endCountGrabs)));
+            analysisParams.appendChild(time2endCountGrabsE);
+
+            Element NeuronesToPlot = doc.createElement("NeuronesToPlot");
+
+            for (String name : neurons_toPlot) {
+                Element neuron = doc.createElement("Neuron");
+                Element nameE = doc.createElement("name");
+                nameE.appendChild(doc.createTextNode(name));
+                neuron.appendChild(nameE);
+                NeuronesToPlot.appendChild(neuron);
+            }
+
+            analysisParams.appendChild(NeuronesToPlot);
+
+            experimentElement.appendChild(analysisParams);
 
             Element visualization = doc.createElement("visualization");
 
@@ -165,6 +197,32 @@ public class XmlCreator {
             Element labelsFontSize = doc.createElement("labelsFontSize");
             labelsFontSize.appendChild(doc.createTextNode(String.valueOf(font_size)));
             visualization.appendChild(labelsFontSize);
+
+            Element startTime2plotE = doc.createElement("startTime2plot");
+            startTime2plotE.appendChild(doc.createTextNode(String.valueOf(startTime2plot)));
+            visualization.appendChild(startTime2plotE);
+
+            Element eventsElement = doc.createElement("Events2plot");
+
+            for (ExperimentEvents event : experimentEventsDao.getAll()) {
+                Element obj = doc.createElement(event.getName());
+
+                String value = "False";
+                for (ExperimentEvents eventExist : experimentEvents) {
+                    if (eventExist.getId() == event.getId())
+                    {
+                        value = "True";
+                        break;
+                    }
+                }
+
+                obj.setAttribute("is_active", value);
+                eventsElement.appendChild(obj);
+            }
+
+            visualization.appendChild(eventsElement);
+
+
 
             experimentElement.appendChild(visualization);
 

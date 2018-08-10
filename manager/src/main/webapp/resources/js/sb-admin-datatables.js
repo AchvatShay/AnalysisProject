@@ -24,7 +24,7 @@ $(document).ready(function() {
         $('#' + id + ' tbody').on('change', 'input[type="checkbox"]', function(){
             // If checkbox is not checked
             if(!this.checked){
-                var el = $('#example-select-all').get(0);
+                var el = $('#' + id + '-select-all').get(0);
                 // If "Select all" control is checked and has 'indeterminate' property
                 if(el && el.checked && ('indeterminate' in el)){
                     // Set visual state of "Select all" control

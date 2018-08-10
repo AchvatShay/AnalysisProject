@@ -4,6 +4,12 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import AnalysisManager.RunAnalysis;
+import com.analysis.manager.NeuronsBean;
+import com.analysis.manager.XmlCreator;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
+import com.mathworks.toolbox.javabuilder.MWException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +20,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import AnalysisManager.RunAnalysis;
 
 /**
  * Contains database configurations.
@@ -98,6 +105,35 @@ public class DatabaseConfig {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
+    @Bean
+    public DbxClientV2 dbxClientV2()
+    {
+        // Create Dropbox client
+        DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial");
+        return new DbxClientV2(config, env.getProperty("dropbox.access.token"));
+    }
+
+    @Bean
+    public RunAnalysis class1()
+    {
+        try {
+            return new RunAnalysis();
+        } catch (MWException e) {
+            return null;
+        }
+    }
+
+    @Bean
+    public XmlCreator xmlCreator()
+    {
+        return new XmlCreator();
+    }
+
+    @Bean
+    public NeuronsBean neuronsBean()
+    {
+        return new NeuronsBean();
+    }
 
     // ------------------------
     // PRIVATE FIELDS

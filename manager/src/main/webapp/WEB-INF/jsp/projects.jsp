@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="input" uri="http://www.springframework.org/tags/form" %>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -11,19 +11,19 @@
   <meta name="author" content="">
   <title>Analysis System</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
-  <link href="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -111,10 +111,10 @@
                     <td>${project.getName()}</td>
                     <td>${project.getDescription()}</td>
                     <td>
-                      <a href="${pageContext.request.contextPath}/projects/delete/${project.getId()}">
+                      <a href="${pageContext.request.contextPath}/projects/${project.getId()}/delete">
                         <i id="project-delete-${project.getId()}" class="fa fa-trash"></i>
                       </a>
-                      <a href="${pageContext.request.contextPath}/project/${project.getId()}">
+                      <a href="${pageContext.request.contextPath}/projects/${project.getId()}">
                         <i id="project-edit-${project.getId()}" class="fa fa-arrow-circle-right"></i>
                       </a>
                     </td>
@@ -143,7 +143,7 @@
                   </div>
                   <div class="form-group">
                     <label for="projectDescription">Description</label>
-                    <input type="text" name="description" required="required" data-error="Project description is required" class="form-control" id="projectDescription" aria-describedby="DescriptionHelp" placeholder="Enter Name">
+                    <textarea type="text" name="description" required="required" data-error="Project description is required" class="form-control" id="projectDescription" placeholder="Enter Description"></textarea>
                   </div>
 
                   <button type="submit" class="btn btn-primary">Save</button>
@@ -190,19 +190,19 @@
     </div>
     <!-- Bootstrap core JavaScript-->
 
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-datatables.min.js"></script>
-    <script src="../../${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin-datatables.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
       $(document).ready(function () {

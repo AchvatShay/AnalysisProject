@@ -1,10 +1,8 @@
 package com.analysis.manager.modle;
 
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +19,6 @@ public class Experiment {
 
     @NotNull
     private String description;
-
 
     @OneToOne
     private ExperimentCondition experimentCondition;
@@ -88,7 +85,7 @@ public class Experiment {
         this.experimentCondition = experimentCondition;
     }
 
-    public List getTrials() {
+    public List<Trial> getTrials() {
         return trials;
     }
 
@@ -116,12 +113,44 @@ public class Experiment {
             for (File f_BDA : filesBDA != null ? filesBDA : new File[0]) {
                 for (File f_TPA : filesTPA != null ? filesTPA : new File[0]) {
                     if (f_BDA.getName().replace("BDA", "TPA").equals(f_TPA.getName())) {
-                        trials.add(new Trial(new TPA(f_TPA.getPath()), null, new BDA(f_BDA.getPath()), null, this));
+                        trials.add(new Trial(f_TPA.getName().replace("TPA", ""),new TPA(f_TPA.getPath()), null, new BDA(f_BDA.getPath()), null, this));
                     }
                 }
             }
         }
 
         return trials;
+    }
+
+    public void AddTrials(List<Trial> trailsListFromFolder) {
+        if (this.trials == null)
+        {
+            setTrials(trailsListFromFolder);
+        } else {
+            this.trials.addAll(trailsListFromFolder);
+        }
+    }
+
+    public void AddTrial(Trial trial) {
+        if (this.trials == null)
+        {
+            this.trials = new LinkedList();
+        }
+
+        this.trials.add(trial);
+    }
+
+    public List<Long> getTrialsID() {
+        LinkedList<Long> trialsID = new LinkedList<>();
+
+        if (getTrials() != null)
+        {
+            for(Trial trial : getTrials())
+            {
+                trialsID.add(trial.getId());
+            }
+        }
+
+        return trialsID;
     }
 }

@@ -23,17 +23,33 @@ public class Analysis {
     @ManyToOne
     private Project project;
 
+    @ManyToMany
+    private List<AnalysisType> analysisType;
+
+    @ManyToMany
+    private List<Trial> trials;
+
     @ManyToOne
-    private AnalysisType analysisType;
+    private Experiment experiment;
 
     public Analysis() {
     }
 
-    public Analysis(@NotNull String name, @NotNull String description, Project project, AnalysisType analysisType) {
+    public Analysis(@NotNull String name, @NotNull String description, Project project, List<AnalysisType> analysisType, List<Trial> trials, Experiment experiment) {
         this.name = name;
+        this.trials = trials;
         this.description = description;
         this.project = project;
         this.analysisType = analysisType;
+        this.experiment = experiment;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
     }
 
     public Project getProject() {
@@ -44,11 +60,19 @@ public class Analysis {
         this.project = project;
     }
 
-    public AnalysisType getAnalysisType() {
+    public List<Trial> getTrials() {
+        return trials;
+    }
+
+    public void setTrials(List<Trial> trials) {
+        this.trials = trials;
+    }
+
+    public List<AnalysisType> getAnalysisType() {
         return analysisType;
     }
 
-    public void setAnalysisType(AnalysisType analysisType) {
+    public void setAnalysisType(List<AnalysisType> analysisType) {
         this.analysisType = analysisType;
     }
 
@@ -70,19 +94,5 @@ public class Analysis {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<String> getAllTifResults(String resultsLocation)
-    {
-
-        File file = new File( resultsLocation + File.separator + project.getName() + File.separator + getName() + File.separator + getAnalysisType().getName());
-        File[] tifFiles = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".tif"));
-        LinkedList<String> results = new LinkedList<>();
-
-        for (File f: tifFiles != null ? tifFiles : new File[0]) {
-            results.add(f.getPath().replace(resultsLocation, ""));
-        }
-
-        return results;
     }
 }

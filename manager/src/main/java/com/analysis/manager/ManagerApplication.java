@@ -4,6 +4,7 @@ import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
@@ -14,7 +15,8 @@ public class ManagerApplication  extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         try {
-            SpringApplication.run(ManagerApplication.class, args);
+            SpringApplicationBuilder builder = new SpringApplicationBuilder(ManagerApplication.class);
+            builder.headless(false).run(args);
         }
         catch (Exception e) {
             System.out.println("Your Message : " + e.getMessage());
@@ -40,6 +42,9 @@ public class ManagerApplication  extends SpringBootServletInitializer {
     @Autowired
     private PermissionsDao permissionsDao;
 
+    @Autowired
+    private ExperimentEventsDao experimentEventsDao;
+
     @Bean
     public boolean dbInit()
     {
@@ -47,11 +52,21 @@ public class ManagerApplication  extends SpringBootServletInitializer {
         LoadExperimentInjections();
         LoadUsersPermissions();
         LoadExperimentPelletPertubation();
+        LoadExperimentEvents();
 
         return true;
     }
 
-    public void LoadExperimentType()
+    private void LoadExperimentEvents() {
+        for (String type: env.getProperty("db.experiment.events").split(",")) {
+            if (experimentEventsDao.getByName(type) == null)
+            {
+                experimentEventsDao.create(new ExperimentEvents(type));
+            }
+        }
+    }
+
+    private void LoadExperimentType()
     {
         for (String type: env.getProperty("db.experiment.type").split(",")) {
             if (experimentTypeDao.getByName(type) == null)
@@ -61,7 +76,7 @@ public class ManagerApplication  extends SpringBootServletInitializer {
         }
     }
 
-    public void LoadExperimentInjections()
+    private void LoadExperimentInjections()
     {
         for (String type: env.getProperty("db.experiment.injections").split(",")) {
             if (experimentInjectionsDao.getByName(type) == null)
@@ -71,7 +86,7 @@ public class ManagerApplication  extends SpringBootServletInitializer {
         }
     }
 
-    public void LoadExperimentPelletPertubation()
+    private void LoadExperimentPelletPertubation()
     {
         for (String type: env.getProperty("db.experiment.pelletPertubation").split(",")) {
             if (experimentPelletPertubationDao.getByName(type) == null)
@@ -81,7 +96,7 @@ public class ManagerApplication  extends SpringBootServletInitializer {
         }
     }
 
-    public void LoadUsersPermissions()
+    private void LoadUsersPermissions()
     {
         if (permissionsDao.getByValue("Administrator") == null)
         {

@@ -11,19 +11,19 @@
   <meta name="author" content="">
   <title>Analysis System</title>
   <!-- Bootstrap core CSS-->
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
-  <link href="../../resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/solid.min.css" rel="stylesheet" type="text/css">
 
-  <link href="../../resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/v4-shims.min.css" rel="stylesheet" type="text/css">
   <!-- Page level plugin CSS-->
-  <link href="../../resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../resources/css/sb-admin.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -71,16 +71,26 @@
   </nav>
   <div class="content-wrapper">
     <div class="container-fluid">
+
+      <c:if test="${not empty error_massage}">
+        <div class="alert alert-danger">
+          <strong>Error!</strong> ${error_massage}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </c:if>
+
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="/" class="elements">Analysis System</a>
+          <a href="${pageContext.request.contextPath}/" class="elements">Analysis System</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="/projects">My Projects</a>
+          <a href="${pageContext.request.contextPath}/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="/project/${experiment.getProject().getId()}">${experiment.getProject().getName()}</a>
+          <a href="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}">${experiment.getProject().getName()}</a>
         </li>
         <li class="breadcrumb-item active">
           ${experiment.getName()}
@@ -89,23 +99,109 @@
 
       <div class="row">
         <div class="col-12">
-          <h1>${experiment.getName()}</h1>
-          <p>${experiment.getDescription()}</p>
+          <label for="name">Name : </label>
+          <label id="name">${experiment.getName()}</label>
 
-          <div class="col-md-5">
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fa fa-area-chart"></i> Experiment Conditions</div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-3">Type : </div>
-                  <div class="col-md-3">${experiment.getExperimentType()} </div>
+          <label for="description">Description : </label>
+          <label id="description">${experiment.getDescription()}</label>
+
+          <label for="animal">Animal : </label>
+          <label id="animal">${experiment.getAnimal().getName()}</label>
+
+          <label for="project">Project : </label>
+          <label id="project">${experiment.getProject().getName()}</label>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fa fa-info-circle"></i> Experiment Conditions</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3 card-text">Type : </div>
+              <div class="col-md-3 card-text">${experiment.getExperimentCondition().getExperimentType().getName()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">Injections : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getExperimentInjections().getName()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">Pellet Pertubation : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getExperimentPelletPertubation().getName()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">depth : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getDepth()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">imaging_sampling_rate : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getImaging_sampling_rate()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">behavioral_sampling_rate : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getBehavioral_sampling_rate()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">tone_time : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getTone_time()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">duration : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getDuration()} </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">behavioral_delay : </div>
+              <div class="col-md-3">${experiment.getExperimentCondition().getBehavioral_delay()} </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="addExperimentTrialBtn" data-toggle="collapse" href="#collapseTrial" type="button" class="btn btn-info" aria-expanded="true">
+        <i id="addExperimentTrialIcon" class="fa fa-plus-circle"></i> Add Trials
+      </button>
+      <div id="collapseTrial" class="collapse col-md-6" style="padding-top:1%;">
+        <div class="card md-3">
+          <div class="card-header">
+            <div class="card-title">
+              <h1>Multiple Trails</h1>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trails" method="post" class="col-md-6">
+                <div class="form-group">
+                  <label for="files_location">Trails BDA+TPA files location</label>
+                  <input type="text" name="files_location" required="required" data-error="files location is required" class="form-control" id="files_location" placeholder="Enter files location">
                 </div>
-                <div class="row">
-                  <div class="col-md-3">Injections : </div>
-                  <div class="col-md-3">${experiment.getExperimentInjections()} </div>
+                <button type="submit" class="btn btn-primary">ADD</button>
+              </form>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="card md-3">
+          <div class="card-header">
+            <div class="card-title">
+              <h1>Trail</h1>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trail" method="post" class="col-md-6">
+                <div class="form-group">
+                  <label for="bda_location">Trail BDA file location</label>
+                  <input type="text" name="bda_location" required="required" data-error="BDA location is required" class="form-control" id="bda_location" placeholder="Enter files location">
                 </div>
-              </div>
+                <div class="form-group">
+                  <label for="tpa_location">Trail TPA file location</label>
+                  <input type="text" name="tpa_location" required="required" data-error="BDA location is required" class="form-control" id="tpa_location" placeholder="Enter files location">
+                </div>
+                <button type="submit" class="btn btn-primary">ADD</button>
+              </form>
             </div>
           </div>
         </div>
@@ -146,25 +242,33 @@
     </div>
     <!-- Bootstrap core JavaScript-->
 
-    <script src="../../resources/vendor/jquery/jquery.min.js"></script>
-    <script src="../../resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="../../resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="../../resources/vendor/chart.js/Chart.min.js"></script>
-    <script src="../../resources/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="../../resources/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="../../resources/js/sb-admin.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="../../resources/js/sb-admin-datatables.min.js"></script>
-    <script src="../../resources/js/sb-admin-charts.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin-datatables.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
-    <script>
+  <script>
       $(document).ready(function () {
-
-      });
-    </script>
+          $("#addExperimentTrialBtn").click(function () {
+              if ($("#addExperimentTrialIcon").hasClass("fa-plus-circle")) {
+                  $("#addExperimentTrialIcon").removeClass("fa-plus-circle");
+                  $("#addExperimentTrialIcon").addClass("fa-minus-circle");
+              } else {
+                  $("#addExperimentTrialIcon").removeClass("fa-minus-circle");
+                  $("#addExperimentTrialIcon").addClass("fa-plus-circle");
+              }
+          });
+      })
+  </script>
 
   </div>
 </body>

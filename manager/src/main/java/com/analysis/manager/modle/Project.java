@@ -65,7 +65,7 @@ public class Project {
         return layers;
     }
 
-    public List getExperiments() {
+    public List<Experiment> getExperiments() {
         return experiments;
     }
 
@@ -97,5 +97,32 @@ public class Project {
         }
 
         this.layers.add(layer);
+    }
+
+    public void AddAnimal(Animal animal) {
+        if (this.animals == null)
+        {
+            this.animals = new LinkedList<Layer>();
+        }
+
+        this.animals.add(animal);
+    }
+
+    public void AddAnalysis(Analysis analysis) {
+        if (this.Analyzes == null)
+        {
+            this.Analyzes = new LinkedList<Layer>();
+        }
+
+        this.Analyzes.add(analysis);
+    }
+
+    public void AddExperiment(Experiment experiment) {
+        if (this.experiments == null)
+        {
+            this.experiments = new LinkedList<Layer>();
+        }
+
+        this.experiments.add(experiment);
     }
 }

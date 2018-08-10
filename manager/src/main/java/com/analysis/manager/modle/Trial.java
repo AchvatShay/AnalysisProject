@@ -19,6 +19,8 @@ public class Trial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String name;
+
     @OneToOne
     private TPA tpa;
 
@@ -40,8 +42,9 @@ public class Trial {
 
     public Trial(){}
 
-    public Trial(TPA tpa, Imaging imaging, BDA bda, Behavioral behavioral, Experiment experiment)
+    public Trial(String name, TPA tpa, Imaging imaging, BDA bda, Behavioral behavioral, Experiment experiment)
     {
+        this.name = name;
         this.bda = bda;
         this.behavioral = behavioral;
         this.imaging = imaging;
@@ -95,5 +98,28 @@ public class Trial {
 
     public long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other == this) return true;
+        if (other instanceof Trial)
+        {
+            return this.getId() == ((Trial)other).getId();
+        } else if (other instanceof Long)
+        {
+            return this.getId() == (Long)other;
+        }
+
+        return false;
     }
 }

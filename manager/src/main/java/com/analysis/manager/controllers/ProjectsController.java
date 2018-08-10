@@ -1,12 +1,19 @@
 package com.analysis.manager.controllers;
 
-import com.analysis.manager.modle.Project;
-import com.analysis.manager.modle.ProjectDao;
+import com.analysis.manager.NeuronsBean;
+import com.analysis.manager.modle.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -16,15 +23,57 @@ public class ProjectsController {
 
     private List<Project> projects;
 
+    @Autowired
+    private AnalysisTypeDao analysisTypeDao;
+
+    @Autowired
+    private ExperimentPelletPertubationDao experimentPelletPertubationDao;
+
+    @Autowired
+    private ExperimentInjectionsDao experimentInjectionsDao;
+
+    @Autowired
+    private ExperimentTypeDao experimentTypeDao;
+
+    @Autowired
+    private ExperimentEventsDao experimentEventsDao;
+
+    @Autowired
+    private NeuronsBean neuronsBean;
+
     @GetMapping(value = {"", "projects"})
     public String index(Model m) {
-        if (projects == null)
-        {
+        try {
             projects = projectDao.getAll();
+
+            m.addAttribute("my_projects", projects);
+        } catch (Exception e)
+        {
+            m.addAttribute("error_massage", "Error getting projects list from DB");
         }
 
-        m.addAttribute("my_projects", projects);
         return "projects";
+    }
+
+    @RequestMapping(value = "projects/{id}")
+    public String viewProjects(@PathVariable long id, Model m)
+    {
+        try {
+            Project project = projectDao.getById(id);
+            m.addAttribute("project", project);
+            m.addAttribute("analysisTypes", analysisTypeDao.getAll());
+            m.addAttribute("experiment_type", experimentTypeDao.getAll());
+            m.addAttribute("experimentInjections", experimentInjectionsDao.getAll());
+            m.addAttribute("experimentEvents", experimentEventsDao.getAll());
+            m.addAttribute("pelletPertubations", experimentPelletPertubationDao.getAll());
+            m.addAttribute("neuronsBean", neuronsBean);
+            m.addAttribute("tree_trials", new JSONObject(trailsToSelect(project)));
+            return "project";
+        } catch (Exception e)
+        {
+            m.addAttribute("error_massage", "Error getting project" + id + "from DB");
+            return "redirect:/projects";
+        }
     }
 
     @PostMapping("/projects")
@@ -60,15 +109,15 @@ public class ProjectsController {
             return index(model);
         }
 
-        return "redirect:project/" + project.getId();
+        return "redirect:projects/" + project.getId();
     }
 
     @RequestMapping(value = "projects/delete/{id}")
-    public String delete(@PathVariable long id)
+    public String delete(@PathVariable long id, Model m)
     {
         if (projects == null)
         {
-            return "";
+            return "redirect:/projects";
         }
 
         Project projectToDelete = null;
@@ -82,10 +131,59 @@ public class ProjectsController {
 
         if (projectToDelete != null)
         {
-            projectDao.delete(projectToDelete);
-            projects.remove(projectToDelete);
+            try {
+                projectDao.delete(projectToDelete);
+                projects.remove(projectToDelete);
+            } catch (Exception e) {
+                m.addAttribute("error_massage", "Error deleting project from list in DB");
+            }
         }
 
         return "redirect:/projects";
     }
+
+    public HashMap<String, LinkedList<String>> trailsToSelect(Project project)
+    {
+        HashMap<String, LinkedList<String>> map = new HashMap<>();
+
+        for (Object experiment : project.getExperiments()) {
+            LinkedList<String> jSonTypes = new LinkedList<>();
+            for (Trial trial : ((Experiment)experiment).getTrials())
+            {
+                jSonTypes.add((trial.getName()));
+            }
+
+            map.put(String.valueOf(((Experiment)experiment).getId()), jSonTypes);
+        }
+
+        return map;
+    }
+
+    private class JSonType
+    {
+        private String id;
+        private String name;
+
+        public JSonType(long id, String name) {
+            this.id = String.valueOf(id);
+            this.name = name;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }
+
