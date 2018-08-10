@@ -1,4 +1,4 @@
-function plotsinglNrnPerTrials(titlestr, mA, MA, roiNames, currnrnind, x, outputPath, outputstr, faillabels, chosenLabelval, xlimmin, t, m, M, nerons2plot, X, histbehave, generalProperty)
+function plotsinglNrnPerTrials(titlestr, mA, MA, roiNames, currnrnind, x, outputPath, outputstr, faillabels, chosenLabelval, xlimmin, t, m, M, X, histbehave, generalProperty)
 figure;htop = subplot(2,1,1);
 imagesc(t, 1:sum(faillabels==chosenLabelval), x(faillabels==chosenLabelval,:));set(gca,'CLim',[m,M]);
 colormap jet;ylabel('Trials #','FontSize',10);
@@ -32,4 +32,4 @@ xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
 
 
-mysave(gcf, fullfile(outputPath, [outputstr num2str(nerons2plot(currnrnind))]));
+mysave(gcf, fullfile(outputPath, [outputstr num2str(roiNames(currnrnind))]));

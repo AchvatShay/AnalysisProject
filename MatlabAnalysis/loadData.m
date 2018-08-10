@@ -92,8 +92,14 @@ if isfield(BehaveData, 'success')
 end
 
 if generalProperty.Neurons2keep ~= 0
-    imagingData.samples=imagingData.samples(generalProperty.Neurons2keep, :,:);
-    imagingData.roiNames = imagingData.roiNames(generalProperty.Neurons2keep);
+    
+     for nrind=1:length(generalProperty.Neurons2keep)
+         curr_nrn2Keep = generalProperty.Neurons2keep(nrind);
+         currnrnind(nrind) = find(imagingData.roiNames(:, 1)-curr_nrn2Keep==0);
+     end
+    
+    imagingData.samples=imagingData.samples(currnrnind, :,:);
+    imagingData.roiNames = imagingData.roiNames(currnrnind);
 end
 % if generalProperty.Trials2keep == 0
 %     return;

@@ -38,9 +38,9 @@ for nrind=1:length(nerons2plot)
     mA=mA-DN*.1;
     MA=MA+DN*.1;
     plotsinglNrnPerTrials('Success', mA, MA,imagingData.roiNames, currnrnind, x, outputPath, 'SucNr', faillabels, 0, xlimmin, t,...
-        m, M, nerons2plot, X, Sbehave, generalProperty);
+        m, M, X, Sbehave, generalProperty);
     plotsinglNrnPerTrials('Failure', mA, MA,imagingData.roiNames, currnrnind, x, outputPath, 'FailNr', faillabels, 1, xlimmin, t,...
-        m, M, nerons2plot, X, Fbehave, generalProperty);
+        m, M, X, Fbehave, generalProperty);
     
    
 end
