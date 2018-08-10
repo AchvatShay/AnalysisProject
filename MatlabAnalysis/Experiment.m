@@ -20,7 +20,7 @@ classdef Experiment %< handle
         PelletPertubation = 'None';
         Neurons2keep = 0;
         Neurons2plot = 0;
-        Trials2keep = 0;
+%         Trials2keep = 0;
         analysis_pca_thEffDim=0.01;
         visualization_legendLocation = 'Best';
         visualization_labelsFontSize = 14;
@@ -95,10 +95,10 @@ classdef Experiment %< handle
             for nr = 1:length(neurons)
                 obj.Neurons2plot(nr) = str2double(neurons(nr).name.Text);
             end
-            trials = [xmlstrct.GeneralProperty.Experiment.TrialsToPut.Trial{:}];
-            for tr = 1:length(trials)
-                obj.Trials2keep(tr) = str2double(trials(tr).name.Text);
-            end
+%             trials = [xmlstrct.GeneralProperty.Experiment.TrialsToPut.Trial{:}];
+%             for tr = 1:length(trials)
+%                 obj.Trials2keep(tr) = str2double(trials(tr).name.Text);
+%             end
             
         end
         

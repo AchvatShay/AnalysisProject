@@ -95,16 +95,16 @@ if generalProperty.Neurons2keep ~= 0
     imagingData.samples=imagingData.samples(generalProperty.Neurons2keep, :,:);
     imagingData.roiNames = imagingData.roiNames(generalProperty.Neurons2keep);
 end
-if generalProperty.Trials2keep == 0
-    return;
-end
+% if generalProperty.Trials2keep == 0
+%     return;
+% end
 
 for event_i = 1:length(eventNameList)
     switch eventNameList{event_i}
         case {'failure', 'success'}
-            BehaveData.(eventNameList{event_i})=BehaveData.(eventNameList{event_i})(generalProperty.Trials2keep);
+            BehaveData.(eventNameList{event_i})=BehaveData.(eventNameList{event_i})(:);
         otherwise
-            BehaveData.(eventNameList{event_i}).indicator=BehaveData.(eventNameList{event_i}).indicator(generalProperty.Trials2keep, :);
+            BehaveData.(eventNameList{event_i}).indicator=BehaveData.(eventNameList{event_i}).indicator(:, :);
     end
 end
-imagingData = imagingData(:, :, generalProperty.Trials2keep);
+imagingData = imagingData(:, :, :);
