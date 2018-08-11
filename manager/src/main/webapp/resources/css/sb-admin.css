@@ -467,7 +467,7 @@ footer.sticky-footer {
 
 @media (min-width: 992px) {
   footer.sticky-footer {
-    width: calc(100% - 250px);
+    width: calc(100%);
   }
 }
 

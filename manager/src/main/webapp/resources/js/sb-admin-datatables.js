@@ -5,6 +5,7 @@ $(document).ready(function() {
     $('#dataTableAnimals').DataTable();
     $('#dataTableExperiment').DataTable();
     $('#dataTableAnalysis').DataTable();
+    $('#dataTableExpTrials').DataTable();
     $(".dataTableTrials").each(function () {
         var id = this.id;
 

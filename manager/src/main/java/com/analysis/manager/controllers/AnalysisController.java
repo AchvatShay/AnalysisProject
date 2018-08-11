@@ -93,6 +93,33 @@ public class AnalysisController {
         return "analysis";
     }
 
+    @RequestMapping(value = "projects/{id}/analysis/{analysis_id}/delete")
+    public String delete(@PathVariable("id") long projectId, @PathVariable("analysis_id") long analysis_id, Model model)
+    {
+        try {
+            Analysis analysis = analysisDao.getById(analysis_id);
+
+            if (analysis == null)
+            {
+                model.addAttribute("error_massage", "Can not find analysis by id = " + analysis_id);
+                return "redirect:/projects/" + projectId;
+            }
+
+            Project project = projectDao.getById(projectId);
+
+            project.deleteAnalysis(analysis);
+            projectDao.update(project);
+            analysisDao.delete(analysis);
+
+            return "redirect:/projects/" + projectId;
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("error_massage", "error while delete analysis in DB");
+            return "redirect:/projects/" + projectId;
+        }
+    }
+
     @RequestMapping(value = "projects/{projects_id}/analysis", method = RequestMethod.POST)
     public String create(@PathVariable("projects_id") long id,
                          @RequestParam("name") String name, @RequestParam("description") String description,

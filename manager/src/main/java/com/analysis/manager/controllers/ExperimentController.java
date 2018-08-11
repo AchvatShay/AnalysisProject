@@ -94,6 +94,62 @@ public class ExperimentController {
 
     }
 
+    @RequestMapping(value = "projects/{id}/experiments/{experiment_id}/delete")
+    public String delete(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, Model model)
+    {
+        try {
+            Experiment experiment = experimentDao.getById(experiment_id);
+
+            if (experiment == null)
+            {
+                model.addAttribute("error_massage", "Can not find experiment by id = " + experiment_id);
+                return "redirect:/projects/" + projectId;
+            }
+
+            Project project = projectDao.getById(projectId);
+
+            project.deleteExperiment(experiment);
+            projectDao.update(project);
+
+            experimentDao.delete(experiment);
+
+            return "redirect:/projects/" + projectId;
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("error_massage", "error while delete experiment in DB");
+            return "redirect:/projects/" + projectId;
+        }
+    }
+
+    @RequestMapping(value = "projects/{id}/experiments/{experiment_id}/delete/trial/{trial_id}")
+    public String deleteTrial(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, @PathVariable("trial_id") long trial_id, Model model)
+    {
+        try {
+            Experiment experiment = experimentDao.getById(experiment_id);
+
+            if (experiment == null)
+            {
+                model.addAttribute("error_massage", "Can not find experiment by id = " + experiment_id);
+                return "redirect:/projects/" + projectId;
+            }
+
+            Trial trial = trialDao.getById(trial_id);
+
+            experiment.deleteTrial(trial);
+            experimentDao.update(experiment);
+            trialDao.delete(trial);
+
+            return "redirect:/projects/" + projectId;
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("error_massage", "error while delete trial in DB");
+            return "redirect:/projects/" + projectId;
+        }
+    }
+
+
     @RequestMapping(value = "projects/{projectID}/experiments/{id}/add_trails")
     public String addTrails(@PathVariable long id, @PathVariable("projectID") long projectId, @RequestParam(value = "files_location") String filesLocation, Model model)
     {

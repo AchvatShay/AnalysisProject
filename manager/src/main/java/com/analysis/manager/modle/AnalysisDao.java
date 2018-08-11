@@ -1,14 +1,21 @@
 package com.analysis.manager.modle;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Repository
 @Transactional
 public class AnalysisDao extends BasicDao<Analysis>{
+    @Autowired
+    private Environment environment;
 
     /**
      * Return all the users stored in the database.
@@ -42,5 +49,19 @@ public class AnalysisDao extends BasicDao<Analysis>{
         }
     }
 
+    @Override
+    public void delete(Analysis analysis) {
+        // delete from dropbox
+        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
+        String path = dropboxPathLocal + File.separator + analysis.getProject().getName() + File.separator + analysis.getName();
 
+        try {
+            FileUtils.deleteDirectory(new File(path));
+        } catch (IOException e) {
+            // TODO
+            // logging
+        }
+
+        super.delete(analysis);
+    }
 } // class UserDao

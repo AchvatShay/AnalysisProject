@@ -153,4 +153,25 @@ public class Experiment {
 
         return trialsID;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        /* Check if o is an instance of Complex or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof Experiment)) {
+            return false;
+        }
+
+        return ((Experiment)o).getId() == this.getId();
+    }
+
+    public void deleteTrial(Trial trial) {
+        if (this.getTrials() != null) {
+            this.trials.remove(trial);
+        }
+    }
 }

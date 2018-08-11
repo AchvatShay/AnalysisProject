@@ -52,4 +52,31 @@ public class AnimalsController {
             return "redirect:/projects/" + project_id;
         }
     }
+
+    @RequestMapping(value = "projects/{id}/animals/{animal_id}/delete")
+    public String delete(@PathVariable("id") long projectId, @PathVariable("animal_id") long animal_id, Model model)
+    {
+        try {
+            Animal animal = animalsDao.getById(animal_id);
+
+            if (animal == null)
+            {
+                model.addAttribute("error_massage", "Can not find animal by id = " + animal_id);
+                return "redirect:/projects/" + projectId;
+            }
+
+            Project project = projectDao.getById(projectId);
+
+            project.deleteAnimal(animal);
+            projectDao.update(project);
+            animalsDao.delete(animal);
+
+            return "redirect:/projects/" + projectId;
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("error_massage", "error while delete animal in DB");
+            return "redirect:/projects/" + projectId;
+        }
+    }
 }

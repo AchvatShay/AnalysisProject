@@ -25,6 +25,9 @@
   <link href="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="${pageContext.request.contextPath}/resources/css/analysis-custom.css" rel="stylesheet">
+
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -35,7 +38,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+      <ul class="navbar-nav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
           <a class="nav-link" href="analysis">
             <i class="fa fa-fw fa-area-chart"></i>
@@ -55,13 +58,6 @@
           </a>
         </li>
       </ul>
-      <ul class="navbar-nav sidenav-toggler">
-        <li class="nav-item">
-          <a class="nav-link text-center" id="sidenavToggler">
-            <i class="fa fa-fw fa-angle-left"></i>
-          </a>
-        </li>
-      </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
@@ -70,10 +66,11 @@
       </ul>
     </div>
   </nav>
-  <div class="content-wrapper">
-    <div class="container-fluid">
+    <div class="container-fluid rapper">
 
-      <c:if test="${not empty error_massage}">
+      <div class="loader"></div>
+
+      <c:if test="${error_massage != null and !error_massage.equals('')}">
         <div class="alert alert-danger">
           <strong>Error!</strong> ${error_massage}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -81,6 +78,7 @@
           </button>
         </div>
       </c:if>
+
 
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
@@ -137,7 +135,6 @@
         </div>
       </div>
 
-      </div>
     </div>
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
@@ -187,6 +184,10 @@
     <script src="${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
+        $(window).on('load', function(){
+            $('.loader').hide();
+        });
+
         $(document).ready(function () {
             var count = 0;
             var currentType;

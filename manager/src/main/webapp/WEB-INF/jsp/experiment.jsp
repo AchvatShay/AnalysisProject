@@ -24,6 +24,8 @@
   <link href="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
+
+  <link href="${pageContext.request.contextPath}/resources/css/analysis-custom.css" rel="stylesheet">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -34,7 +36,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+      <ul class="navbar-nav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
           <a class="nav-link" href="analysis">
             <i class="fa fa-fw fa-area-chart"></i>
@@ -54,13 +56,7 @@
           </a>
         </li>
       </ul>
-      <ul class="navbar-nav sidenav-toggler">
-        <li class="nav-item">
-          <a class="nav-link text-center" id="sidenavToggler">
-            <i class="fa fa-fw fa-angle-left"></i>
-          </a>
-        </li>
-      </ul>
+
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
@@ -69,10 +65,9 @@
       </ul>
     </div>
   </nav>
-  <div class="content-wrapper">
-    <div class="container-fluid">
+    <div class="container-fluid rapper">
 
-      <c:if test="${not empty error_massage}">
+      <c:if test="${error_massage != null and !error_massage.equals('')}">
         <div class="alert alert-danger">
           <strong>Error!</strong> ${error_massage}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -97,21 +92,27 @@
         </li>
       </ol>
 
-      <div class="row">
-        <div class="col-12">
-          <label for="name">Name : </label>
-          <label id="name">${experiment.getName()}</label>
 
-          <label for="description">Description : </label>
-          <label id="description">${experiment.getDescription()}</label>
-
-          <label for="animal">Animal : </label>
-          <label id="animal">${experiment.getAnimal().getName()}</label>
-
-          <label for="project">Project : </label>
-          <label id="project">${experiment.getProject().getName()}</label>
+        <div class="col-md-5">
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fa fa-info-circle"></i> Experiment info</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-5 card-text">Name : </div>
+                <div class="col-md-5 card-text">${experiment.getName()} </div>
+              </div>
+              <div class="row">
+                <div class="col-md-5 card-text">Description : </div>
+                <div class="col-md-5 card-text">${experiment.getDescription()} </div>
+              </div>
+              <div class="row">
+                <div class="col-md-5 card-text">Animal : </div>
+                <div class="col-md-5 card-text"> ${experiment.getAnimal().getName()} </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
       <div class="col-md-5">
         <div class="card mb-3">
@@ -119,44 +120,74 @@
             <i class="fa fa-info-circle"></i> Experiment Conditions</div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-3 card-text">Type : </div>
-              <div class="col-md-3 card-text">${experiment.getExperimentCondition().getExperimentType().getName()} </div>
+              <div class="col-md-5 card-text">Type : </div>
+              <div class="col-md-5 card-text">${experiment.getExperimentCondition().getExperimentType().getName()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">Injections : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getExperimentInjections().getName()} </div>
+              <div class="col-md-5">Injections : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getExperimentInjections().getName()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">Pellet Pertubation : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getExperimentPelletPertubation().getName()} </div>
+              <div class="col-md-5">Pellet Pertubation : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getExperimentPelletPertubation().getName()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">depth : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getDepth()} </div>
+              <div class="col-md-5">depth : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getDepth()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">imaging_sampling_rate : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getImaging_sampling_rate()} </div>
+              <div class="col-md-5">imaging_sampling_rate : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getImaging_sampling_rate()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">behavioral_sampling_rate : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getBehavioral_sampling_rate()} </div>
+              <div class="col-md-5">behavioral_sampling_rate : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getBehavioral_sampling_rate()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">tone_time : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getTone_time()} </div>
+              <div class="col-md-5">tone_time : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getTone_time()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">duration : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getDuration()} </div>
+              <div class="col-md-5">duration : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getDuration()} </div>
             </div>
             <div class="row">
-              <div class="col-md-3">behavioral_delay : </div>
-              <div class="col-md-3">${experiment.getExperimentCondition().getBehavioral_delay()} </div>
+              <div class="col-md-5">behavioral_delay : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getBehavioral_delay()} </div>
             </div>
+
           </div>
         </div>
       </div>
+
+        <div class="col-md-9">
+          <div class="card mb-9">
+            <div class="card-header">
+              <i class="fa fa-info-circle"></i> Experiment Trials</div>
+            <div class="card-body">
+              <div class="table-responsive" style="margin-top:5%">
+          <table class="table table-bordered dataTableTrials" id="dataTableExpTrials" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach var="trial" items="${experiment.getTrials()}">
+              <tr>
+                <td>
+                    ${trial.getId()}
+                </td>
+                <td>${trial.getName()}</td>
+              </tr>
+            </c:forEach>
+            </tbody>
+          </table>
+        </div>
+            </div>
+          </div>
+        </div>
 
       <button id="addExperimentTrialBtn" data-toggle="collapse" href="#collapseTrial" type="button" class="btn btn-info" aria-expanded="true">
         <i id="addExperimentTrialIcon" class="fa fa-plus-circle"></i> Add Trials
@@ -165,7 +196,7 @@
         <div class="card md-3">
           <div class="card-header">
             <div class="card-title">
-              <h1>Multiple Trails</h1>
+              Multiple Trails
             </div>
           </div>
           <div class="card-body">
@@ -186,7 +217,7 @@
         <div class="card md-3">
           <div class="card-header">
             <div class="card-title">
-              <h1>Trail</h1>
+              Trail
             </div>
           </div>
           <div class="card-body">
@@ -208,7 +239,6 @@
       </div>
 
       </div>
-    </div>
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
     <footer class="sticky-footer">

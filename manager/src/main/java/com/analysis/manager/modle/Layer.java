@@ -44,4 +44,19 @@ public class Layer {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        /* Check if o is an instance of Complex or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof Layer)) {
+            return false;
+        }
+
+        return ((Layer)o).getId() == this.getId();
+    }
 }

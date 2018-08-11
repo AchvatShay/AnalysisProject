@@ -53,15 +53,15 @@ public class Project {
         this.Analyzes = Analyzes;
     }
 
-    public List getAnalyzes() {
+    public List<Analysis> getAnalyzes() {
         return Analyzes;
     }
 
-    public List getAnimals() {
+    public List<Animal> getAnimals() {
         return animals;
     }
 
-    public List getLayers() {
+    public List<Layer> getLayers() {
         return layers;
     }
 
@@ -124,5 +124,37 @@ public class Project {
         }
 
         this.experiments.add(experiment);
+    }
+
+    public void deleteLayer(Layer layer) {
+        if (this.getLayers() != null) {
+            this.layers.remove(layer);
+        }
+    }
+
+    public void deleteExperiment(Experiment experiment) {
+        if (this.getExperiments() != null) {
+            this.experiments.remove(experiment);
+        }
+    }
+
+    public void deleteAnimal(Animal animal) {
+        if (this.getAnimals() != null) {
+            this.animals.remove(animal);
+        }
+    }
+
+    public void deleteAnalysis(Analysis analysis) {
+        if (this.getAnalyzes() != null) {
+            this.Analyzes.remove(analysis);
+        }
+    }
+
+    public void setAnimals(List<Animal> animallist) {
+        this.animals = animallist;
+    }
+
+    public void setExperiments(List<Experiment> experimentList) {
+        this.experiments = experimentList;
     }
 }

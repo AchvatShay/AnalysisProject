@@ -21,8 +21,6 @@ public class ProjectsController {
     @Autowired
     private ProjectDao projectDao;
 
-    private List<Project> projects;
-
     @Autowired
     private AnalysisTypeDao analysisTypeDao;
 
@@ -44,9 +42,7 @@ public class ProjectsController {
     @GetMapping(value = {"", "projects"})
     public String index(Model m) {
         try {
-            projects = projectDao.getAll();
-
-            m.addAttribute("my_projects", projects);
+            m.addAttribute("my_projects", projectDao.getAll());
         } catch (Exception e)
         {
             m.addAttribute("error_massage", "Error getting projects list from DB");
@@ -91,17 +87,18 @@ public class ProjectsController {
             return index(model);
         }
 
-        for (Project p: projects) {
-            if (p.getName().equals(project.getName()))
-            {
-                model.addAttribute("error_massage", "The Project name already exists");
-                return index(model);
-            }
-        }
-
-        projects.add(project);
-
         try {
+            List<Project> projects = projectDao.getAll();
+
+            if (projects != null) {
+                for (Project p : projects) {
+                    if (p.getName().equals(project.getName())) {
+                        model.addAttribute("error_massage", "The Project name already exists");
+                        return index(model);
+                    }
+                }
+            }
+
             projectDao.create(project);
         } catch (Exception e)
         {
@@ -112,78 +109,40 @@ public class ProjectsController {
         return "redirect:projects/" + project.getId();
     }
 
-    @RequestMapping(value = "projects/delete/{id}")
+    @RequestMapping(value = "projects/{id}/delete", method = RequestMethod.GET)
     public String delete(@PathVariable long id, Model m)
     {
-        if (projects == null)
-        {
-            return "redirect:/projects";
-        }
+        try {
+            Project projectToDelete = projectDao.getById(id);
 
-        Project projectToDelete = null;
-        for (Project project: projects) {
-            if (project.getId() == id)
-            {
-                projectToDelete = project;
-                break;
-            }
-        }
-
-        if (projectToDelete != null)
-        {
-            try {
+            if (projectToDelete != null) {
                 projectDao.delete(projectToDelete);
-                projects.remove(projectToDelete);
-            } catch (Exception e) {
-                m.addAttribute("error_massage", "Error deleting project from list in DB");
             }
+        } catch (Exception e) {
+            m.addAttribute("error_massage", "Error deleting project from list in DB");
         }
 
         return "redirect:/projects";
     }
 
+
     public HashMap<String, LinkedList<String>> trailsToSelect(Project project)
     {
         HashMap<String, LinkedList<String>> map = new HashMap<>();
 
-        for (Object experiment : project.getExperiments()) {
-            LinkedList<String> jSonTypes = new LinkedList<>();
-            for (Trial trial : ((Experiment)experiment).getTrials())
-            {
-                jSonTypes.add((trial.getName()));
-            }
+        if (project.getExperiments() != null) {
+            for (Object experiment : project.getExperiments()) {
+                LinkedList<String> jSonTypes = new LinkedList<>();
+                for (Trial trial : ((Experiment)experiment).getTrials())
+                {
+                    jSonTypes.add((trial.getName()));
+                }
 
-            map.put(String.valueOf(((Experiment)experiment).getId()), jSonTypes);
+                map.put(String.valueOf(((Experiment)experiment).getId()), jSonTypes);
+            }
         }
 
         return map;
-    }
-
-    private class JSonType
-    {
-        private String id;
-        private String name;
-
-        public JSonType(long id, String name) {
-            this.id = String.valueOf(id);
-            this.name = name;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
     }
 }
 

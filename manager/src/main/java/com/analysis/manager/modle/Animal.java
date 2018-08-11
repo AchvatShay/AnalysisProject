@@ -72,4 +72,19 @@ public class Animal {
     public void setLayer(Layer layer) {
         this.layer = layer;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        /* Check if o is an instance of Complex or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof Animal)) {
+            return false;
+        }
+
+        return ((Animal)o).getId() == this.getId();
+    }
 }

@@ -14,6 +14,8 @@
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
+
+  <link href="${pageContext.request.contextPath}/resources/css/analysis-custom.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
   <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-5.2.0/css/fontawesome.min.css" rel="stylesheet" type="text/css">
 
@@ -38,7 +40,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+      <ul class="navbar-nav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
           <a class="nav-link" href="analysis">
             <i class="fa fa-fw fa-area-chart"></i>
@@ -58,13 +60,7 @@
           </a>
         </li>
       </ul>
-      <ul class="navbar-nav sidenav-toggler">
-        <li class="nav-item">
-          <a class="nav-link text-center" id="sidenavToggler">
-            <i class="fa fa-fw fa-angle-left"></i>
-          </a>
-        </li>
-      </ul>
+
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
@@ -73,10 +69,10 @@
       </ul>
     </div>
   </nav>
-  <div class="content-wrapper">
-    <div class="container-fluid">
+    <div class="container-fluid rapper">
+      <div class="loader" style="display: none"></div>
 
-      <c:if test="${not empty error_massage}">
+      <c:if test="${error_massage != null and !error_massage.equals('')}">
         <div class="alert alert-danger">
           <strong>Error!</strong> ${error_massage}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -84,6 +80,7 @@
           </button>
         </div>
       </c:if>
+
 
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
@@ -139,7 +136,8 @@
 
           <c:if test="${(experiment_type != null and !experiment_type.isEmpty())
         and (experimentInjections != null and !experimentInjections.isEmpty())
-        and (pelletPertubations != null and !pelletPertubations.isEmpty())}">
+        and (pelletPertubations != null and !pelletPertubations.isEmpty())
+        and (project.getAnimals() != null and !project.getAnimals().isEmpty())}">
             <button id="createProjectExperimentsBtn" data-toggle="collapse" href="#collapseExperiments" type="button" class="btn btn-info" aria-expanded="true">
               <i id="createProjectExperimentsIcon" class="fa fa-plus-circle"></i> Create New Experiment
             </button>
@@ -405,7 +403,7 @@
           </div>
           </c:if>
 
-          <c:if test="${analysisTypes != null and !analysisTypes.isEmpty()}">
+          <c:if test="${analysisTypes != null and !analysisTypes.isEmpty() and project.getExperiments() != null and !project.getExperiments().isEmpty()}">
               <button id="createProjectAnalysisBtn" data-toggle="collapse" href="#collapseAnalysis" type="button" class="btn btn-info" aria-expanded="true">
                 <i id="createProjectAnalysisIcon" class="fa fa-plus-circle"></i> Create New Project Analysis
               </button>
@@ -578,7 +576,6 @@
       </div>
 
       </div>
-    </div>
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
     <footer class="sticky-footer">
@@ -641,6 +638,7 @@
         }
 
         $(document).ready(function () {
+            // $('.loader').hide();
             <c:forEach var="experiment_val" items="${project.getExperiments()}">
                 $('#trials' + ${experiment_val.getId()}).hide();
             </c:forEach>
@@ -671,6 +669,11 @@
 
                 setCheckBox('#dataTableTrials' + id_val, true);
                 before = id_val;
+            });
+
+            $("#addanalysisForm").submit(function() {
+                $('.loader').show();
+                return true; // allow regular form submission
             });
 
             var checkboxes = $("input[name='types']"),

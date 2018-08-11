@@ -1,5 +1,6 @@
 package com.analysis.manager.modle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +11,9 @@ import java.util.List;
 @Transactional
 public class LayerDao extends BasicDao<Layer>{
 
+    @Autowired
+    private AnimalsDao animalsDao;
+
     /**
      * Return all the users stored in the database.
      */
@@ -18,6 +22,20 @@ public class LayerDao extends BasicDao<Layer>{
         return entityManager.createQuery("from Layer").getResultList();
     }
 
+    @Override
+    public void delete(Layer layer) {
+        List<Animal> animals = animalsDao.getAll();
+
+        if (animals != null) {
+            for (Animal animal : animals) {
+                if (animal.getLayer().getId() == layer.getId()) {
+                    animalsDao.delete(animal);
+                }
+            }
+        }
+
+        super.delete(layer);
+    }
 
     /**
      * Return the user having the passed id.
@@ -26,10 +44,10 @@ public class LayerDao extends BasicDao<Layer>{
         return entityManager.find(Layer.class, id);
     }
 
-    public Permissions getByName(String name)
+    public Layer getByName(String name)
     {
         try {
-            return (Permissions) entityManager.createQuery(
+            return (Layer) entityManager.createQuery(
                     "from Layer where name = :name")
                     .setParameter("name", name)
                     .getSingleResult();

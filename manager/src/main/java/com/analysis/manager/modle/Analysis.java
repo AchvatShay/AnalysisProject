@@ -95,4 +95,19 @@ public class Analysis {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        /* Check if o is an instance of Complex or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof Analysis)) {
+            return false;
+        }
+
+        return ((Analysis)o).getId() == this.getId();
+    }
 }
