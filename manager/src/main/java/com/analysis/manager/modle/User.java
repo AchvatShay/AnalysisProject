@@ -1,50 +1,59 @@
 package com.analysis.manager.modle;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * Represents an User for this web application.
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
     // ------------------------
     // PRIVATE FIELDS
     // ------------------------
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private long id;
 
-    @NotNull
+    @Column(name = "email")
+    @Email(message = "*Please provide a valid Email")
+    @NotEmpty(message = "*Please provide an email")
+    private String email;
+
+    @Column(name = "password")
+    @Length(min = 5, message = "*Your password must have at least 5 characters")
+    @NotEmpty(message = "*Please provide your password")
     private String password;
 
-    @NotNull
+    @Column(name = "name")
+    @NotEmpty(message = "*Please provide your name")
     private String name;
 
-    @ManyToOne
-    private Permissions permissions;
+    @Column(name = "last_name")
+    @NotEmpty(message = "*Please provide your last name")
+    private String lastName;
 
-    // ------------------------
-    // PUBLIC METHODS
-    // ------------------------
+    @Column(name = "active")
+    private int active;
 
-    public User(){}
-
-    public User(String password, String name, Permissions permissions) {
-        this.password = password;
-        this.name = name;
-        this.permissions = permissions;
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     public long getId() {
         return id;
     }
 
-    public void setId(long value) {
-        this.id = value;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPassword() {
@@ -59,16 +68,40 @@ public class User {
         return name;
     }
 
-    public Permissions getPermissions() {
-        return permissions;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setPermissions(Permissions permissions) {
-        this.permissions = permissions;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setName(String value) {
-        this.name = value;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
 } // class User

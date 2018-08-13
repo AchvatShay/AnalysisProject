@@ -9,7 +9,6 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <title>SB Admin - Start Bootstrap Template</title>
-  <!-- Bootstrap core CSS-->
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
   <link href="${pageContext.request.contextPath}/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -19,45 +18,42 @@
 
 <body class="bg-dark">
   <div class="container">
-    <c:if test="${successMessage != null and !successMessage.equals('')}">
-      <div class="alert alert-success"  style="margin-top: 2%;">
-        <strong>Success!</strong> ${successMessage}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </c:if>
-
-    <c:if test="${param.size() > 0 and param.get('error') != null and param.get('error').equals('true')}">
-      <div class="alert alert-danger" style="margin-top: 2%;">
-        <strong>Error!</strong> The login request failed
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </c:if>
-
-    <div class="card card-login mx-auto mt-5">
-      <div class="card-header">Login</div>
+    <div class="card card-register mx-auto mt-5">
+      <div class="card-header">Register an Account</div>
       <div class="card-body">
-        <form action="${pageContext.request.contextPath}/login" method="post">
+        <form action="${pageContext.request.contextPath}/registration" method="post" onautocomplete="false">
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label for="exampleInputName">First name</label>
+                <input class="form-control" id="exampleInputName" name="name" type="text" aria-describedby="nameHelp" placeholder="Enter first name">
+              </div>
+              <div class="col-md-6">
+                <label for="exampleInputLastName">Last name</label>
+                <input class="form-control" id="exampleInputLastName" type="text" name="lastName" aria-describedby="nameHelp" placeholder="Enter last name">
+              </div>
+            </div>
+          </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
             <input class="form-control" id="exampleInputEmail1" name="email" type="email" aria-describedby="emailHelp" placeholder="Enter email">
           </div>
           <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input class="form-control" name="password" id="exampleInputPassword1" type="password" placeholder="Password">
+                <label for="exampleInputPassword1">Password</label>
+                <input class="form-control" id="exampleInputPassword1" name="password" type="password" placeholder="Password">
           </div>
-          <button type="submit" class="btn btn-primary">Login</button>
+          <c:if test="${error_message != null and !error_message.equals('')}">
+            <label class="invalid-feedback" style="display: -webkit-box;">${error_message}</label>
+          </c:if>
+
+          <button type="submit" class="btn btn-primary btn-block">Register User</button>
         </form>
         <div class="text-center">
-          <a class="d-block small mt-3" href="${pageContext.request.contextPath}/registration">Register an Account</a>
+          <a class="d-block small mt-3" href="${pageContext.request.contextPath}/login">Login Page</a>
         </div>
       </div>
     </div>
   </div>
-  <!-- Bootstrap core JavaScript-->
   <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- Core plugin JavaScript-->

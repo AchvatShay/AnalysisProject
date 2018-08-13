@@ -157,15 +157,17 @@ public class ExperimentController {
             Experiment experiment = experimentDao.getById(id);
             List<Trial> trailsListFromFolder = experiment.createTrailsListFromFolder(filesLocation);
             for (Trial trial : trailsListFromFolder) {
-                tpaDao.create(trial.getTpa());
-                bdaDao.create(trial.getBda());
-                trialDao.create(trial);
+
+                if (trialDao.getByName(trial.getName()) == null)
+                {
+                    tpaDao.create(trial.getTpa());
+                    bdaDao.create(trial.getBda());
+                    trialDao.create(trial);
+                    experiment.AddTrial(trial);
+                }
             }
 
-            experiment.AddTrials(trailsListFromFolder);
-
             experimentDao.update(experiment);
-
         }
         catch (Exception e) {
             model.addAttribute("error_massage", "Error while Adding trials to DB");
@@ -184,13 +186,15 @@ public class ExperimentController {
             TPA tpa = new TPA(TPALocation);
             BDA bda = new BDA(BDALocation);
 
-            tpaDao.create(tpa);
-            bdaDao.create(bda);
-            Trial trial = new Trial(TPALocation.replace("TPA", "") ,tpa, null, bda, null, experiment);
-            trialDao.create(trial);
-            experiment.AddTrial(trial);
-
-            experimentDao.update(experiment);
+            String trialName = TPALocation.replace("TPA", "");
+            if (trialDao.getByName(trialName) == null) {
+                tpaDao.create(tpa);
+                bdaDao.create(bda);
+                Trial trial = new Trial(trialName ,tpa, null, bda, null, experiment);
+                trialDao.create(trial);
+                experiment.AddTrial(trial);
+                experimentDao.update(experiment);
+            }
         }catch (Exception e) {
             model.addAttribute("error_massage", "Error while Adding trial to DB");
         }

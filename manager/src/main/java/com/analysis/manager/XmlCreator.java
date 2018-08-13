@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -240,4 +242,63 @@ public class XmlCreator {
         }
     }
 
+    public boolean createLinksXML(List<String> urls, String path)
+    {
+        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
+        try {
+            DocumentBuilderFactory dbFactory =
+                    DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
+
+            // root element
+            Element rootElement = doc.createElement("Links");
+            doc.appendChild(rootElement);
+
+            for (String link : urls) {
+                Element l = doc.createElement("Link");
+                Element v = doc.createElement("value");
+                v.appendChild(doc.createTextNode(link));
+                l.appendChild(v);
+                rootElement.appendChild(l);
+            }
+
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(dropboxPathLocal + File.separator + path + File.separator + "XmlLinks.xml"));
+            transformer.transform(source, result);
+            return true;
+        } catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    public List<String> getLinksList(String path)
+    {
+        LinkedList<String> results = new LinkedList();
+        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
+        try {
+            File fXmlFile = new File(dropboxPathLocal + File.separator + path + File.separator + "XmlLinks.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
+
+            NodeList nList = doc.getElementsByTagName("Link");
+
+            for (int index = 0; index < nList.getLength(); index++)
+            {
+                Node item = nList.item(index);
+                results.add(item.getFirstChild().getTextContent());
+            }
+
+            return results;
+        }
+        catch (Exception e) {
+            return null;
+        }
+
+    }
 }

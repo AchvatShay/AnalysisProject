@@ -9,9 +9,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>Analysis System</title>
+  <title>SB Admin - Start Bootstrap Template</title>
   <!-- Bootstrap core CSS-->
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/css/gallery.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-reboot.min.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/css/bootstrap-grid.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -24,12 +25,13 @@
   <link href="${pageContext.request.contextPath}/resources/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
-
+  <!-- Custom styles for this template-->
   <link href="${pageContext.request.contextPath}/resources/css/analysis-custom.css" rel="stylesheet">
+
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
-<!-- Navigation-->
+  <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
     <a class="navbar-brand" href="projects">Analysis System</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +68,8 @@
   </nav>
     <div class="container-fluid rapper">
 
+      <div class="loader"></div>
+
       <c:if test="${error_massage != null and !error_massage.equals('')}">
         <div class="alert alert-danger">
           <strong>Error!</strong> ${error_massage}
@@ -75,81 +79,113 @@
         </div>
       </c:if>
 
+
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="${pageContext.request.contextPath}/">Analysis System</a>
+          <a href="${pageContext.request.contextPath}/" class="elements">Analysis System</a>
         </li>
-        <li class="breadcrumb-item active">My Projects</li>
+        <li class="breadcrumb-item active">
+          My Analysis
+        </li>
       </ol>
 
-      <c:if test="${!my_projects.isEmpty()}">
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fa fa-line-chart"></i> All Projects</div>
+            <i class="fa fa-line-chart"></i> All Analysis Types</div>
           <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="project" items="${my_projects}">
+            <c:if test="${!analysisTypes.isEmpty() and analysisTypes != null}">
+              <div class="table-responsive space-btn-card">
+                <table class="table table-bordered" id="dataTableAnalysisTypes" width="100%" cellspacing="0">
+                  <thead>
                   <tr>
-                    <td>${project.getId()}</td>
-                    <td>${project.getName()}</td>
-                    <td>${project.getDescription()}</td>
-                    <td>
-                      <a href="${pageContext.request.contextPath}/projects/${project.getId()}/delete">
-                        <i id="project-delete-${project.getId()}" class="fa fa-trash"></i>
-                      </a>
-                      <a href="${pageContext.request.contextPath}/projects/${project.getId()}">
-                        <i id="project-edit-${project.getId()}" class="fa fa-arrow-circle-right"></i>
-                      </a>
-                    </td>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th></th>
                   </tr>
-                </c:forEach>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                  <c:forEach var="types" items="${analysisTypes}">
+                    <tr>
+                      <td>${types.getId()}</td>
+                      <td>${types.getName()}</td>
+                      <td>
+                        <a href="${pageContext.request.contextPath}/analysis/${types.getId()}/delete">
+                          <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </c:forEach>
+                  </tbody>
+                </table>
+              </div>
+            </c:if>
+            <button id="createAnalysisTypeBtn" data-toggle="collapse" href="#collapseTypes" type="button" class="btn btn-info" aria-expanded="true">
+              <i id="createAnalysisTypeIcon" class="fa fa-plus-circle"></i> Create New Analysis Type
+            </button>
+            <div id="collapseTypes" class="collapse col-md-6" style="padding-top:1%;">
+              <div class="card md-3">
+                <div class="card-body">
+                  <div class="row">
+                    <form action="${pageContext.request.contextPath}/analysis/" method="post" class="col-md-6">
+                      <div class="form-group">
+                        <label for="TypeName">Name</label>
+                        <input type="text" name="name" required="required" data-error="Analysis type name is required" class="form-control" id="TypeName" placeholder="Enter Name">
+                      </div>
+                      <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                  </div>
+
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
-      </c:if>
-
-
-      <button id="createProjectBtn" data-toggle="collapse" href="#collapse1" type="button" class="btn btn-info" aria-expanded="true">
-        <i id="createProjectIcon" class="fa fa-plus-circle"></i> Create New Project
-      </button>
-
-      <div id="collapse1" class="collapse col-md-6" style="padding-top:1%;">
-        <div class="card md-3">
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fa fa-line-chart"></i> All Analysis</div>
           <div class="card-body">
-            <div class="row">
-                <form action="${pageContext.request.contextPath}/projects" method="post" class="col-md-6">
-                  <div class="form-group">
-                    <label for="projectName">Name</label>
-                    <input type="text" name="name" required="required" data-error="Project name is required" class="form-control" id="projectName" aria-describedby="NameHelp" placeholder="Enter Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="projectDescription">Description</label>
-                    <textarea type="text" name="description" required="required" data-error="Project description is required" class="form-control" id="projectDescription" placeholder="Enter Description"></textarea>
-                  </div>
-
-                  <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
-
+            <c:if test="${!analysisList.isEmpty() and analysisList != null}">
+              <div class="table-responsive space-btn-card">
+                <table class="table table-bordered" id="dataTableAnalysis" width="100%" cellspacing="0">
+                  <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Project</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <c:forEach var="analysis" items="${analysisList}">
+                    <tr>
+                      <td>${analysis.getId()}</td>
+                      <td>${analysis.getName()}</td>
+                      <td>${analysis.getDescription()}</td>
+                      <td>${analysis.getProject().getName()}</td>
+                      <td>
+                        <a href="${pageContext.request.contextPath}/projects/${analysis.getProject().getId()}/analysis/${analysis.getId()}/delete">
+                          <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
+                        </a>
+                        <a href="${pageContext.request.contextPath}/projects/${analysis.getProject().getId()}/analysis/${analysis.getId()}">
+                          <i id="analysis-open-${analysis.getId()}" class="fa fa-arrow-circle-right"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </c:forEach>
+                  </tbody>
+                </table>
+              </div>
+            </c:if>
           </div>
-
         </div>
-      </div>
+
 
       </div>
+
+    </div>
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
     <footer class="sticky-footer">
@@ -198,17 +234,22 @@
     <script src="${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
 
     <script>
-      $(document).ready(function () {
-          $("#createProjectBtn").click(function () {
-              if ($("#createProjectIcon").hasClass("fa-plus-circle")) {
-                  $("#createProjectIcon").removeClass("fa-plus-circle");
-                  $("#createProjectIcon").addClass("fa-minus-circle");
-              } else {
-                  $("#createProjectIcon").removeClass("fa-minus-circle");
-                  $("#createProjectIcon").addClass("fa-plus-circle");
-              }
-          });
-      })
+        $(window).on('load', function(){
+            $('.loader').hide();
+        });
+
+        $(document).ready(function () {
+            $("#createAnalysisTypeBtn").click(function () {
+                if ($("#createAnalysisTypeIcon").hasClass("fa-plus-circle")) {
+                    $("#createAnalysisTypeIcon").removeClass("fa-plus-circle");
+                    $("#createAnalysisTypeIcon").addClass("fa-minus-circle");
+                } else {
+                    $("#createAnalysisTypeIcon").removeClass("fa-minus-circle");
+                    $("#createAnalysisTypeIcon").addClass("fa-plus-circle");
+                }
+            });
+
+        });
     </script>
 
   </div>

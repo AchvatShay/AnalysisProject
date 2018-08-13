@@ -39,35 +39,34 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav" id="exampleAccordion">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-          <a class="nav-link" href="analysis">
-            <i class="fa fa-fw fa-area-chart"></i>
-            <span class="nav-link-text">Analysis</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="projects">
-            <i class="fa fa-fw fa-line-chart"></i>
-            <span class="nav-link-text">Projects</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
-          <a class="nav-link" href="users">
-            <i class="fa fa-fw fa-users"></i>
-            <span class="nav-link-text">Users</span>
-          </a>
-        </li>
-      </ul>
-
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
-        </li>
-      </ul>
-    </div>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav" id="exampleAccordion">
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Analysis">
+                  <a class="nav-link" href="${pageContext.request.contextPath}/analysis">
+                      <i class="fa fa-fw fa-area-chart"></i>
+                      <span class="nav-link-text">Analysis</span>
+                  </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Projects">
+                  <a class="nav-link" href="${pageContext.request.contextPath}/projects">
+                      <i class="fa fa-fw fa-line-chart"></i>
+                      <span class="nav-link-text">Projects</span>
+                  </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
+                  <a class="nav-link" href="${pageContext.request.contextPath}/users">
+                      <i class="fa fa-fw fa-users"></i>
+                      <span class="nav-link-text">Users</span>
+                  </a>
+              </li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                  <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+                      <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+              </li>
+          </ul>
+      </div>
   </nav>
     <div class="container-fluid rapper">
       <div class="loader" style="display: none"></div>
@@ -101,7 +100,7 @@
           <i class="fa fa-flask"></i> All Experiments</div>
         <div class="card-body">
           <c:if test="${!project.getExperiments().isEmpty() and project.getExperiments() != null}">
-          <div class="table-responsive">
+          <div class="table-responsive space-btn-card">
             <table class="table table-bordered" id="dataTableExperiment" width="100%" cellspacing="0">
               <thead>
               <tr>
@@ -234,18 +233,20 @@
 
       </div>
 
-      <div class="card mb-3">
+      <div class="row col-md-12 card-animal-layer">
+        <div class="card card-animal col-mb-3">
         <div class="card-header">
           <i class="fa fa-frog"></i> All Animals</div>
         <div class="card-body">
         <c:if test="${!project.getAnimals().isEmpty() and project.getAnimals() != null}">
-          <div class="table-responsive">
+          <div class="table-responsive space-btn-card">
             <table class="table table-bordered" id="dataTableAnimals" width="100%" cellspacing="0">
               <thead>
               <tr>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Layer</th>
                 <th></th>
               </tr>
               </thead>
@@ -255,12 +256,10 @@
                   <td>${animal.getId()}</td>
                   <td>${animal.getName()}</td>
                   <td>${animal.getDescription()}</td>
+                  <td>${animal.getLayer().getName()}</td>
                   <td>
                     <a href="${pageContext.request.contextPath}/projects/${project.getId()}/animals/${animal.getId()}/delete">
                       <i id="animals-delete-${animal.getId()}" class="fa fa-trash"></i>
-                    </a>
-                    <a href="${pageContext.request.contextPath}/projects/${project.getId()}/animals/${animal.getId()}">
-                      <i id="animals-open-${animal.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
                 </tr>
@@ -308,12 +307,12 @@
         </div>
       </div>
 
-      <div class="card mb-3">
+        <div class="card card-layer col-mb-3">
         <div class="card-header">
           <i class="fa fa-layer-group"></i> All Layers</div>
         <div class="card-body">
           <c:if test="${!project.getLayers().isEmpty() and project.getLayers() != null}">
-          <div class="table-responsive">
+          <div class="table-responsive space-btn-card">
             <table class="table table-bordered" id="dataTableLayers" width="100%" cellspacing="0">
               <thead>
               <tr>
@@ -330,9 +329,6 @@
                   <td>
                     <a href="${pageContext.request.contextPath}/projects/${project.getId()}/layers/${layer.getId()}/delete">
                       <i id="layers-delete-${layer.getId()}" class="fa fa-trash"></i>
-                    </a>
-                    <a href="${pageContext.request.contextPath}/projects/${project.getId()}/layers/${layer.getId()}">
-                      <i id="layers-open-${layer.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
                   </td>
                 </tr>
@@ -365,14 +361,14 @@
 
         </div>
       </div>
-
+      </div>
 
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-line-chart"></i> All Analysis</div>
         <div class="card-body">
           <c:if test="${!project.getAnalyzes().isEmpty() and project.getAnalyzes() != null}">
-            <div class="table-responsive">
+            <div class="table-responsive space-btn-card">
             <table class="table table-bordered" id="dataTableAnalysis" width="100%" cellspacing="0">
               <thead>
               <tr>
@@ -428,7 +424,8 @@
                                   <label for="analysisVisFontSize">visualization Font Size</label>
                                   <input type="number" step="any" name="font_size" required="required" data-error="Analysis font size is required" class="form-control" id="analysisVisFontSize" placeholder="Enter Font Size">
                               </div>
-
+                          </div>
+                          <div class="col-md-3">
                               <div class="form-group">
                                   <label for="analysisVisStartTime">visualization start time to plot</label>
                                   <input type="number" step="any" name="startTime2plot" required="required" data-error="Analysis start time plot is required" class="form-control" id="analysisVisStartTime" placeholder="Enter start time to plot">
@@ -445,47 +442,56 @@
                                   <label for="time2endCountGrabs">Time to end count grabs</label>
                                   <input type="number" step="any" name="time2endCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2endCountGrabs" placeholder="Enter time">
                               </div>
-
+                          </div>
+                          <div class="col-md-3">
                             <div class="form-group">
                               <label for="analysisType">Analysis Types : </label>
 
                               <c:forEach var="analysis_types" items="${analysisTypes}">
-                                <label id="analysisType" class="checkbox"><input type="checkbox" name="types" value="${analysis_types.getId()}">${analysis_types.getName()}</label>
+                                <div class="row checkbox-space">
+                                  <label id="analysisType" class="checkbox"><input type="checkbox" name="types" value="${analysis_types.getId()}">${analysis_types.getName()}</label>
+                                </div>
                               </c:forEach>
                             </div>
                               <div class="form-group">
                                   <label for="experimentEvents">Experiments Events To Plot : </label>
 
                                   <c:forEach var="experimentEvent" items="${experimentEvents}">
-                                      <label id="experimentEvents" class="checkbox"><input type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
+                                      <div class="row checkbox-space">
+                                        <label id="experimentEvents" class="checkbox"><input type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
+                                      </div>
                                   </c:forEach>
                               </div>
-                              <div class="form-group">
-                                  <label for="trailsAnalysisExperiment">Experiment for analysis : </label>
-
-                                  <select id="trailsAnalysisExperiment" name="experiment_id" class="form-control">
-                                      <c:forEach var="experiment" items="${project.getExperiments()}">
-                                          <option value="${experiment.getId()}">
-                                                  ${experiment.getName()}
-                                          </option>
-                                      </c:forEach>
-                                  </select>
-                              </div>
-
-
-                              <button id="createAnalysisSubmit" type="submit" class="btn btn-primary">Save</button>
                           </div>
+
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-3">
+                            <label for="trailsAnalysisExperiment">Experiment for analysis : </label>
+
+                            <select id="trailsAnalysisExperiment" name="experiment_id" class="form-control">
+                              <c:forEach var="experiment" items="${project.getExperiments()}">
+                                <option value="${experiment.getId()}">
+                                    ${experiment.getName()}
+                                </option>
+                              </c:forEach>
+                            </select>
+                          </div>
+
+                        </div>
+
+                        <div class="row space-btn-card">
                           <%--<div class="col-md-6">--%>
                             <c:forEach var="experiment" items="${project.getExperiments()}">
-                              <div  id="trials${experiment.getId()}" class="col-md-9">
+                              <div  id="trials${experiment.getId()}">
                                 <div class="row">
                                 <div class="col-md-6">
                                   <c:set var="neurons" value="${neuronsBean.getNeurons(experiment)}"/>
 
-                                  <div class="form-group">
-                                    <label>Neurons To Plot : </label>
-
-                                    <div class="table-responsive" style="margin-top:5%">
+                                  <div class="form-group space-btn-card border border-dark">
+                                    <label class="table-analysis-label"><strong>Neurons To Plot : </strong></label>
+                                    <input name="neurons_toPlot" hidden="hidden" checked="checked" type="checkbox" value="${experiment.getId()}_00">
+                                    <div class="table-responsive space-btn-card" style="margin-top:5%">
                                       <table class="table table-bordered dataTableTrials" id="dataTableNeuronsToPlot${experiment.getId()}" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
@@ -506,9 +512,9 @@
                                       </table>
                                     </div>
                                   </div>
-                                  <div class="form-group">
-                                  <label>Neurons For Analysis : </label>
-                                  <div class="table-responsive" style="margin-top:5%">
+                                  <div class="form-group border border-dark">
+                                    <label class="table-analysis-label"><strong>Neurons For Analysis : </strong></label>
+                                  <div class="table-responsive space-btn-card" style="margin-top:5%">
                                     <table class="table table-bordered dataTableTrials" id="dataTableNeuronsForAnalysis${experiment.getId()}" width="100%" cellspacing="0">
                                       <thead>
                                       <tr>
@@ -533,9 +539,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                 <div class="form-group">
-                                  <label>Trials for analysis : </label>
-                                    <div class="table-responsive" style="margin-top:5%">
+                                 <div class="form-group border border-dark">
+                                   <label class="table-analysis-label"><strong>Trials for analysis : </strong></label>
+                                    <div class="table-responsive space-btn-card" style="margin-top:5%">
                                         <table class="table table-bordered dataTableTrials" id="dataTableTrials${experiment.getId()}" width="100%" cellspacing="0">
                                             <thead>
                                             <tr>
@@ -564,6 +570,9 @@
 
                           <%--</div>--%>
                         </div>
+                      <div class="row space-btn-card col-md-3">
+                          <button id="createAnalysisSubmit" type="submit" class="btn btn-primary">Save</button>
+                      </div>
                       </form>
                     <%--</div>--%>
 
@@ -602,7 +611,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.jsp">Logout</a>
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/logout">Logout</a>
           </div>
         </div>
       </div>
@@ -646,7 +655,7 @@
             var before = $("#trailsAnalysisExperiment").val();
 
 
-            setCheckBox('#dataTableNeuronsToPlot' + before, true);
+            setCheckBox('#dataTableNeuronsToPlot' + before, false);
 
             setCheckBox('#dataTableNeuronsForAnalysis' + before, true);
 
@@ -673,6 +682,7 @@
 
             $("#addanalysisForm").submit(function() {
                 $('.loader').show();
+
                 return true; // allow regular form submission
             });
 

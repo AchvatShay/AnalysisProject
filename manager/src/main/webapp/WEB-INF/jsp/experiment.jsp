@@ -35,35 +35,34 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav" id="exampleAccordion">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-          <a class="nav-link" href="analysis">
-            <i class="fa fa-fw fa-area-chart"></i>
-            <span class="nav-link-text">Analysis</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="projects">
-            <i class="fa fa-fw fa-line-chart"></i>
-            <span class="nav-link-text">Projects</span>
-          </a>
-        </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
-          <a class="nav-link" href="users">
-            <i class="fa fa-fw fa-users"></i>
-            <span class="nav-link-text">Users</span>
-          </a>
-        </li>
-      </ul>
-
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
-        </li>
-      </ul>
-    </div>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav" id="exampleAccordion">
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Analysis">
+                  <a class="nav-link" href="${pageContext.request.contextPath}/analysis">
+                      <i class="fa fa-fw fa-area-chart"></i>
+                      <span class="nav-link-text">Analysis</span>
+                  </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Projects">
+                  <a class="nav-link" href="${pageContext.request.contextPath}/projects">
+                      <i class="fa fa-fw fa-line-chart"></i>
+                      <span class="nav-link-text">Projects</span>
+                  </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
+                  <a class="nav-link" href="${pageContext.request.contextPath}/users">
+                      <i class="fa fa-fw fa-users"></i>
+                      <span class="nav-link-text">Users</span>
+                  </a>
+              </li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                  <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+                      <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+              </li>
+          </ul>
+      </div>
   </nav>
     <div class="container-fluid rapper">
 
@@ -99,15 +98,15 @@
               <i class="fa fa-info-circle"></i> Experiment info</div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-5 card-text">Name : </div>
+                <div class="col-md-5 card-text space-btn-card">Name : </div>
                 <div class="col-md-5 card-text">${experiment.getName()} </div>
               </div>
               <div class="row">
-                <div class="col-md-5 card-text">Description : </div>
+                <div class="col-md-5 card-text space-btn-card">Description : </div>
                 <div class="col-md-5 card-text">${experiment.getDescription()} </div>
               </div>
               <div class="row">
-                <div class="col-md-5 card-text">Animal : </div>
+                <div class="col-md-5 card-text space-btn-card">Animal : </div>
                 <div class="col-md-5 card-text"> ${experiment.getAnimal().getName()} </div>
               </div>
             </div>
@@ -120,39 +119,39 @@
             <i class="fa fa-info-circle"></i> Experiment Conditions</div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-5 card-text">Type : </div>
-              <div class="col-md-5 card-text">${experiment.getExperimentCondition().getExperimentType().getName()} </div>
+              <div class="col-md-5  space-btn-card">Type : </div>
+              <div class="col-md-5">${experiment.getExperimentCondition().getExperimentType().getName()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">Injections : </div>
+              <div class="col-md-5 space-btn-card">Injections : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getExperimentInjections().getName()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">Pellet Pertubation : </div>
+              <div class="col-md-5 space-btn-card">Pellet Pertubation : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getExperimentPelletPertubation().getName()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">depth : </div>
+              <div class="col-md-5 space-btn-card">depth : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getDepth()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">imaging_sampling_rate : </div>
+              <div class="col-md-5 space-btn-card">imaging_sampling_rate : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getImaging_sampling_rate()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">behavioral_sampling_rate : </div>
+              <div class="col-md-5 space-btn-card">behavioral_sampling_rate : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getBehavioral_sampling_rate()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">tone_time : </div>
+              <div class="col-md-5 space-btn-card">tone_time : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getTone_time()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">duration : </div>
+              <div class="col-md-5 space-btn-card">duration : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getDuration()} </div>
             </div>
             <div class="row">
-              <div class="col-md-5">behavioral_delay : </div>
+              <div class="col-md-5 space-btn-card">behavioral_delay : </div>
               <div class="col-md-5">${experiment.getExperimentCondition().getBehavioral_delay()} </div>
             </div>
 
@@ -165,12 +164,13 @@
             <div class="card-header">
               <i class="fa fa-info-circle"></i> Experiment Trials</div>
             <div class="card-body">
-              <div class="table-responsive" style="margin-top:5%">
+              <div class="table-responsive space-btn-card" style="margin-top:5%">
           <table class="table table-bordered dataTableTrials" id="dataTableExpTrials" width="100%" cellspacing="0">
             <thead>
             <tr>
               <th>Id</th>
               <th>Name</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -180,63 +180,69 @@
                     ${trial.getId()}
                 </td>
                 <td>${trial.getName()}</td>
+                  <td>
+                      <a href="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/delete/trial/${trial.getId()}">
+                          <i id="experiments-delete-${experiment.getId()}-trial-${trial.getId()}" class="fa fa-trash"></i>
+                      </a>
+                  </td>
               </tr>
             </c:forEach>
             </tbody>
           </table>
         </div>
+                <button id="addExperimentTrialBtn" data-toggle="collapse" href="#collapseTrial" type="button" class="btn btn-info" aria-expanded="true">
+                    <i id="addExperimentTrialIcon" class="fa fa-plus-circle"></i> Add Trials
+                </button>
+                <div id="collapseTrial" class="collapse col-md-6" style="padding-top:1%;">
+                    <div class="card md-3 space-btn-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                Multiple Trails
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trails" method="post" class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="files_location">Trails BDA+TPA files location</label>
+                                        <input type="text" name="files_location" required="required" data-error="files location is required" class="form-control" id="files_location" placeholder="Enter files location">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">ADD</button>
+                                </form>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card md-3 space-btn-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                Trail
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trail" method="post" class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bda_location">Trail BDA file location</label>
+                                        <input type="text" name="bda_location" required="required" data-error="BDA location is required" class="form-control" id="bda_location" placeholder="Enter files location">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tpa_location">Trail TPA file location</label>
+                                        <input type="text" name="tpa_location" required="required" data-error="BDA location is required" class="form-control" id="tpa_location" placeholder="Enter files location">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">ADD</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
 
-      <button id="addExperimentTrialBtn" data-toggle="collapse" href="#collapseTrial" type="button" class="btn btn-info" aria-expanded="true">
-        <i id="addExperimentTrialIcon" class="fa fa-plus-circle"></i> Add Trials
-      </button>
-      <div id="collapseTrial" class="collapse col-md-6" style="padding-top:1%;">
-        <div class="card md-3">
-          <div class="card-header">
-            <div class="card-title">
-              Multiple Trails
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trails" method="post" class="col-md-6">
-                <div class="form-group">
-                  <label for="files_location">Trails BDA+TPA files location</label>
-                  <input type="text" name="files_location" required="required" data-error="files location is required" class="form-control" id="files_location" placeholder="Enter files location">
-                </div>
-                <button type="submit" class="btn btn-primary">ADD</button>
-              </form>
-            </div>
 
-          </div>
-
-        </div>
-
-        <div class="card md-3">
-          <div class="card-header">
-            <div class="card-title">
-              Trail
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trail" method="post" class="col-md-6">
-                <div class="form-group">
-                  <label for="bda_location">Trail BDA file location</label>
-                  <input type="text" name="bda_location" required="required" data-error="BDA location is required" class="form-control" id="bda_location" placeholder="Enter files location">
-                </div>
-                <div class="form-group">
-                  <label for="tpa_location">Trail TPA file location</label>
-                  <input type="text" name="tpa_location" required="required" data-error="BDA location is required" class="form-control" id="tpa_location" placeholder="Enter files location">
-                </div>
-                <button type="submit" class="btn btn-primary">ADD</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
 
       </div>
     <!-- /.container-fluid-->
@@ -265,7 +271,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.jsp">Logout</a>
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/logout">Logout</a>
           </div>
         </div>
       </div>

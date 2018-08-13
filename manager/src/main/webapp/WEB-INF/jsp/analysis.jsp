@@ -39,20 +39,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav" id="exampleAccordion">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-          <a class="nav-link" href="analysis">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Analysis">
+          <a class="nav-link" href="${pageContext.request.contextPath}/analysis">
             <i class="fa fa-fw fa-area-chart"></i>
             <span class="nav-link-text">Analysis</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="projects">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Projects">
+          <a class="nav-link" href="${pageContext.request.contextPath}/projects">
             <i class="fa fa-fw fa-line-chart"></i>
             <span class="nav-link-text">Projects</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
-          <a class="nav-link" href="users">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
+          <a class="nav-link" href="${pageContext.request.contextPath}/users">
             <i class="fa fa-fw fa-users"></i>
             <span class="nav-link-text">Users</span>
           </a>
@@ -98,10 +98,18 @@
 
       <div class="row">
         <div class="col-12">
-          <div class="card-title">Analysis ${analysis.getName()} results</div>
-          <div class="card-text">
-            <label class="card-title" for="description">Description : </label>
-            <p id="description">${analysis.getDescription()}</p>
+
+          <div class="col-md-5">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fa fa-info-circle"></i> Analysis info</div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3 card-text space-btn-card">Description : </div>
+                  <div class="col-md-5 card-text">${analysis.getDescription()} </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <c:if test="${tif != null and !tif.isEmpty()}">
@@ -162,7 +170,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.jsp">Logout</a>
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/logout">Logout</a>
           </div>
         </div>
       </div>

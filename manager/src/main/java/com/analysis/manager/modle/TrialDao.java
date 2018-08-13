@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 
@@ -55,6 +56,16 @@ public class TrialDao extends BasicDao<Trial>{
         return entityManager.find(Trial.class, id);
     }
 
-
-
+    public Trial getByName(String name) {
+        try {
+            return (Trial) entityManager.createQuery(
+                    "from Trial where name = :name")
+                    .setParameter("name", name)
+                    .getSingleResult();
+        }
+        catch (NoResultException e)
+        {
+            return null;
+        }
+    }
 } // class UserDao

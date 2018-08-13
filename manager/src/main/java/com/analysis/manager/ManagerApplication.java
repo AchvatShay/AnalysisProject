@@ -2,7 +2,6 @@ package com.analysis.manager;
 
 import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -11,7 +10,6 @@ import org.springframework.core.env.Environment;
 
 @SpringBootApplication
 public class ManagerApplication  extends SpringBootServletInitializer {
-
 
     public static void main(String[] args) {
         try {
@@ -40,7 +38,7 @@ public class ManagerApplication  extends SpringBootServletInitializer {
     private ExperimentPelletPertubationDao experimentPelletPertubationDao;
 
     @Autowired
-    private PermissionsDao permissionsDao;
+    private RoleDao roleDao;
 
     @Autowired
     private ExperimentEventsDao experimentEventsDao;
@@ -98,20 +96,11 @@ public class ManagerApplication  extends SpringBootServletInitializer {
 
     private void LoadUsersPermissions()
     {
-        if (permissionsDao.getByValue("Administrator") == null)
+        if (roleDao.findByRole("ADMIN") == null)
         {
-            permissionsDao.create(new Permissions("Administrator"));
-        }
-
-        if (permissionsDao.getByValue("View") == null)
-        {
-            permissionsDao.create(new Permissions("View"));
-        }
-
-
-        if (permissionsDao.getByValue("Edit") == null)
-        {
-            permissionsDao.create(new Permissions("Edit"));
+            Role role = new Role();
+            role.setRole("ADMIN");
+            roleDao.save(role);
         }
     }
 }
