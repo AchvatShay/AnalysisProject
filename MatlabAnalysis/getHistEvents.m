@@ -15,3 +15,6 @@ for event_i = 1:length(Events2plot)
       end
    end
 end
+allbehave = allbehave/length(tryinginds);
+Fbehave = Fbehave/length(tryinginds);
+Sbehave = Sbehave/length(tryinginds);

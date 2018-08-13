@@ -24,16 +24,26 @@ classdef Experiment %< handle
         analysis_pca_thEffDim=0.01;
         visualization_legendLocation = 'Best';
         visualization_labelsFontSize = 14;
+        visualization_viewparams1 = 0;
+        visualization_viewparams2 = 0;
         time2startCountGrabs = 4;
         time2endCountGrabs = 4 + 2;
+        startBehaveTime4trajectory = 4;
+        endBehaveTime4trajectory = 4 + 2;
         visualization_startTime2plot = 1.5;
         Events2plot = {'lift' 'grab' 'atmouth'};
+        foldsNum = 10;
     end
     methods
         function obj = Experiment(xmlfile)
-            xmlstrct = xml2struct(xmlfile);
+            xmlstrct = xml2struct(xmlfile); 
+            obj.startBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.startBehaveTime4trajectory.Text);
+            obj.foldsNum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.foldsNum.Text);
+            obj.endBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.endBehaveTime4trajectory.Text);            
             obj.time2startCountGrabs = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.time2startCountGrabs.Text);
             obj.time2endCountGrabs = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.time2endCountGrabs.Text);
+            obj.visualization_viewparams1 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams1.Text);            
+            obj.visualization_viewparams2 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams2.Text);            
             obj.visualization_legendLocation = xmlstrct.GeneralProperty.Experiment.visualization.legend.Attributes.Location;
             obj.visualization_labelsFontSize = str2double(xmlstrct.GeneralProperty.Experiment.visualization.labelsFontSize.Text);
             obj.visualization_startTime2plot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.startTime2plot.Text);
@@ -91,9 +101,17 @@ classdef Experiment %< handle
                 obj.Neurons2keep(nr) = str2double(neurons(nr).name.Text);
             end
             % neurons for plotting
-            neurons = [xmlstrct.GeneralProperty.Experiment.analysisParams.NeuronesToPlot.Neuron{:}];
-            for nr = 1:length(neurons)
-                obj.Neurons2plot(nr) = str2double(neurons(nr).name.Text);
+            if isfield(xmlstrct.GeneralProperty.Experiment.analysisParams.NeuronesToPlot, 'Text')
+                obj.Neurons2plot = [];
+            else
+                if length(xmlstrct.GeneralProperty.Experiment.analysisParams.NeuronesToPlot.Neuron) > 1
+                    neurons = [xmlstrct.GeneralProperty.Experiment.analysisParams.NeuronesToPlot.Neuron{:}];
+                else
+                    neurons = xmlstrct.GeneralProperty.Experiment.analysisParams.NeuronesToPlot.Neuron;
+                end
+                for nr = 1:length(neurons)
+                    obj.Neurons2plot(nr) = str2double(neurons(nr).name.Text);
+                end
             end
 %             trials = [xmlstrct.GeneralProperty.Experiment.TrialsToPut.Trial{:}];
 %             for tr = 1:length(trials)
