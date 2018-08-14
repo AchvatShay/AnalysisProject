@@ -26,6 +26,18 @@
 		</PelletPertubation>
 	</Condition>
 	<NeuronesToPut>
+		<Neuron>
+			<name>1</name>
+		</Neuron>
+		<Neuron>
+			<name>2</name>
+		</Neuron>
+		<Neuron>
+			<name>3</name>
+		</Neuron>
+		<Neuron>
+			<name>4</name>
+		</Neuron>
 	</NeuronesToPut>
 	<TrialsToPut>
 		<Trial>
@@ -44,16 +56,7 @@
         <NeuronesToPlot>
 		<Neuron>
 			<name>1</name>
-		</Neuron>
-		<Neuron>
-			<name>2</name>
-		</Neuron>
-		<Neuron>
-			<name>3</name>
-		</Neuron>
-		<Neuron>
-			<name>4</name>
-		</Neuron>
+		</Neuron>		
 	</NeuronesToPlot>
     </analysisParams>
     <visualization>   
