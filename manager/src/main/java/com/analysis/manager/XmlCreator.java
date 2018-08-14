@@ -1,5 +1,9 @@
 package com.analysis.manager;
 
+import com.analysis.manager.Dao.ExperimentEventsDao;
+import com.analysis.manager.Dao.ExperimentInjectionsDao;
+import com.analysis.manager.Dao.ExperimentPelletPertubationDao;
+import com.analysis.manager.Dao.ExperimentTypeDao;
 import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -10,9 +14,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -43,7 +45,7 @@ public class XmlCreator {
 
         for (AnalysisType type : analysis.getAnalysisType())
         {
-            String path = dropboxPathLocal + File.separator + analysis.getProject().getName() + File.separator + analysis.getName();
+            String path = dropboxPathLocal + File.separator + analysis.getExperiment().getProject().getName() + File.separator + analysis.getName();
 
             File xml_folder = new File(path);
             if (!xml_folder.exists()) {
@@ -100,7 +102,7 @@ public class XmlCreator {
 
 
             Element typeE = doc.createElement("Type");
-            for (ExperimentType experimentType : experimentTypeDao.getAll()) {
+            for (ExperimentType experimentType : experimentTypeDao.findAll()) {
                 Element obj = doc.createElement(experimentType.getName());
                 String value = experiment.getExperimentCondition().getExperimentType().getId() == experimentType.getId() ? "True" : "False";
                 obj.setAttribute("is_active", value);
@@ -109,7 +111,7 @@ public class XmlCreator {
             experimentCondition.appendChild(typeE);
 
             Element injectionE = doc.createElement("Injection");
-            for (ExperimentInjections experimentIn : experimentInjectionsDao.getAll()) {
+            for (ExperimentInjections experimentIn : experimentInjectionsDao.findAll()) {
                 Element obj = doc.createElement(experimentIn.getName());
                 String value = experiment.getExperimentCondition().getExperimentInjections().getId() == experimentIn.getId() ? "True" : "False";
                 obj.setAttribute("is_active", value);
@@ -118,7 +120,7 @@ public class XmlCreator {
             experimentCondition.appendChild(injectionE);
 
             Element pelletPertubationE = doc.createElement("PelletPertubation");
-            for (ExperimentPelletPertubation experimentP : experimentPelletPertubationDao.getAll()) {
+            for (ExperimentPelletPertubation experimentP : experimentPelletPertubationDao.findAll()) {
                 Element obj = doc.createElement(experimentP.getName());
                 String value = experiment.getExperimentCondition().getExperimentPelletPertubation().getId() == experimentP.getId() ? "True" : "False";
                 obj.setAttribute("is_active", value);
@@ -206,7 +208,7 @@ public class XmlCreator {
 
             Element eventsElement = doc.createElement("Events2plot");
 
-            for (ExperimentEvents event : experimentEventsDao.getAll()) {
+            for (ExperimentEvents event : experimentEventsDao.findAll()) {
                 Element obj = doc.createElement(event.getName());
 
                 String value = "False";

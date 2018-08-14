@@ -1,5 +1,9 @@
 package com.analysis.manager.controllers;
 
+import com.analysis.manager.Dao.*;
+import com.analysis.manager.Service.ExperimentService;
+import com.analysis.manager.Service.ProjectService;
+import com.analysis.manager.Service.UserService;
 import com.analysis.manager.XmlCreator;
 import com.analysis.manager.modle.*;
 import com.dropbox.core.v2.DbxClientV2;
@@ -7,6 +11,8 @@ import com.mathworks.toolbox.javabuilder.MWCharArray;
 import com.mathworks.toolbox.javabuilder.MWStructArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +39,7 @@ public class AnalysisController {
     private AnalysisTypeDao analysisTypeDao;
 
     @Autowired
-    private ProjectDao projectDao;
+    private ProjectService projectDao;
 
     @Autowired
     private DbxClientV2 dbxClientV2;
@@ -42,7 +48,7 @@ public class AnalysisController {
     private Environment environment;
 
     @Autowired
-    private ExperimentDao experimentDao;
+    private ExperimentService experimentDao;
 
     @Autowired
     private XmlCreator xmlCreator;
@@ -53,13 +59,16 @@ public class AnalysisController {
     @Autowired
     private ExperimentEventsDao experimentEventsDao;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "analysis", method = RequestMethod.POST)
     public String createAnalysisType(@RequestParam String name, Model model)
     {
-        if (analysisTypeDao.getByName(name) == null)
+        if (analysisTypeDao.findByName(name) == null)
         {
             try {
-                analysisTypeDao.create(new AnalysisType(name));
+                analysisTypeDao.save(new AnalysisType(name));
             }
             catch (Exception e)
             {
@@ -78,8 +87,10 @@ public class AnalysisController {
     public String viewAll(Model model)
     {
         try {
-            model.addAttribute("analysisTypes", analysisTypeDao.getAll());
-            model.addAttribute("analysisList", analysisDao.getAll());
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            model.addAttribute("analysisTypes", analysisTypeDao.findAll());
+            model.addAttribute("analysisList", analysisDao.findAllByUser(user));
         }catch (Exception e)
         {
             model.addAttribute("error_massage", "Error getting analysis types from DB");
@@ -92,45 +103,56 @@ public class AnalysisController {
     @RequestMapping(value = "projects/{project_id}/analysis/{id}")
     public String view(@PathVariable long project_id, @PathVariable long id, Model m)
     {
-        Analysis analysis = analysisDao.getById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
 
-        try {
-            LinkedHashMap<AnalysisType, List<String>> map = new LinkedHashMap<>();
+        Analysis analysis = analysisDao.findByIdAndUser(id, user);
+        Project project = projectDao.findByIdAndUser(project_id, user);
 
-            for (AnalysisType type: analysis.getAnalysisType()) {
+        if (analysis == null) {
+            m.addAttribute("error_message", "can not find analysis with this id");
+        } else if (analysis.getExperiment().getProject().getId() != project_id) {
+            m.addAttribute("error_message", "analysis do not belong to project");
+        } else {
+            try {
+                LinkedHashMap<AnalysisType, List<String>> map = new LinkedHashMap<>();
 
-                List<String> linksList = xmlCreator.getLinksList(analysis.getProject().getName() + File.separator + analysis.getName() + File.separator + type.getName());
-                map.put(type, linksList);
+                for (AnalysisType type : analysis.getAnalysisType()) {
+
+                    List<String> linksList = xmlCreator.getLinksList(project.getName() + File.separator + analysis.getName() + File.separator + type.getName());
+                    map.put(type, linksList);
+                }
+
+                m.addAttribute("tif", map);
+                m.addAttribute("analysis", analysis);
+                return "analysis";
+            } catch (Exception e) {
+                m.addAttribute("error_message", "failed to load files from dropbox");
             }
-
-            m.addAttribute("tif", map);
-        } catch (Exception e) {
-            m.addAttribute("error_message", "failed to load files from dropbox");
-            m.addAttribute("tif", new LinkedList<String>());
         }
 
-        m.addAttribute("analysis", analysis);
-
-        return "analysis";
+        return "redirect:/projects/" + project_id;
     }
 
     @RequestMapping(value = "projects/{id}/analysis/{analysis_id}/delete")
     public String delete(@PathVariable("id") long projectId, @PathVariable("analysis_id") long analysis_id, Model model)
     {
         try {
-            Analysis analysis = analysisDao.getById(analysis_id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
 
-            if (analysis == null)
-            {
-                model.addAttribute("error_massage", "Can not find analysis by id = " + analysis_id);
-                return "redirect:/projects/" + projectId;
+            Analysis analysis = analysisDao.findByIdAndUser(analysis_id, user);
+            Project project = projectDao.findByIdAndUser(projectId, user);
+
+            if (analysis == null) {
+                model.addAttribute("error_message", "can not find analysis with this id");
+            } else if (analysis.getExperiment().getProject().getId() != projectId) {
+                model.addAttribute("error_message", "analysis do not belong to project");
+            } else {
+                project.deleteAnalysis(analysis);
+                projectDao.saveProject(project);
+                analysisDao.delete(analysis);
             }
-
-            Project project = projectDao.getById(projectId);
-
-            project.deleteAnalysis(analysis);
-            projectDao.update(project);
-            analysisDao.delete(analysis);
 
             return "redirect:/projects/" + projectId;
         }
@@ -174,22 +196,26 @@ public class AnalysisController {
         LinkedList<ExperimentEvents> experimentEvents = new LinkedList<>();
 
         try {
-            if (analysisDao.getByName(name) != null) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+
+            Project project = projectDao.findByIdAndUser(id, user);
+
+
+            if (analysisDao.existsByNameAndUser(name, user)) {
                 model.addAttribute("error_message", "failed to create analysis, this analysis name already exists");
                 return "redirect:/projects/" + id;
             }
 
-            Project project = projectDao.getById(id);
+            Experiment experiment = experimentDao.findByIdAndProject(experiment_id, project);
 
-            Experiment experiment = experimentDao.getById(experiment_id);
-
-            for (Long id_type : types) {
-                AnalysisType analysisType = analysisTypeDao.getById(id_type);
+            for (long id_type : types) {
+                AnalysisType analysisType = analysisTypeDao.findById(id_type);
                 analysisTypes.add(analysisType);
             }
 
-            for (Long id_event : events) {
-                ExperimentEvents eventsDaoById = experimentEventsDao.getById(id_event);
+            for (long id_event : events) {
+                ExperimentEvents eventsDaoById = experimentEventsDao.findById(id_event);
                 experimentEvents.add(eventsDaoById);
             }
 
@@ -223,10 +249,10 @@ public class AnalysisController {
                 }
             }
 
-            Analysis analysis = new Analysis(name, description, project, analysisTypes, allTrials, experiment);
-            analysisDao.create(analysis);
+            Analysis analysis = new Analysis(name, description, user, analysisTypes, allTrials, experiment);
+            analysisDao.save(analysis);
             project.AddAnalysis(analysis);
-            projectDao.update(project);
+            projectDao.saveProject(project);
 
 
             if (!xmlCreator.createXml(analysis, font_size, neuronsAnalysis, neuronsPlot, experimentEvents, startTime2plot, time2startCountGrabs, time2endCountGrabs)) {
@@ -288,7 +314,8 @@ public class AnalysisController {
         List<String > errors = null;
         for (AnalysisType type : analysis.getAnalysisType())
         {
-            String path = dropboxPathLocal + File.separator + analysis.getProject().getName() + File.separator + analysis.getName();
+            Project project = analysis.getExperiment().getProject();
+            String path = dropboxPathLocal + File.separator + project.getName() + File.separator + analysis.getName();
 
             try {
                 MWCharArray xmlLocation = new MWCharArray(path + File.separator + "XmlAnalysis.xml");
@@ -299,8 +326,8 @@ public class AnalysisController {
                 int count = 1;
                 for (Trial trial : analysis.getTrials())
                 {
-                    BDA_TPA.set("BDA", new int[] {1, count}, trial.getBda().getFile_location());
-                    BDA_TPA.set("TPA", new int[] {1, count}, trial.getTpa().getFile_location());
+                    BDA_TPA.set("BDA", new int[] {1, count}, trial.getBda().getFileLocation());
+                    BDA_TPA.set("TPA", new int[] {1, count}, trial.getTpa().getFileLocation());
                     count++;
                 }
 
@@ -308,7 +335,7 @@ public class AnalysisController {
 
                 runAnalysis.runAnalysis(analysisOutputFolder, xmlLocation, BDA_TPA, analysisName);
 
-                String pathType = "/" + analysis.getProject().getName() + "/" + analysis.getName() +
+                String pathType = "/" + project.getName() + "/" + analysis.getName() +
                         "/" + type.getName();
 
                 File dir = new File(path + File.separator + type.getName());
@@ -320,12 +347,12 @@ public class AnalysisController {
                     for (File f : files != null ? files : new File[0])
                     {
                         if (f.getName().endsWith(".tif")) {
-                            links.add(dbxClientV2.sharing().createSharedLinkWithSettings("/" + analysis.getProject().getName() + "/" + analysis.getName() +
+                            links.add(dbxClientV2.sharing().createSharedLinkWithSettings("/" + project.getName() + "/" + analysis.getName() +
                                     "/" + type.getName() + "/" + f.getName()).getUrl().replace("dl=0", "raw=1"));
                         }
                     }
 
-                    xmlCreator.createLinksXML(links, analysis.getProject().getName() + File.separator + analysis.getName() + File.separator + type.getName());
+                    xmlCreator.createLinksXML(links, project.getName() + File.separator + analysis.getName() + File.separator + type.getName());
                 }
             } catch (Exception e) {
                // e.printStackTrace();

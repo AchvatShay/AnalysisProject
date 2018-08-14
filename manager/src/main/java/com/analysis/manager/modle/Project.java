@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "project")
 public class Project {
     // ------------------------
     // PRIVATE FIELDS
@@ -36,6 +36,9 @@ public class Project {
     @OneToMany(targetEntity = Analysis.class)
     private List Analyzes;
 
+    @ManyToOne
+    private User user;
+
     public Project(){
         this.Analyzes = new LinkedList<Analysis>();
         this.animals = new LinkedList<Animal>();
@@ -43,14 +46,31 @@ public class Project {
         this.layers = new LinkedList();
     }
 
-    public Project(String name, String description, List layers, List experiments, List animals, List Analyzes)
+    public Project(User user, String name, String description, List layers, List experiments, List animals, List Analyzes)
     {
+        this.user = user;
         this.description = description;
         this.name = name;
         this.animals = animals;
         this.layers = layers;
         this.experiments = experiments;
         this.Analyzes = Analyzes;
+    }
+
+    public Project(User user, String name, String description)
+    {
+        super();
+        this.user = user;
+        this.description = description;
+        this.name = name;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<Analysis> getAnalyzes() {

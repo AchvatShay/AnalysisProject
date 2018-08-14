@@ -1,50 +1,55 @@
-package com.analysis.manager.modle;
+package com.analysis.manager.Service;
 
+import com.analysis.manager.Dao.*;
+import com.analysis.manager.modle.*;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@Repository
+@Service("projectService")
 @Transactional
-public class ProjectDao extends BasicDao<Project>{
+public class ProjectServiceImpl implements ProjectService {
+    @Autowired
+    private ProjectDao projectDao;
 
     @Autowired
-    private ExperimentDao experimentDao;
+    private ExperimentService experimentDao;
+
     @Autowired
-    private LayerDao layerDao;
+    private AnimalsService animalsDao;
+
     @Autowired
-    private AnimalsDao animalsDao;
+    private LayerService layerDao;
+
     @Autowired
-    private AnalysisDao analysisDao;
+    private AnalysisService analysisDao;
+
     @Autowired
     private Environment environment;
 
-
-    /**
-     * Return all the users stored in the database.
-     */
-    @SuppressWarnings("unchecked")
-    public List<Project> getAll() {
-        return entityManager.createQuery("from Project").getResultList();
-    }
-
-    public void deleteByID(long id)
-    {
-        Project project = entityManager.find(Project.class, id);
-        if (project != null)
-        {
-            entityManager.remove(project);
-        }
+    @Override
+    public List<Project> findAllByUser(User user) {
+        return projectDao.findAllByUser(user);
     }
 
     @Override
-    public void delete(Project project) {
+    public Project findByIdAndUser(long id, User user) {
+        return projectDao.findByIdAndUser(id, user);
+    }
+
+    @Override
+    public void saveProject(Project project) {
+        projectDao.save(project);
+    }
+
+    @Override
+    public void deleteProject(Project project) {
         if (project.getExperiments() != null) {
             for (Experiment experiment : project.getExperiments())
             {
@@ -84,14 +89,21 @@ public class ProjectDao extends BasicDao<Project>{
             // logging
         }
 
-        super.delete(project);
+        projectDao.delete(project);
     }
 
-    /**
-     * Return the user having the passed id.
-     */
-    public Project getById(long id) {
-        return entityManager.find(Project.class, id);
+    @Override
+    public void deleteProjectById(long id) {
+        projectDao.deleteById(id);
     }
 
-} // class UserDao
+    @Override
+    public Project findById(long id) {
+        return projectDao.findById(id);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return projectDao.existsByName(name);
+    }
+}

@@ -21,12 +21,16 @@ public class Layer {
     @NotNull
     private String name;
 
+    @ManyToOne
+    private Project project;
+
     public Layer(){}
 
-    public Layer(String name, List<Animal> animals)
+    public Layer(String name, List<Animal> animals, Project project)
     {
         this.animals = animals;
         this.name = name;
+        this.project = project;
     }
 
     public long getId() {

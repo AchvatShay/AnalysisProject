@@ -273,7 +273,7 @@
                 <button id="createProjectAnimalsBtn" data-toggle="collapse" href="#collapseAnimals" type="button" class="btn btn-info" aria-expanded="true">
             <i id="createProjectAnimalsIcon" class="fa fa-plus-circle"></i> Create New Animal
           </button>
-                <div id="collapseAnimals" class="collapse col-md-6" style="padding-top:1%;">
+                <div id="collapseAnimals" class="collapse col-md-12" style="padding-top:1%;">
             <div class="card md-3">
               <div class="card-body">
                 <div class="row">
@@ -341,7 +341,7 @@
           <button id="createProjectLayersBtn" data-toggle="collapse" href="#collapseLayers" type="button" class="btn btn-info" aria-expanded="true">
               <i id="createProjectLayersIcon" class="fa fa-plus-circle"></i> Create New Layer
             </button>
-          <div id="collapseLayers" class="collapse col-md-6" style="padding-top:1%;">
+          <div id="collapseLayers" class="collapse col-md-12" style="padding-top:1%;">
               <div class="card md-3">
                 <div class="card-body">
                   <div class="row">

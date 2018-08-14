@@ -22,7 +22,7 @@ public class NeuronsBean {
         try {
             List<Trial> trials = experiment.getTrials();
             if (trials != null && trials.size() > 0) {
-                MWCharArray tpa = new MWCharArray(trials.get(0).getTpa().getFile_location());
+                MWCharArray tpa = new MWCharArray(trials.get(0).getTpa().getFileLocation());
 
                 Object[] results = analysisMatlab.getAllExperimentNeurons(1, tpa);
 

@@ -1,7 +1,15 @@
 package com.analysis.manager.controllers;
 
+import com.analysis.manager.Dao.*;
+import com.analysis.manager.Service.AnimalsService;
+import com.analysis.manager.Service.ProjectService;
+import com.analysis.manager.Service.TrialService;
+import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,20 +25,22 @@ public class ExperimentController {
     @Autowired
     private ExperimentDao experimentDao;
 
+    @Qualifier("tpaRepository")
     @Autowired
-    private TPADao tpaDao;
+    private TpaRepository tpaRepository;
 
+    @Qualifier("bdaRepository")
     @Autowired
     private BDADao bdaDao;
 
     @Autowired
-    private TrialDao trialDao;
+    private TrialService trialDao;
 
     @Autowired
-    private ProjectDao projectDao;
+    private ProjectService projectDao;
 
     @Autowired
-    private AnimalsDao animalsDao;
+    private AnimalsService animalsDao;
 
     @Autowired
     private ExperimentPelletPertubationDao experimentPelletPertubationDao;
@@ -44,10 +54,17 @@ public class ExperimentController {
     @Autowired
     private ExperimentConditionDao experimentConditionDao;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "projects/{projectID}/experiments/{id}")
     public String view(@PathVariable long id, @PathVariable("projectID") long project_id,  Model m) {
         try {
-            Experiment experiment = experimentDao.getById(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(project_id, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(id, project);
 
             m.addAttribute("experiment", experiment);
 
@@ -68,22 +85,25 @@ public class ExperimentController {
 
     {
         try {
-            Project project = projectDao.getById(id);
-            Animal animal = animalsDao.getById(animal_id);
-            ExperimentInjections experimentInjections = experimentInjectionsDao.getById(experiment_injection);
-            ExperimentType experimentType = experimentTypeDao.getById(experiment_type);
-            ExperimentPelletPertubation experimentPelletPertubation = experimentPelletPertubationDao.getById(experiment_pelletPertubation);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(id, user);
+
+            Animal animal = animalsDao.findById(animal_id);
+            ExperimentInjections experimentInjections = experimentInjectionsDao.findById(experiment_injection);
+            ExperimentType experimentType = experimentTypeDao.findById(experiment_type);
+            ExperimentPelletPertubation experimentPelletPertubation = experimentPelletPertubationDao.findById(experiment_pelletPertubation);
 
             ExperimentCondition experimentCondition = new ExperimentCondition(behavioral_sampling_rate, depth, duration, imaging_sampling_rate,
                     tone_time, behavioral_delay, experimentType, experimentInjections, experimentPelletPertubation);
 
-            experimentConditionDao.create(experimentCondition);
+            experimentConditionDao.save(experimentCondition);
 
             Experiment experiment = new Experiment(description, name, experimentCondition, new LinkedList<Trial>(), animal, project);
-            experimentDao.create(experiment);
+            experimentDao.save(experiment);
 
             project.AddExperiment(experiment);
-            projectDao.update(project);
+            projectDao.saveProject(project);
 
             return "redirect:/projects/" + id + "/experiments/" + experiment.getId();
         } catch (Exception e)
@@ -98,7 +118,11 @@ public class ExperimentController {
     public String delete(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, Model model)
     {
         try {
-            Experiment experiment = experimentDao.getById(experiment_id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(projectId, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(experiment_id, project);
 
             if (experiment == null)
             {
@@ -106,10 +130,9 @@ public class ExperimentController {
                 return "redirect:/projects/" + projectId;
             }
 
-            Project project = projectDao.getById(projectId);
 
             project.deleteExperiment(experiment);
-            projectDao.update(project);
+            projectDao.saveProject(project);
 
             experimentDao.delete(experiment);
 
@@ -126,7 +149,12 @@ public class ExperimentController {
     public String deleteTrial(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, @PathVariable("trial_id") long trial_id, Model model)
     {
         try {
-            Experiment experiment = experimentDao.getById(experiment_id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(projectId, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(experiment_id, project);
+
 
             if (experiment == null)
             {
@@ -134,11 +162,11 @@ public class ExperimentController {
                 return "redirect:/projects/" + projectId;
             }
 
-            Trial trial = trialDao.getById(trial_id);
+            Trial trial = trialDao.findByIdAndExperiment(trial_id, experiment);
 
             experiment.deleteTrial(trial);
-            experimentDao.update(experiment);
-            trialDao.delete(trial);
+            experimentDao.save(experiment);
+            trialDao.deleteTrial(trial);
 
             return "redirect:/projects/" + projectId;
         }
@@ -154,20 +182,37 @@ public class ExperimentController {
     public String addTrails(@PathVariable long id, @PathVariable("projectID") long projectId, @RequestParam(value = "files_location") String filesLocation, Model model)
     {
         try {
-            Experiment experiment = experimentDao.getById(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(projectId, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(id, project);
+
             List<Trial> trailsListFromFolder = experiment.createTrailsListFromFolder(filesLocation);
             for (Trial trial : trailsListFromFolder) {
 
-                if (trialDao.getByName(trial.getName()) == null)
+                if (trialDao.findByNameAndExperiment(trial.getName(), experiment) == null)
                 {
-                    tpaDao.create(trial.getTpa());
-                    bdaDao.create(trial.getBda());
-                    trialDao.create(trial);
+                    TPA tpa = tpaRepository.findByFileLocation(trial.getTpa().getFileLocation());
+                    if (tpa == null) {
+                        tpaRepository.save(trial.getTpa());
+                    } else {
+                        trial.setTpa(tpa);
+                    }
+
+                    BDA bda = bdaDao.findByFileLocation(trial.getBda().getFileLocation());
+                    if (bda == null) {
+                        bdaDao.save(trial.getBda());
+                    } else {
+                        trial.setBda(bda);
+                    }
+
+                    trialDao.save(trial);
                     experiment.AddTrial(trial);
                 }
             }
 
-            experimentDao.update(experiment);
+            experimentDao.save(experiment);
         }
         catch (Exception e) {
             model.addAttribute("error_massage", "Error while Adding trials to DB");
@@ -182,18 +227,29 @@ public class ExperimentController {
                            @RequestParam(value = "tpa_location") String TPALocation, Model model)
     {
         try {
-            Experiment experiment = experimentDao.getById(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(projectId, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(id, project);
             TPA tpa = new TPA(TPALocation);
             BDA bda = new BDA(BDALocation);
 
             String trialName = TPALocation.replace("TPA", "");
-            if (trialDao.getByName(trialName) == null) {
-                tpaDao.create(tpa);
-                bdaDao.create(bda);
-                Trial trial = new Trial(trialName ,tpa, null, bda, null, experiment);
-                trialDao.create(trial);
+
+            if (trialDao.findByNameAndExperiment(trialName, experiment) == null)
+            {
+                if (!tpaRepository.existsByFileLocation(tpa.getFileLocation())) {
+                    tpaRepository.save(tpa);
+                }
+
+                if (!bdaDao.existsByFileLocation(bda.getFileLocation())) {
+                    bdaDao.save(bda);
+                }
+                Trial trial = new Trial(trialName, tpa, null, bda, null, experiment);
+                trialDao.save(trial);
                 experiment.AddTrial(trial);
-                experimentDao.update(experiment);
+                experimentDao.save(experiment);
             }
         }catch (Exception e) {
             model.addAttribute("error_massage", "Error while Adding trial to DB");

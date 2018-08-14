@@ -89,7 +89,7 @@
           <a href="${pageContext.request.contextPath}/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="${pageContext.request.contextPath}/projects/${analysis.getProject().getId()}">${analysis.getProject().getName()}</a>
+          <a href="${pageContext.request.contextPath}/projects/${analysis.getExperiment().getProject().getId()}">${analysis.getExperiment().getProject().getName()}</a>
         </li>
         <li class="breadcrumb-item active">
           ${analysis.getName()}

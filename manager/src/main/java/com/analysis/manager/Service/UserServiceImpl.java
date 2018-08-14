@@ -1,13 +1,19 @@
-package com.analysis.manager.modle;
+package com.analysis.manager.Service;
 
+import com.analysis.manager.Dao.RoleDao;
+import com.analysis.manager.Dao.UserDao;
+import com.analysis.manager.modle.Role;
+import com.analysis.manager.modle.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
 @Service("userService")
+@Transactional
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userRepository;
@@ -25,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
-        Role userRole = roleRepository.findByRole("ADMIN");
+        Role userRole = roleRepository.findByRole("REGULAR");
         user.setRoles(new HashSet<>(Arrays.asList(userRole)));
         userRepository.save(user);
     }

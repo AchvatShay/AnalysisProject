@@ -92,26 +92,35 @@
 
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fa fa-line-chart"></i> All Analysis Types</div>
+            <i class="fa fa-users"></i> All users</div>
           <div class="card-body">
-            <c:if test="${!analysisTypes.isEmpty() and analysisTypes != null}">
               <div class="table-responsive space-btn-card">
-                <table class="table table-bordered" id="dataTableAnalysisTypes" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTableUsers" width="100%" cellspacing="0">
                   <thead>
                   <tr>
                     <th>Id</th>
                     <th>Name</th>
+                    <th>Last name</th>
+                    <th>Email</th>
+                    <th>Role</th>
                     <th></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <c:forEach var="types" items="${analysisTypes}">
+                  <c:forEach var="user" items="${users}">
                     <tr>
-                      <td>${types.getId()}</td>
-                      <td>${types.getName()}</td>
+                      <td>${user.getId()}</td>
+                      <td>${user.getName()}</td>
+                      <td>${user.getLastName()}</td>
+                      <td>${user.getEmail()}</td>
                       <td>
-                        <a href="${pageContext.request.contextPath}/analysis/${types.getId()}/delete">
-                          <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
+                    <c:forEach var="role" items="${users.getRoles()}">
+                      ${role.getRole() + "/"}
+                    </c:forEach>
+                      </td>
+                      <td>
+                        <a href="${pageContext.request.contextPath}/users/${user.getId()}/delete">
+                          <i id="analysis-delete-${user.getId()}" class="fa fa-trash"></i>
                         </a>
                       </td>
                     </tr>
@@ -119,70 +128,8 @@
                   </tbody>
                 </table>
               </div>
-            </c:if>
-            <button id="createAnalysisTypeBtn" data-toggle="collapse" href="#collapseTypes" type="button" class="btn btn-info" aria-expanded="true">
-              <i id="createAnalysisTypeIcon" class="fa fa-plus-circle"></i> Create New Analysis Type
-            </button>
-            <div id="collapseTypes" class="collapse col-md-6" style="padding-top:1%;">
-              <div class="card md-3">
-                <div class="card-body">
-                  <div class="row">
-                    <form action="${pageContext.request.contextPath}/analysis/" method="post" class="col-md-6">
-                      <div class="form-group">
-                        <label for="TypeName">Name</label>
-                        <input type="text" name="name" required="required" data-error="Analysis type name is required" class="form-control" id="TypeName" placeholder="Enter Name">
-                      </div>
-                      <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
           </div>
         </div>
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fa fa-line-chart"></i> All Analysis</div>
-          <div class="card-body">
-            <c:if test="${!analysisList.isEmpty() and analysisList != null}">
-              <div class="table-responsive space-btn-card">
-                <table class="table table-bordered" id="dataTableAnalysis" width="100%" cellspacing="0">
-                  <thead>
-                  <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Project</th>
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <c:forEach var="analysis" items="${analysisList}">
-                    <tr>
-                      <td>${analysis.getId()}</td>
-                      <td>${analysis.getName()}</td>
-                      <td>${analysis.getDescription()}</td>
-                      <td>${analysis.getExperiment().getProject().getName()}</td>
-                      <td>
-                        <a href="${pageContext.request.contextPath}/projects/${analysis.getExperiment().getProject().getId()}/analysis/${analysis.getId()}/delete">
-                          <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
-                        </a>
-                        <a href="${pageContext.request.contextPath}/projects/${analysis.getExperiment().getProject().getId()}/analysis/${analysis.getId()}">
-                          <i id="analysis-open-${analysis.getId()}" class="fa fa-arrow-circle-right"></i>
-                        </a>
-                      </td>
-                    </tr>
-                  </c:forEach>
-                  </tbody>
-                </table>
-              </div>
-            </c:if>
-          </div>
-        </div>
-
-
       </div>
 
     </div>
@@ -238,18 +185,7 @@
             $('.loader').hide();
         });
 
-        $(document).ready(function () {
-            $("#createAnalysisTypeBtn").click(function () {
-                if ($("#createAnalysisTypeIcon").hasClass("fa-plus-circle")) {
-                    $("#createAnalysisTypeIcon").removeClass("fa-plus-circle");
-                    $("#createAnalysisTypeIcon").addClass("fa-minus-circle");
-                } else {
-                    $("#createAnalysisTypeIcon").removeClass("fa-minus-circle");
-                    $("#createAnalysisTypeIcon").addClass("fa-plus-circle");
-                }
-            });
-
-        });
+     
     </script>
 
   </div>

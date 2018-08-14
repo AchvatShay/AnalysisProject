@@ -15,7 +15,7 @@ public class Behavioral {
     private long id;
 
     @NotNull
-    private String file_location;
+    private String fileLocation;
 
     // ------------------------
     // PUBLIC METHODS
@@ -23,23 +23,23 @@ public class Behavioral {
 
     public Behavioral(){}
 
-    public Behavioral(String file_location) {
-        this.file_location = file_location;
+    public Behavioral(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 
     public long getId() {
         return id;
     }
 
-    public String getFile_location() {
-        return file_location;
+    public String getFileLocation() {
+        return fileLocation;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setFile_location(String file_location) {
-        this.file_location = file_location;
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 }

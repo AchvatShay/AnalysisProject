@@ -1,17 +1,18 @@
 package com.analysis.manager.controllers;
 
+import com.analysis.manager.Dao.*;
 import com.analysis.manager.NeuronsBean;
+import com.analysis.manager.Service.ProjectService;
+import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 @Controller
 public class ProjectsController {
     @Autowired
-    private ProjectDao projectDao;
+    private ProjectService projectDao;
 
     @Autowired
     private AnalysisTypeDao analysisTypeDao;
@@ -39,10 +40,15 @@ public class ProjectsController {
     @Autowired
     private NeuronsBean neuronsBean;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping(value = {"", "projects"})
     public String index(Model m) {
         try {
-            m.addAttribute("my_projects", projectDao.getAll());
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            m.addAttribute("my_projects", projectDao.findAllByUser(user));
         } catch (Exception e)
         {
             m.addAttribute("error_massage", "Error getting projects list from DB");
@@ -52,16 +58,18 @@ public class ProjectsController {
     }
 
     @RequestMapping(value = "projects/{id}")
-    public String viewProjects(@PathVariable long id, Model m)
+    public String viewProject(@PathVariable long id, Model m)
     {
         try {
-            Project project = projectDao.getById(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(id, user);
             m.addAttribute("project", project);
-            m.addAttribute("analysisTypes", analysisTypeDao.getAll());
-            m.addAttribute("experiment_type", experimentTypeDao.getAll());
-            m.addAttribute("experimentInjections", experimentInjectionsDao.getAll());
-            m.addAttribute("experimentEvents", experimentEventsDao.getAll());
-            m.addAttribute("pelletPertubations", experimentPelletPertubationDao.getAll());
+            m.addAttribute("analysisTypes", analysisTypeDao.findAll());
+            m.addAttribute("experiment_type", experimentTypeDao.findAll());
+            m.addAttribute("experimentInjections", experimentInjectionsDao.findAll());
+            m.addAttribute("experimentEvents", experimentEventsDao.findAll());
+            m.addAttribute("pelletPertubations", experimentPelletPertubationDao.findAll());
             m.addAttribute("neuronsBean", neuronsBean);
             m.addAttribute("tree_trials", new JSONObject(trailsToSelect(project)));
             return "project";
@@ -73,50 +81,53 @@ public class ProjectsController {
     }
 
     @PostMapping("/projects")
-    public String create(@ModelAttribute Project project, Model model)
+    public String create(@RequestParam String name, @RequestParam String description, Model model)
     {
-        if (project.getName() == null || project.getName().equals(""))
+
+        if (name == null || name.equals(""))
         {
             model.addAttribute("error_massage", "The Project name is empty");
             return index(model);
         }
 
-        if (project.getDescription() == null || project.getDescription().equals(""))
+        if (description == null || description.equals(""))
         {
             model.addAttribute("error_massage", "The Project description is empty");
             return index(model);
         }
 
         try {
-            List<Project> projects = projectDao.getAll();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
 
-            if (projects != null) {
-                for (Project p : projects) {
-                    if (p.getName().equals(project.getName())) {
-                        model.addAttribute("error_massage", "The Project name already exists");
-                        return index(model);
-                    }
-                }
+            if (projectDao.existsByName(name))
+            {
+                model.addAttribute("error_massage", "The Project name already exists");
+                return index(model);
+            } else {
+                Project project = new Project(user, name, description);
+                projectDao.saveProject(project);
+
+                return "redirect:projects/" + project.getId();
             }
-
-            projectDao.create(project);
         } catch (Exception e)
         {
             model.addAttribute("error_massage", "The Project DB creation failed");
             return index(model);
         }
-
-        return "redirect:projects/" + project.getId();
     }
 
     @RequestMapping(value = "projects/{id}/delete", method = RequestMethod.GET)
     public String delete(@PathVariable long id, Model m)
     {
         try {
-            Project projectToDelete = projectDao.getById(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+
+            Project projectToDelete = projectDao.findByIdAndUser(id, user);
 
             if (projectToDelete != null) {
-                projectDao.delete(projectToDelete);
+                projectDao.deleteProject(projectToDelete);
             }
         } catch (Exception e) {
             m.addAttribute("error_massage", "Error deleting project from list in DB");

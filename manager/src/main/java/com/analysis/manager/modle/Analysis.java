@@ -21,7 +21,7 @@ public class Analysis {
     private String description;
 
     @ManyToOne
-    private Project project;
+    private User user;
 
     @ManyToMany
     private List<AnalysisType> analysisType;
@@ -35,11 +35,11 @@ public class Analysis {
     public Analysis() {
     }
 
-    public Analysis(@NotNull String name, @NotNull String description, Project project, List<AnalysisType> analysisType, List<Trial> trials, Experiment experiment) {
+    public Analysis(@NotNull String name, @NotNull String description, User user, List<AnalysisType> analysisType, List<Trial> trials, Experiment experiment) {
         this.name = name;
         this.trials = trials;
         this.description = description;
-        this.project = project;
+        this.user = user;
         this.analysisType = analysisType;
         this.experiment = experiment;
     }
@@ -52,12 +52,12 @@ public class Analysis {
         this.experiment = experiment;
     }
 
-    public Project getProject() {
-        return project;
+    public User getUser() {
+        return user;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<Trial> getTrials() {

@@ -1,5 +1,6 @@
 package com.analysis.manager;
 
+import com.analysis.manager.Dao.*;
 import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -57,9 +58,9 @@ public class ManagerApplication  extends SpringBootServletInitializer {
 
     private void LoadExperimentEvents() {
         for (String type: env.getProperty("db.experiment.events").split(",")) {
-            if (experimentEventsDao.getByName(type) == null)
+            if (!experimentEventsDao.existsByName(type))
             {
-                experimentEventsDao.create(new ExperimentEvents(type));
+                experimentEventsDao.save(new ExperimentEvents(type));
             }
         }
     }
@@ -67,9 +68,9 @@ public class ManagerApplication  extends SpringBootServletInitializer {
     private void LoadExperimentType()
     {
         for (String type: env.getProperty("db.experiment.type").split(",")) {
-            if (experimentTypeDao.getByName(type) == null)
+            if (!experimentTypeDao.existsByName(type))
             {
-                experimentTypeDao.create(new ExperimentType(type));
+                experimentTypeDao.save(new ExperimentType(type));
             }
         }
     }
@@ -77,9 +78,9 @@ public class ManagerApplication  extends SpringBootServletInitializer {
     private void LoadExperimentInjections()
     {
         for (String type: env.getProperty("db.experiment.injections").split(",")) {
-            if (experimentInjectionsDao.getByName(type) == null)
+            if (!experimentInjectionsDao.existsByName(type))
             {
-                experimentInjectionsDao.create(new ExperimentInjections(type));
+                experimentInjectionsDao.save(new ExperimentInjections(type));
             }
         }
     }
@@ -87,9 +88,9 @@ public class ManagerApplication  extends SpringBootServletInitializer {
     private void LoadExperimentPelletPertubation()
     {
         for (String type: env.getProperty("db.experiment.pelletPertubation").split(",")) {
-            if (experimentPelletPertubationDao.getByName(type) == null)
+            if (!experimentPelletPertubationDao.existsByName(type))
             {
-                experimentPelletPertubationDao.create(new ExperimentPelletPertubation(type));
+                experimentPelletPertubationDao.save(new ExperimentPelletPertubation(type));
             }
         }
     }
@@ -100,6 +101,13 @@ public class ManagerApplication  extends SpringBootServletInitializer {
         {
             Role role = new Role();
             role.setRole("ADMIN");
+            roleDao.save(role);
+        }
+
+        if (roleDao.findByRole("REGULAR") == null)
+        {
+            Role role = new Role();
+            role.setRole("REGULAR");
             roleDao.save(role);
         }
     }

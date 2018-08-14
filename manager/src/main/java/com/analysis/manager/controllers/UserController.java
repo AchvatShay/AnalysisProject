@@ -2,7 +2,7 @@ package com.analysis.manager.controllers;
 
 
 import com.analysis.manager.modle.User;
-import com.analysis.manager.modle.UserDao;
+//import com.analysis.manager.Dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -90,8 +90,8 @@ public class UserController {
     // PRIVATE FIELDS
     // ------------------------
 
-    // Wire the UserDao used inside this controller.
-    @Autowired
-    private UserDao userDao;
+//    // Wire the UserDao used inside this controller.
+//    @Autowired
+//    private UserDao userDao;
 
 } // class UserController

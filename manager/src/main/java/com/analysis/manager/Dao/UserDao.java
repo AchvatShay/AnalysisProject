@@ -1,5 +1,6 @@
-package com.analysis.manager.modle;
+package com.analysis.manager.Dao;
 
+import com.analysis.manager.modle.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
