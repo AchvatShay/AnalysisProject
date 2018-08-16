@@ -10,4 +10,6 @@ end
 [imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
 analysis(analysisName, outputPath, generalProperty, imagingData, BehaveData);
 
+close all;
+
 end
