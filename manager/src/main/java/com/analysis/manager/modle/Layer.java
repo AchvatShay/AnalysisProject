@@ -33,6 +33,14 @@ public class Layer {
         this.project = project;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public long getId() {
         return id;
     }

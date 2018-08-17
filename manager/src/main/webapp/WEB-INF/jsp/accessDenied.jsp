@@ -17,14 +17,13 @@
 
 <body class="bg-dark">
   <div class="container">
-    <div class="card card-register mx-auto mt-5">
-      <div class="card-header">Access Denied</div>
-      <div class="card-body">
-        <div class="text-center">
-          <a class="d-block small mt-3" href="login.jsp">Login Page</a>
-        </div>
-      </div>
+
+    <div class="alert alert-danger" style="margin-top: 2%;">
+      <strong>Access Denied!</strong> go back to <a class="small mt-3" href="${pageContext.request.contextPath}/projects">Projects Page</a>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      </button>
     </div>
+
   </div>
   <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

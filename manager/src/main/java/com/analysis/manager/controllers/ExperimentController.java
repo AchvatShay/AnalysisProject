@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +60,7 @@ public class ExperimentController {
     private UserService userService;
 
     @RequestMapping(value = "projects/{projectID}/experiments/{id}")
-    public String view(@PathVariable long id, @PathVariable("projectID") long project_id,  Model m) {
+    public ModelAndView view(@PathVariable long id, @PathVariable("projectID") long project_id, Model m) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
@@ -68,20 +70,20 @@ public class ExperimentController {
 
             m.addAttribute("experiment", experiment);
 
-            return "experiment";
+            return new ModelAndView("experiment");
         } catch (Exception e) {
-            return "redirect:projects/" + project_id;
+            return new ModelAndView("redirect:/projects/" + project_id);
         }
     }
 
     @RequestMapping(value = "projects/{id}/experiments" , method = RequestMethod.POST)
-    public String create(@PathVariable("id") long id, @RequestParam("name") String name, @RequestParam("description") String description,
+    public ModelAndView create(@PathVariable("id") long id, @RequestParam("name") String name, @RequestParam("description") String description,
                          @RequestParam("experiment_animal") long animal_id, @RequestParam("experiment_type") long experiment_type,
                          @RequestParam("experiment_injection") long experiment_injection,
                          @RequestParam("experiment_pelletPertubation") long experiment_pelletPertubation,
                          @RequestParam("behavioral_delay") long behavioral_delay, @RequestParam("duration") long duration,
                          @RequestParam("tone_time") long tone_time, @RequestParam("behavioral_sampling_rate") int behavioral_sampling_rate,
-                         @RequestParam("imaging_sampling_rate") int imaging_sampling_rate, @RequestParam("depth") int depth, Model model)
+                         @RequestParam("imaging_sampling_rate") int imaging_sampling_rate, @RequestParam("depth") int depth, RedirectAttributes model)
 
     {
         try {
@@ -90,6 +92,12 @@ public class ExperimentController {
             Project project = projectDao.findByIdAndUser(id, user);
 
             Animal animal = animalsDao.findById(animal_id);
+
+            if (animal.getLayer().getProject().getId() != project.getId()) {
+                model.addFlashAttribute("error_message", "The animal selected do not belong to this user");
+                return new ModelAndView("redirect:/projects/" + id);
+            }
+
             ExperimentInjections experimentInjections = experimentInjectionsDao.findById(experiment_injection);
             ExperimentType experimentType = experimentTypeDao.findById(experiment_type);
             ExperimentPelletPertubation experimentPelletPertubation = experimentPelletPertubationDao.findById(experiment_pelletPertubation);
@@ -105,17 +113,17 @@ public class ExperimentController {
             project.AddExperiment(experiment);
             projectDao.saveProject(project);
 
-            return "redirect:/projects/" + id + "/experiments/" + experiment.getId();
+            return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment.getId());
         } catch (Exception e)
         {
-            model.addAttribute("error_massage", "Error while creating Experiment in DB");
-            return "redirect:/projects/" + id;
+            model.addFlashAttribute("error_message", "Error while creating Experiment in DB");
+            return new ModelAndView("redirect:/projects/" + id);
         }
 
     }
 
     @RequestMapping(value = "projects/{id}/experiments/{experiment_id}/delete")
-    public String delete(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, Model model)
+    public ModelAndView delete(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, RedirectAttributes model)
     {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -126,8 +134,8 @@ public class ExperimentController {
 
             if (experiment == null)
             {
-                model.addAttribute("error_massage", "Can not find experiment by id = " + experiment_id);
-                return "redirect:/projects/" + projectId;
+                model.addFlashAttribute("error_message", "Can not find experiment by id = " + experiment_id);
+                return new ModelAndView("redirect:/projects/" + projectId);
             }
 
 
@@ -136,17 +144,17 @@ public class ExperimentController {
 
             experimentDao.delete(experiment);
 
-            return "redirect:/projects/" + projectId;
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
         catch (Exception e)
         {
-            model.addAttribute("error_massage", "error while delete experiment in DB");
-            return "redirect:/projects/" + projectId;
+            model.addFlashAttribute("error_message", "error while delete experiment in DB");
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
     }
 
     @RequestMapping(value = "projects/{id}/experiments/{experiment_id}/delete/trial/{trial_id}")
-    public String deleteTrial(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, @PathVariable("trial_id") long trial_id, Model model)
+    public ModelAndView deleteTrial(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, @PathVariable("trial_id") long trial_id, RedirectAttributes model)
     {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -158,8 +166,8 @@ public class ExperimentController {
 
             if (experiment == null)
             {
-                model.addAttribute("error_massage", "Can not find experiment by id = " + experiment_id);
-                return "redirect:/projects/" + projectId;
+                model.addFlashAttribute("error_message", "Can not find experiment by id = " + experiment_id);
+                return new ModelAndView("redirect:/projects/" + projectId);
             }
 
             Trial trial = trialDao.findByIdAndExperiment(trial_id, experiment);
@@ -168,18 +176,18 @@ public class ExperimentController {
             experimentDao.save(experiment);
             trialDao.deleteTrial(trial);
 
-            return "redirect:/projects/" + projectId;
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
         catch (Exception e)
         {
-            model.addAttribute("error_massage", "error while delete trial in DB");
-            return "redirect:/projects/" + projectId;
+            model.addFlashAttribute("error_message", "error while delete trial in DB");
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
     }
 
 
     @RequestMapping(value = "projects/{projectID}/experiments/{id}/add_trails")
-    public String addTrails(@PathVariable long id, @PathVariable("projectID") long projectId, @RequestParam(value = "files_location") String filesLocation, Model model)
+    public ModelAndView addTrails(@PathVariable long id, @PathVariable("projectID") long projectId, @RequestParam(value = "files_location") String filesLocation, RedirectAttributes model)
     {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -197,34 +205,39 @@ public class ExperimentController {
                     if (tpa == null) {
                         tpaRepository.save(trial.getTpa());
                     } else {
-                        trial.setTpa(tpa);
+                        model.addFlashAttribute("error_message", "The trial already exists");
+                        return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
                     }
 
                     BDA bda = bdaDao.findByFileLocation(trial.getBda().getFileLocation());
                     if (bda == null) {
                         bdaDao.save(trial.getBda());
                     } else {
-                        trial.setBda(bda);
+                        model.addFlashAttribute("error_message", "The trial already exists");
+                        return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
                     }
 
                     trialDao.save(trial);
                     experiment.AddTrial(trial);
+                } else {
+                    model.addFlashAttribute("error_message", "The trial already exists");
+                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
                 }
             }
 
             experimentDao.save(experiment);
         }
         catch (Exception e) {
-            model.addAttribute("error_massage", "Error while Adding trials to DB");
+            model.addFlashAttribute("error_message", "Error while Adding trials to DB");
         }
 
-        return "redirect:/projects/" + projectId + "/experiments/" + id;
+        return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
     }
 
 
     @RequestMapping(value = "projects/{projectID}/experiments/{id}/add_trail")
-    public String addTrail(@PathVariable("projectID") long projectId, @PathVariable long id, @RequestParam(value = "bda_location") String BDALocation,
-                           @RequestParam(value = "tpa_location") String TPALocation, Model model)
+    public ModelAndView addTrail(@PathVariable("projectID") long projectId, @PathVariable long id, @RequestParam(value = "bda_location") String BDALocation,
+                           @RequestParam(value = "tpa_location") String TPALocation, RedirectAttributes model)
     {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -239,22 +252,31 @@ public class ExperimentController {
 
             if (trialDao.findByNameAndExperiment(trialName, experiment) == null)
             {
-                if (!tpaRepository.existsByFileLocation(tpa.getFileLocation())) {
+                TPA tpaDB = tpaRepository.findByFileLocation(tpa.getFileLocation());
+                if (tpaDB == null) {
                     tpaRepository.save(tpa);
+                } else {
+                    model.addFlashAttribute("error_message", "The trial already exists");
+                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
                 }
 
-                if (!bdaDao.existsByFileLocation(bda.getFileLocation())) {
+                BDA bdaDB = bdaDao.findByFileLocation(bda.getFileLocation());
+                if (bdaDB == null) {
                     bdaDao.save(bda);
+                } else {
+                    model.addFlashAttribute("error_message", "The trial already exists");
+                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
                 }
+
                 Trial trial = new Trial(trialName, tpa, null, bda, null, experiment);
                 trialDao.save(trial);
                 experiment.AddTrial(trial);
                 experimentDao.save(experiment);
             }
         }catch (Exception e) {
-            model.addAttribute("error_massage", "Error while Adding trial to DB");
+            model.addFlashAttribute("error_message", "Error while Adding trial to DB");
         }
 
-        return "redirect:/projects/" + projectId + "/experiments/" + id;
+        return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
     }
 }

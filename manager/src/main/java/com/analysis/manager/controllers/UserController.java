@@ -1,97 +1,50 @@
 package com.analysis.manager.controllers;
 
 
+import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.User;
 //import com.analysis.manager.Dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Class UserController
  */
 @Controller
 public class UserController {
+    @Autowired
+    private UserService userService;
 
-    // ------------------------
-    // PUBLIC METHODS
-    // ------------------------
+    @RequestMapping(value = "/users")
+    public String view(Model model)
+    {
+        model.addAttribute("users", userService.findAll());
 
-    /**
-     * Create a new user with an auto-generated id and email and name as passed
-     * values.
-     */
-//    @RequestMapping(value="/create")
-//    @ResponseBody
-//    public String create(String email, String name) {
-//        try {
-//            User user = new User(email, name);
-//            userDao.create(user);
-//        }
-//        catch (Exception ex) {
-//            return "Error creating the user: " + ex.toString();
-//        }
-//        return "User succesfully created!";
-//    }
+        return "users";
+    }
 
-    /**
-     * Delete the user with the passed id.
-     */
-//    @RequestMapping(value="/delete")
-//    @ResponseBody
-//    public String delete(long id) {
-//        try {
-//            User user = new User(id);
-//            userDao.delete(user);
-//        }
-//        catch (Exception ex) {
-//            return "Error deleting the user: " + ex.toString();
-//        }
-//        return "User succesfully deleted!";
-//    }
+    @RequestMapping(value="/users/{id}/delete")
+    public String delete(@PathVariable long id, Model model) {
+        try {
+            User user = userService.findById(id);
 
-    /**
-     * Retrieve the id for the user with the passed email address.
-     */
-//    @RequestMapping(value="/get-by-email")
-//    @ResponseBody
-//    public String getByEmail(String email) {
-//        String userId;
-//        try {
-//            User user = userDao.getByEmail(email);
-//            userId = String.valueOf(user.getId());
-//        }
-//        catch (Exception ex) {
-//            return "User not found: " + ex.toString();
-//        }
-//        return "The user id is: " + userId;
-//    }
+            if (user != null) {
+                userService.delete(user);
+                model.addAttribute("success_message", "User succesfully deleted!");
+            } else {
+                model.addAttribute("error_message", "can not find user to delete");
+            }
+        }
+        catch (Exception ex) {
+            model.addAttribute("error_message", "error while deleting user from DB");
+        }
 
-    /**
-     * Update the email and the name for the user indentified by the passed id.
-     */
-//    @RequestMapping(value="/update")
-//    @ResponseBody
-//    public String updateName(long id, String email, String name) {
-//        try {
-//            User user = userDao.getById(id);
-//            user.setEmail(email);
-//            user.setName(name);
-//            userDao.update(user);
-//        }
-//        catch (Exception ex) {
-//            return "Error updating the user: " + ex.toString();
-//        }
-//        return "User succesfully updated!";
-//    }
-
-    // ------------------------
-    // PRIVATE FIELDS
-    // ------------------------
-
-//    // Wire the UserDao used inside this controller.
-//    @Autowired
-//    private UserDao userDao;
+        return view(model);
+    }
 
 } // class UserController

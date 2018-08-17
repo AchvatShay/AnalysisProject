@@ -41,19 +41,19 @@
     </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav" id="exampleAccordion">
-              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Analysis">
+              <li class="nav-item" >
                   <a class="nav-link" href="${pageContext.request.contextPath}/analysis">
                       <i class="fa fa-fw fa-area-chart"></i>
                       <span class="nav-link-text">Analysis</span>
                   </a>
               </li>
-              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Projects">
+              <li class="nav-item" >
                   <a class="nav-link" href="${pageContext.request.contextPath}/projects">
                       <i class="fa fa-fw fa-line-chart"></i>
                       <span class="nav-link-text">Projects</span>
                   </a>
               </li>
-              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
+              <li class="nav-item" >
                   <a class="nav-link" href="${pageContext.request.contextPath}/users">
                       <i class="fa fa-fw fa-users"></i>
                       <span class="nav-link-text">Users</span>
@@ -71,9 +71,9 @@
     <div class="container-fluid rapper">
       <div class="loader" style="display: none"></div>
 
-      <c:if test="${error_massage != null and !error_massage.equals('')}">
+      <c:if test="${error_message != null and !error_message.equals('')}">
         <div class="alert alert-danger">
-          <strong>Error!</strong> ${error_massage}
+          <strong>Error!</strong> ${error_message}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -442,6 +442,19 @@
                                   <label for="time2endCountGrabs">Time to end count grabs</label>
                                   <input type="number" step="any" name="time2endCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2endCountGrabs" placeholder="Enter time">
                               </div>
+
+                            <div class="form-group">
+                              <label for="startBehaveTime4trajectory">Start behave time for trajctory</label>
+                              <input type="number" step="any" name="startBehaveTime4trajectory" required="required" data-error="Analysis Start behave time is required" class="form-control" id="startBehaveTime4trajectory" placeholder="Enter start behave time">
+                            </div>
+                            <div class="form-group">
+                              <label for="endBehaveTime4trajectory">End behave time for trajctory</label>
+                              <input type="number" step="any" name="endBehaveTime4trajectory" required="required" data-error="Analysis End behave time is required" class="form-control" id="endBehaveTime4trajectory" placeholder="Enter end behave time">
+                            </div>
+                            <div class="form-group">
+                              <label for="foldsNum">Foldes Num</label>
+                              <input type="number" step="any" name="foldsNum" required="required" data-error="Analysis End behave time is required" class="form-control" id="foldsNum" placeholder="Enter foldes num">
+                            </div>
                           </div>
                           <div class="col-md-3">
                             <div class="form-group">
@@ -490,7 +503,7 @@
 
                                   <div class="form-group space-btn-card border border-dark">
                                     <label class="table-analysis-label"><strong>Neurons To Plot : </strong></label>
-                                    <input name="neurons_toPlot" hidden="hidden" checked="checked" type="checkbox" value="${experiment.getId()}_00">
+                                    <%--<input name="neurons_toPlot" hidden="hidden" checked="checked" type="checkbox" value="${experiment.getId()}_00">--%>
                                     <div class="table-responsive space-btn-card" style="margin-top:5%">
                                       <table class="table table-bordered dataTableTrials" id="dataTableNeuronsToPlot${experiment.getId()}" width="100%" cellspacing="0">
                                         <thead>
@@ -672,7 +685,7 @@
                 var id_val = this.value;
                 $('#trials' + before).fadeOut();
                 $('#trials' + id_val).fadeIn();
-                setCheckBox('#dataTableNeuronsToPlot' + id_val, true);
+                setCheckBox('#dataTableNeuronsToPlot' + id_val, false);
 
                 setCheckBox('#dataTableNeuronsForAnalysis' + id_val, true);
 

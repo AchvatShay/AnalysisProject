@@ -6,11 +6,9 @@ import com.analysis.manager.Dao.ExperimentPelletPertubationDao;
 import com.analysis.manager.Dao.ExperimentTypeDao;
 import com.analysis.manager.modle.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,16 +34,16 @@ public class XmlCreator {
     @Autowired
     private ExperimentEventsDao experimentEventsDao;
 
-    @Autowired
-    private Environment environment;
+    @Value("${analysis.results.location}")
+    private String pathAnalysis;
 
-    public boolean createXml(Analysis analysis, double font_size, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2startCountGrabs, double time2endCountGrabs) throws Exception {
-        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
+    public boolean createXml(Analysis analysis, double font_size, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2startCountGrabs, double time2endCountGrabs, double startBehaveTime4trajectory, double endBehaveTime4trajectory, double foldsNum) throws Exception {
         boolean results = true;
 
+        Project project = analysis.getExperiment().getProject();
         for (AnalysisType type : analysis.getAnalysisType())
         {
-            String path = dropboxPathLocal + File.separator + analysis.getExperiment().getProject().getName() + File.separator + analysis.getName();
+            String path = pathAnalysis + File.separator + project.getUser().getName() + File.separator + project.getName() + File.separator + analysis.getName();
 
             File xml_folder = new File(path);
             if (!xml_folder.exists()) {
@@ -67,7 +65,7 @@ public class XmlCreator {
             File xml = new File(xml_folder.getAbsolutePath() + File.separator + "XmlAnalysis.xml");
             if (!xml.exists())
             {
-                results = createXmlDoc(analysis.getExperiment(), xml_folder, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2endCountGrabs, time2startCountGrabs, font_size);
+                results = createXmlDoc(analysis.getExperiment(), xml_folder, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2endCountGrabs, time2startCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum, font_size);
 
                 if (!results)
                 {
@@ -79,7 +77,7 @@ public class XmlCreator {
         return results;
     }
 
-    private boolean createXmlDoc(Experiment experiment, File type_folder, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2endCountGrabs, double time2startCountGrabs, double font_size){
+    private boolean createXmlDoc(Experiment experiment, File type_folder, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2endCountGrabs, double time2startCountGrabs, double startBehaveTime4trajectory, double endBehaveTime4trajectory, double foldsNum, double font_size){
 
 
         try {
@@ -178,6 +176,19 @@ public class XmlCreator {
             time2endCountGrabsE.appendChild(doc.createTextNode(String.valueOf(time2endCountGrabs)));
             analysisParams.appendChild(time2endCountGrabsE);
 
+            Element startBehaveTime4trajectoryE = doc.createElement("startBehaveTime4trajectory");
+            startBehaveTime4trajectoryE.appendChild(doc.createTextNode(String.valueOf(startBehaveTime4trajectory)));
+            analysisParams.appendChild(startBehaveTime4trajectoryE);
+
+
+            Element endBehaveTime4trajectoryE = doc.createElement("endBehaveTime4trajectory");
+            endBehaveTime4trajectoryE.appendChild(doc.createTextNode(String.valueOf(endBehaveTime4trajectory)));
+            analysisParams.appendChild(endBehaveTime4trajectoryE);
+
+            Element foldsNumE = doc.createElement("foldsNum");
+            foldsNumE.appendChild(doc.createTextNode(String.valueOf(foldsNum)));
+            analysisParams.appendChild(foldsNumE);
+
             Element NeuronesToPlot = doc.createElement("NeuronesToPlot");
 
             for (String name : neurons_toPlot) {
@@ -197,6 +208,15 @@ public class XmlCreator {
             Element legend = doc.createElement("legend");
             legend.setAttribute("Location", "Best");
             visualization.appendChild(legend);
+
+            Element viewP1 = doc.createElement("viewparams1");
+            viewP1.appendChild(doc.createTextNode("0"));
+            visualization.appendChild(viewP1);
+
+
+            Element viewP2 = doc.createElement("viewparams2");
+            viewP2.appendChild(doc.createTextNode("0"));
+            visualization.appendChild(viewP2);
 
             Element labelsFontSize = doc.createElement("labelsFontSize");
             labelsFontSize.appendChild(doc.createTextNode(String.valueOf(font_size)));
@@ -242,65 +262,5 @@ public class XmlCreator {
         {
             return false;
         }
-    }
-
-    public boolean createLinksXML(List<String> urls, String path)
-    {
-        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
-        try {
-            DocumentBuilderFactory dbFactory =
-                    DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.newDocument();
-
-            // root element
-            Element rootElement = doc.createElement("Links");
-            doc.appendChild(rootElement);
-
-            for (String link : urls) {
-                Element l = doc.createElement("Link");
-                Element v = doc.createElement("value");
-                v.appendChild(doc.createTextNode(link));
-                l.appendChild(v);
-                rootElement.appendChild(l);
-            }
-
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(dropboxPathLocal + File.separator + path + File.separator + "XmlLinks.xml"));
-            transformer.transform(source, result);
-            return true;
-        } catch (Exception e)
-        {
-            return false;
-        }
-    }
-
-    public List<String> getLinksList(String path)
-    {
-        LinkedList<String> results = new LinkedList();
-        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
-        try {
-            File fXmlFile = new File(dropboxPathLocal + File.separator + path + File.separator + "XmlLinks.xml");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(fXmlFile);
-
-            NodeList nList = doc.getElementsByTagName("Link");
-
-            for (int index = 0; index < nList.getLength(); index++)
-            {
-                Node item = nList.item(index);
-                results.add(item.getFirstChild().getTextContent());
-            }
-
-            return results;
-        }
-        catch (Exception e) {
-            return null;
-        }
-
     }
 }

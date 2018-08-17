@@ -39,19 +39,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav" id="exampleAccordion">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Analysis">
+        <li class="nav-item" >
           <a class="nav-link" href="${pageContext.request.contextPath}/analysis">
             <i class="fa fa-fw fa-area-chart"></i>
             <span class="nav-link-text">Analysis</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Projects">
+        <li class="nav-item" >
           <a class="nav-link" href="${pageContext.request.contextPath}/projects">
             <i class="fa fa-fw fa-line-chart"></i>
             <span class="nav-link-text">Projects</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
+        <li class="nav-item" >
           <a class="nav-link" href="${pageContext.request.contextPath}/users">
             <i class="fa fa-fw fa-users"></i>
             <span class="nav-link-text">Users</span>
@@ -70,9 +70,9 @@
 
       <div class="loader"></div>
 
-      <c:if test="${error_massage != null and !error_massage.equals('')}">
+      <c:if test="${error_message != null and !error_message.equals('')}">
         <div class="alert alert-danger">
-          <strong>Error!</strong> ${error_massage}
+          <strong>Error!</strong> ${error_message}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -114,8 +114,8 @@
                       <td>${user.getLastName()}</td>
                       <td>${user.getEmail()}</td>
                       <td>
-                    <c:forEach var="role" items="${users.getRoles()}">
-                      ${role.getRole() + "/"}
+                    <c:forEach var="role" items="${user.getRoles()}">
+                      ${role.getRole()}
                     </c:forEach>
                       </td>
                       <td>
@@ -185,7 +185,7 @@
             $('.loader').hide();
         });
 
-     
+
     </script>
 
   </div>

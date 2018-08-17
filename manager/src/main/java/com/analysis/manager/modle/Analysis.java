@@ -23,6 +23,8 @@ public class Analysis {
     @ManyToOne
     private User user;
 
+//    private String urlsResults;
+
     @ManyToMany
     private List<AnalysisType> analysisType;
 
@@ -43,6 +45,14 @@ public class Analysis {
         this.analysisType = analysisType;
         this.experiment = experiment;
     }
+
+//    public String getUrlsResults() {
+//        return urlsResults;
+//    }
+//
+//    public void setUrlsResults(String urlsResults) {
+//        this.urlsResults = urlsResults;
+//    }
 
     public Experiment getExperiment() {
         return experiment;

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class LayersController {
@@ -29,13 +31,13 @@ public class LayersController {
     private UserService userService;
 
     @RequestMapping(value = "projects/{id}/layers", method = RequestMethod.POST)
-    public String addLayer(@PathVariable("id") long projectId, @RequestParam("name") String name, Model model)
+    public ModelAndView addLayer(@PathVariable("id") long projectId, @RequestParam("name") String name, RedirectAttributes model)
     {
 
         if (layerDao.existsByName(name))
         {
-            model.addAttribute("error_massage", "The Layer already exists");
-            return "redirect:/projects/" + projectId;
+            model.addFlashAttribute("error_message", "The Layer already exists");
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
 
 
@@ -51,29 +53,29 @@ public class LayersController {
             project.AddLayer(layer);
 
             projectDao.saveProject(project);
-
-            return "redirect:/projects/" + projectId;
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
         catch (Exception e)
         {
-            model.addAttribute("error_massage", "error while creating layer in DB");
-            return "redirect:/projects/" + projectId;
+            model.addFlashAttribute("error_message", "error while creating layer in DB");
+
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
     }
 
     @RequestMapping(value = "projects/{id}/layers/{layer_id}/delete")
-    public String delete(@PathVariable("id") long projectId, @PathVariable("layer_id") long layerId, Model model)
+    public ModelAndView delete(@PathVariable("id") long projectId, @PathVariable("layer_id") long layerId, RedirectAttributes model)
     {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
-            Project project = projectDao.findById(projectId);
+            Project project = projectDao.findByIdAndUser(projectId, user);
             Layer layer = layerDao.findByIdAndProject(layerId, project);
 
             if (layer == null)
             {
-                model.addAttribute("error_massage", "Can not find layer by id = " + layerId);
-                return "redirect:/projects/" + projectId;
+                model.addFlashAttribute("error_message", "Can not find layer by id = " + layerId);
+                return new ModelAndView("redirect:/projects/" + projectId);
             }
 
 
@@ -81,12 +83,13 @@ public class LayersController {
             projectDao.saveProject(project);
             layerDao.delete(layer);
 
-            return "redirect:/projects/" + projectId;
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
         catch (Exception e)
         {
-            model.addAttribute("error_massage", "error while delete layer in DB");
-            return "redirect:/projects/" + projectId;
+            model.addFlashAttribute("error_message", "error while delete layer in DB");
+
+            return new ModelAndView("redirect:/projects/" + projectId);
         }
     }
 }

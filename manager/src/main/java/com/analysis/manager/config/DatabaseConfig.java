@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 import AnalysisManager.RunAnalysis;
 import com.analysis.manager.NeuronsBean;
 import com.analysis.manager.XmlCreator;
-import com.analysis.manager.modle.User;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.mathworks.toolbox.javabuilder.MWException;
@@ -22,7 +21,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import AnalysisManager.RunAnalysis;
 
 /**
  * Contains database configurations.

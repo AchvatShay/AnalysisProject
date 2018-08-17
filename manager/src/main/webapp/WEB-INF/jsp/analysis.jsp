@@ -39,19 +39,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav" id="exampleAccordion">
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Analysis">
+        <li class="nav-item">
           <a class="nav-link" href="${pageContext.request.contextPath}/analysis">
             <i class="fa fa-fw fa-area-chart"></i>
             <span class="nav-link-text">Analysis</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Projects">
+        <li class="nav-item" >
           <a class="nav-link" href="${pageContext.request.contextPath}/projects">
             <i class="fa fa-fw fa-line-chart"></i>
             <span class="nav-link-text">Projects</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
+        <li class="nav-item">
           <a class="nav-link" href="${pageContext.request.contextPath}/users">
             <i class="fa fa-fw fa-users"></i>
             <span class="nav-link-text">Users</span>
@@ -70,9 +70,9 @@
 
       <div class="loader"></div>
 
-      <c:if test="${error_massage != null and !error_massage.equals('')}">
+      <c:if test="${error_message != null and !error_message.equals('')}">
         <div class="alert alert-danger">
-          <strong>Error!</strong> ${error_massage}
+          <strong>Error!</strong> ${error_message}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -113,13 +113,14 @@
           </div>
 
           <c:if test="${tif != null and !tif.isEmpty()}">
-          <div class="card text-center">
+          <div class="col-md-12">
+            <div class="card text-center">
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" id="mainType">
 
                 <c:forEach var="tif_map" items="${tif}">
                   <li class="nav-item">
-                    <a class="nav-link active btn clickType" id="click${tif_map.key.getName()}">${tif_map.key.getName()}</a>
+                    <a class="nav-link btn clickType" id="click${tif_map.key.getName()}">${tif_map.key.getName()}</a>
                   </li>
                 </c:forEach>
               </ul>
@@ -130,13 +131,17 @@
                 <div class="gallery" id="gallery">
                   <c:forEach var="tifFile" items="${tif_map.value}">
                     <div class="mb-3 pics animation ">
-                      <img class="img-fluid" src="${tifFile}">
+                      <img class="img-fluid" data-toggle="tooltip" data-placement="right" title="${tifFile.getFileName()}" src="${pageContext.request.contextPath}/resources/AnalysisResults/${tifFile.getUserName()}/${tifFile.getProjectName()}/${tifFile.getAnalysisName()}/${tifFile.getAnalysisType()}/${tifFile.getFileName()}${tifFile.getFileEnd()}">
+                      <a class="btn-floating btn-large" href="${pageContext.request.contextPath}/projects/${analysis.getExperiment().getProject().getId()}/analysis/${analysis.getId()}/download/${tifFile.getUserName()}/${tifFile.getProjectName()}/${tifFile.getAnalysisName()}/${tifFile.getAnalysisType()}/${tifFile.getFileName()}">
+                        <i class="fa fa-file-download"></i>
+                      </a>
                     </div>
                   </c:forEach>
                 </div>
               </div>
             </c:forEach>
             </div>
+          </div>
           </c:if>
           </div>
 
@@ -202,6 +207,7 @@
             <c:forEach var="tif_map" items="${tif}">
               if (count == 0) {
                   $('#${tif_map.key.getName()}').show();
+                  $('#click${tif_map.key.getName()}').addClass("active")
                   count = count + 1;
                   currentType = '${tif_map.key.getName()}';
               } else {
@@ -211,7 +217,14 @@
 
             $('#mainType .clickType').click(function () {
                    var newType = this.text;
-                   $('#' + currentType).hide();
+                   if ($('#click' + currentType).hasClass("active"))
+                   {
+                       $('#click' + currentType).removeClass("active");
+                   }
+
+                $('#click' + newType).addClass("active");
+
+                $('#' + currentType).hide();
                    $('#' + newType).show();
                    currentType = newType;
             });

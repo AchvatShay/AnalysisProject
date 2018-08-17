@@ -18,9 +18,17 @@ public class LoginController {
     private UserService userService;
 
     @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
-    public ModelAndView login(Model model){
+    public ModelAndView login(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/accessDenied")
+    public ModelAndView accessDenied()
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("accessDenied");
         return modelAndView;
     }
 
@@ -50,18 +58,5 @@ public class LoginController {
         }
         return modelAndView;
     }
-
-//    @RequestMapping(value="/admin/home", method = RequestMethod.GET)
-//    public ModelAndView home(){
-//        ModelAndView modelAndView = new ModelAndView();
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        User user = userService.findUserByEmail(auth.getName());
-//        modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-//        modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
-//        modelAndView.setViewName("admin/home");
-//        return modelAndView;
-//    }
-
-
 }
 

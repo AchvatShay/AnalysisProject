@@ -11,7 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,7 +54,7 @@ public class ProjectsController {
             m.addAttribute("my_projects", projectDao.findAllByUser(user));
         } catch (Exception e)
         {
-            m.addAttribute("error_massage", "Error getting projects list from DB");
+            m.addAttribute("error_message", "Error getting projects list from DB");
         }
 
         return "projects";
@@ -75,8 +78,8 @@ public class ProjectsController {
             return "project";
         } catch (Exception e)
         {
-            m.addAttribute("error_massage", "Error getting project" + id + "from DB");
-            return "redirect:/projects";
+            m.addAttribute("error_message", "Error getting project" + id + "from DB");
+            return index(m);
         }
     }
 
@@ -86,13 +89,13 @@ public class ProjectsController {
 
         if (name == null || name.equals(""))
         {
-            model.addAttribute("error_massage", "The Project name is empty");
+            model.addAttribute("error_message", "The Project name is empty");
             return index(model);
         }
 
         if (description == null || description.equals(""))
         {
-            model.addAttribute("error_massage", "The Project description is empty");
+            model.addAttribute("error_message", "The Project description is empty");
             return index(model);
         }
 
@@ -102,17 +105,17 @@ public class ProjectsController {
 
             if (projectDao.existsByName(name))
             {
-                model.addAttribute("error_massage", "The Project name already exists");
+                model.addAttribute("error_message", "The Project name already exists");
                 return index(model);
             } else {
                 Project project = new Project(user, name, description);
                 projectDao.saveProject(project);
 
-                return "redirect:projects/" + project.getId();
+                return viewProject(project.getId(), model);
             }
         } catch (Exception e)
         {
-            model.addAttribute("error_massage", "The Project DB creation failed");
+            model.addAttribute("error_message", "The Project DB creation failed");
             return index(model);
         }
     }
@@ -130,10 +133,10 @@ public class ProjectsController {
                 projectDao.deleteProject(projectToDelete);
             }
         } catch (Exception e) {
-            m.addAttribute("error_massage", "Error deleting project from list in DB");
+            m.addAttribute("error_message", "Error deleting project from list in DB");
         }
 
-        return "redirect:/projects";
+        return index(m);
     }
 
 
