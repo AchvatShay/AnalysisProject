@@ -6,6 +6,8 @@ import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.Layer;
 import com.analysis.manager.modle.Project;
 import com.analysis.manager.modle.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,22 +32,23 @@ public class LayersController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(LayersController.class);
+
     @RequestMapping(value = "projects/{id}/layers", method = RequestMethod.POST)
     public ModelAndView addLayer(@PathVariable("id") long projectId, @RequestParam("name") String name, RedirectAttributes model)
     {
-
-        if (layerDao.existsByName(name))
-        {
-            model.addFlashAttribute("error_message", "The Layer already exists");
-            return new ModelAndView("redirect:/projects/" + projectId);
-        }
-
-
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
 
             Project project = projectDao.findByIdAndUser(projectId, user);
+
+            if (layerDao.existsByNameAndProject(name, project))
+            {
+                model.addFlashAttribute("error_message", "The Layer already exists");
+                return new ModelAndView("redirect:/projects/" + projectId);
+            }
+
             Layer layer = new Layer(name, null, project);
 
             layerDao.save(layer);
@@ -58,7 +61,7 @@ public class LayersController {
         catch (Exception e)
         {
             model.addFlashAttribute("error_message", "error while creating layer in DB");
-
+            logger.error(e.getMessage());
             return new ModelAndView("redirect:/projects/" + projectId);
         }
     }
@@ -88,7 +91,7 @@ public class LayersController {
         catch (Exception e)
         {
             model.addFlashAttribute("error_message", "error while delete layer in DB");
-
+            logger.error(e.getMessage());
             return new ModelAndView("redirect:/projects/" + projectId);
         }
     }

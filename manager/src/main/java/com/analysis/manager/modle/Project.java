@@ -177,4 +177,12 @@ public class Project {
     public void setExperiments(List<Experiment> experimentList) {
         this.experiments = experimentList;
     }
+
+    public void setLayers(List<Layer> layers) {
+        this.layers = layers;
+    }
+
+    public void setAnalyzes(List<Analysis> analysis) {
+        this.Analyzes = analysis;
+    }
 }

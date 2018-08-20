@@ -1,9 +1,9 @@
 package com.analysis.manager.controllers;
 
 import AnalysisManager.RunAnalysis;
-import com.analysis.manager.Dao.AnalysisDao;
 import com.analysis.manager.Dao.AnalysisTypeDao;
 import com.analysis.manager.Dao.ExperimentEventsDao;
+import com.analysis.manager.Service.AnalysisService;
 import com.analysis.manager.Service.ExperimentService;
 import com.analysis.manager.Service.ProjectService;
 import com.analysis.manager.Service.UserService;
@@ -11,6 +11,8 @@ import com.analysis.manager.XmlCreator;
 import com.analysis.manager.modle.*;
 import com.mathworks.toolbox.javabuilder.MWCharArray;
 import com.mathworks.toolbox.javabuilder.MWStructArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -27,15 +29,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 @Controller
 public class AnalysisController {
     @Autowired
-    private AnalysisDao analysisDao;
+    private AnalysisService analysisDao;
 
     @Autowired
     private AnalysisTypeDao analysisTypeDao;
@@ -58,6 +58,8 @@ public class AnalysisController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
+
     @Value("${analysis.results.location}")
     private String pathAnalysis;
 
@@ -71,6 +73,7 @@ public class AnalysisController {
             }
             catch (Exception e)
             {
+                logger.error(e.getMessage());
                 model.addFlashAttribute("error_message", "failed to create analysis type in DB");
             }
         }
@@ -92,6 +95,7 @@ public class AnalysisController {
             m.addAttribute("analysisList", analysisDao.findAllByUser(user));
         }catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error getting analysis types from DB");
             return new ModelAndView("redirect:/projects");
         }
@@ -137,6 +141,7 @@ public class AnalysisController {
                 model.addAttribute("analysis", analysis);
                 return new ModelAndView("analysis");
             } catch (Exception e) {
+                logger.error(e.getMessage());
                 m.addFlashAttribute("error_message", "failed to load files from dropbox");
             }
         }
@@ -167,7 +172,7 @@ public class AnalysisController {
                             FileCopyUtils.copy(in, response.getOutputStream());
 
                         } catch (IOException ex) {
-//                                log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
+                            logger.error(ex.getMessage());
                             model.addFlashAttribute("error_message", "error while downloading the fig file");
                         }
 
@@ -201,6 +206,7 @@ public class AnalysisController {
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "error while delete analysis in DB");
             return new ModelAndView("redirect:/projects/" + projectId);
         }
@@ -209,19 +215,19 @@ public class AnalysisController {
     @RequestMapping(value = "projects/{projects_id}/analysis", method = RequestMethod.POST)
     public ModelAndView create(@PathVariable("projects_id") long id,
                          @RequestParam("name") String name, @RequestParam("description") String description,
-                         @RequestParam("types") LinkedList<Long> types,
-                         @RequestParam("neurons_toPlot") LinkedList<String> neurons_toPlot,
-                         @RequestParam("neurons_forAnalysis") LinkedList<String> neurons_forAnalysis,
+                         @RequestParam(value = "types", required = false) LinkedList<Long> types,
+                         @RequestParam(value = "neurons_toPlot", required = false) LinkedList<String> neurons_toPlot,
+                         @RequestParam(value = "neurons_forAnalysis", required = false) LinkedList<String> neurons_forAnalysis,
                          @RequestParam("startTime2plot") double startTime2plot,
                          @RequestParam("time2startCountGrabs") double time2startCountGrabs,
                          @RequestParam("time2endCountGrabs") double time2endCountGrabs,
                          @RequestParam("startBehaveTime4trajectory") double startBehaveTime4trajectory,
                          @RequestParam("endBehaveTime4trajectory") double endBehaveTime4trajectory,
                          @RequestParam("foldsNum") double foldsNum,
-                         @RequestParam("events") LinkedList<Long> events,
+                         @RequestParam(value = "events", required = false) LinkedList<Long> events,
                          @RequestParam("experiment_id") long experiment_id,
                          @RequestParam("font_size") double font_size,
-                         @RequestParam("trialsSelected") LinkedList<String> trials,  RedirectAttributes model)
+                         @RequestParam(value = "trialsSelected", required = false) LinkedList<String> trials,  RedirectAttributes model)
     {
 
         if (trials == null || trials.isEmpty())
@@ -231,10 +237,16 @@ public class AnalysisController {
             return new ModelAndView("redirect:/projects/" + id);
         }
 
+        if (neurons_forAnalysis == null || neurons_forAnalysis.isEmpty())
+        {
+            model.addFlashAttribute("error_message", "failed to create analysis, empty neurons for analysis");
+            model.addAttribute("tif", new LinkedList<String>());
+            return new ModelAndView("redirect:/projects/" + id);
+        }
 
         if (types == null || types.isEmpty())
         {
-            model.addFlashAttribute("error_message", "failed to create analysis, empty types");
+            model.addFlashAttribute("error_message", "failed to create analysis, empty analysis types");
             return new ModelAndView("redirect:/projects/" + id);
         }
 
@@ -260,12 +272,15 @@ public class AnalysisController {
                 analysisTypes.add(analysisType);
             }
 
-            for (long id_event : events) {
-                ExperimentEvents eventsDaoById = experimentEventsDao.findById(id_event);
-                experimentEvents.add(eventsDaoById);
+            if (events != null) {
+                for (long id_event : events) {
+                    ExperimentEvents eventsDaoById = experimentEventsDao.findById(id_event);
+                    experimentEvents.add(eventsDaoById);
+                }
+
             }
 
-            List<String> neuronsPlot = getNeuronsList(neurons_toPlot, experiment_id);
+            List<String> neuronsPlot = (neurons_toPlot == null) ? new LinkedList<>() : getNeuronsList(neurons_toPlot, experiment_id);
             List<String> neuronsAnalysis = getNeuronsList(neurons_forAnalysis, experiment_id);
 
             if (neuronsPlot == null || neuronsAnalysis == null) {
@@ -314,15 +329,16 @@ public class AnalysisController {
 
             String errors = sendToMatlab(analysis);
 
-            if (errors!= null && !errors.isEmpty()) {
+            if (!errors.isEmpty()) {
                 model.addFlashAttribute("error_message", errors);
-                return new ModelAndView("redirect:/projects/" + id);
+                return new ModelAndView("redirect:/projects/" + id + "/analysis/" + analysis.getId());
             }
 
             return new ModelAndView("redirect:/projects/" + id + "/analysis/" + analysis.getId());
 
         } catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error while creating Analysis in DB");
             return new ModelAndView("redirect:/projects/" + id);
         }
@@ -330,19 +346,6 @@ public class AnalysisController {
 
     private List<String> getNeuronsList(LinkedList<String> neuronsWithID,long experiment_id) {
         LinkedList<String> neurons = new LinkedList<>();
-
-        String[] splitF = neuronsWithID.get(0).split("_");
-        long experimentIdF = Long.parseLong(splitF[0]);
-
-        if (neuronsWithID.contains(experimentIdF + "_00"))
-        {
-            if (neuronsWithID.size() > 1) {
-                neuronsWithID.remove(experimentIdF + "_00");
-            } else {
-                neurons.add("0");
-                return neurons;
-            }
-        }
 
         for (String str : neuronsWithID)
         {
@@ -362,6 +365,8 @@ public class AnalysisController {
 
     private String  sendToMatlab(Analysis analysis) {
         StringBuilder errors = new StringBuilder();
+        analysis.getTrials().sort(Comparator.comparing(Trial::getName));
+
         for (AnalysisType type : analysis.getAnalysisType())
         {
             Project project = analysis.getExperiment().getProject();
@@ -384,8 +389,9 @@ public class AnalysisController {
                 MWCharArray analysisName = new MWCharArray(type.getName());
 
                 runAnalysis.runAnalysis(analysisOutputFolder, xmlLocation, BDA_TPA, analysisName);
+                runAnalysis.CloseAllFigures();
             } catch (Exception e) {
-               // e.printStackTrace();
+                logger.error(e.getMessage());
                 errors.append("Error matlab analysis failed for analysis type :").append(type.getName());
                 errors.append("\n");
             }

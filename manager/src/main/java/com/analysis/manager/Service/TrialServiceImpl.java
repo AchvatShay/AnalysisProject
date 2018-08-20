@@ -3,6 +3,8 @@ package com.analysis.manager.Service;
 import com.analysis.manager.Dao.*;
 import com.analysis.manager.modle.*;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
@@ -30,6 +32,8 @@ public class TrialServiceImpl implements TrialService {
     @Autowired
     private BehavioralDao behavioralDao;
 
+    private static final Logger logger = LoggerFactory.getLogger(TrialServiceImpl.class);
+
     @Override
     public Trial findByIdAndExperiment(long id, Experiment experiment) {
         return trialDao.findByIdAndExperiment(id, experiment);
@@ -56,11 +60,21 @@ public class TrialServiceImpl implements TrialService {
             imagingDao.delete(trial.getImaging());
         }
 
+        logger.info("Delete Trial and the TPA BDA for this trial from DB");
         trialDao.delete(trial);
     }
 
     @Override
     public void save(Trial trial) {
         trialDao.save(trial);
+    }
+
+    @Override
+    public void deleteAllByExperiment(Experiment experiment) {
+        List<Trial> allByExperiment = trialDao.findAllByExperiment(experiment);
+
+        for(Trial trial : allByExperiment) {
+            deleteTrial(trial);
+        }
     }
 }

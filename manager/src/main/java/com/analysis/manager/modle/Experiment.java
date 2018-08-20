@@ -1,5 +1,7 @@
 package com.analysis.manager.modle;
 
+import javafx.collections.transformation.SortedList;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -101,14 +103,14 @@ public class Experiment {
         this.animal = animal;
     }
 
-    public List<Trial> createTrailsListFromFolder(String fileslocation) {
-        File file = new File(fileslocation);
-        LinkedList<Trial> trials = new LinkedList<Trial>();
+    public List<Trial> createTrailsListFromFolder(String filesLocation) {
+        File file = new File(filesLocation);
+        LinkedList<Trial> trials = new LinkedList<>();
 
         if (file.exists() & file.isDirectory()) {
-            File[] filesBDA = file.listFiles((dir, name) -> name.contains("BDA"));
+            File[] filesBDA = file.listFiles((dir, name) -> (name.contains("BDA") && name.endsWith(".mat")));
 
-            File[] filesTPA = file.listFiles((dir, name) -> name.contains("TPA"));
+            File[] filesTPA = file.listFiles((dir, name) -> (name.contains("TPA") && name.endsWith(".mat")));
 
             for (File f_BDA : filesBDA != null ? filesBDA : new File[0]) {
                 for (File f_TPA : filesTPA != null ? filesTPA : new File[0]) {

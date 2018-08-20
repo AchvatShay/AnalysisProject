@@ -1,9 +1,5 @@
 package com.analysis.manager.config;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
 import AnalysisManager.RunAnalysis;
 import com.analysis.manager.NeuronsBean;
 import com.analysis.manager.XmlCreator;
@@ -21,6 +17,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * Contains database configurations.

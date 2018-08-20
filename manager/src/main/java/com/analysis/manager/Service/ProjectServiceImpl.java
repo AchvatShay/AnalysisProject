@@ -3,7 +3,10 @@ package com.analysis.manager.Service;
 import com.analysis.manager.Dao.*;
 import com.analysis.manager.modle.*;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +33,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private AnalysisService analysisDao;
 
-    @Autowired
-    private Environment environment;
+    @Value("${analysis.results.location}")
+    private String pathAnalysis;
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     @Override
     public List<Project> findAllByUser(User user) {
@@ -55,6 +60,8 @@ public class ProjectServiceImpl implements ProjectService {
             {
                 experimentDao.delete(experiment);
             }
+
+            project.setExperiments(null);
         }
 
         if (project.getAnimals() != null) {
@@ -62,6 +69,8 @@ public class ProjectServiceImpl implements ProjectService {
             {
                 animalsDao.delete(animal);
             }
+
+            project.setAnimals(null);
         }
 
         if (project.getLayers() != null) {
@@ -69,6 +78,8 @@ public class ProjectServiceImpl implements ProjectService {
             {
                 layerDao.delete(layer);
             }
+
+            project.setLayers(null);
         }
 
         if (project.getAnalyzes() != null) {
@@ -76,19 +87,19 @@ public class ProjectServiceImpl implements ProjectService {
             {
                 analysisDao.delete(analysis);
             }
+
+            project.setAnalyzes(null);
         }
 
-        // delete from dropbox
-        String dropboxPathLocal = environment.getProperty("dropbox.local.location");
-        String path = dropboxPathLocal + File.separator + project.getName();
+        String path = pathAnalysis + File.separator + project.getUser().getName() + File.separator + project.getName();
 
         try {
             FileUtils.deleteDirectory(new File(path));
         } catch (IOException e) {
-            // TODO
-            // logging
+            logger.error(e.getMessage());
         }
 
+        logger.info("Delete project " + project.getName() + " from DB");
         projectDao.delete(project);
     }
 

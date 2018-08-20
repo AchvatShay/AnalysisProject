@@ -5,6 +5,8 @@ import com.analysis.manager.Dao.ExperimentInjectionsDao;
 import com.analysis.manager.Dao.ExperimentPelletPertubationDao;
 import com.analysis.manager.Dao.ExperimentTypeDao;
 import com.analysis.manager.modle.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
@@ -21,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class XmlCreator {
+    private static final Logger logger = LoggerFactory.getLogger(XmlCreator.class);
+
 
     @Autowired
     private ExperimentTypeDao experimentTypeDao;
@@ -49,6 +53,7 @@ public class XmlCreator {
             if (!xml_folder.exists()) {
                 if (!xml_folder.mkdirs()) {
                     results = false;
+                    logger.error("Failed to create xml folder for analysis " + analysis.getName());
                     break;
                 }
             }
@@ -57,6 +62,7 @@ public class XmlCreator {
             if (!type_folder.exists()) {
                 if (!type_folder.mkdirs()) {
                     results = false;
+                    logger.error("Failed to create folder for analysis type " + analysis.getName() + "/" + type.getName());
                     break;
 
                 }
@@ -69,6 +75,7 @@ public class XmlCreator {
 
                 if (!results)
                 {
+                    logger.error("Failed to create xml file for analysis " + analysis.getName());
                     break;
                 }
             }
@@ -260,6 +267,7 @@ public class XmlCreator {
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             return false;
         }
     }

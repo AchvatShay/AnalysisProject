@@ -19,7 +19,13 @@
   <div class="container">
 
     <div class="alert alert-danger" style="margin-top: 2%;">
-      <strong>Error!</strong> go back to <a class="small mt-3" href="${pageContext.request.contextPath}/projects">Projects Page</a>
+      <strong>Error!</strong>
+      <br>
+      <strong>Status - ${error_status}</strong>
+      <br>
+      <p>${error_message}</p>
+      <br>
+      go back to <a class="small mt-3" href="${pageContext.request.contextPath}/projects">Projects Page</a>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       </button>
     </div>

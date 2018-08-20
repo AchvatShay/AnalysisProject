@@ -5,12 +5,15 @@ import com.analysis.manager.modle.Experiment;
 import com.analysis.manager.modle.Trial;
 import com.mathworks.toolbox.javabuilder.MWCharArray;
 import com.mathworks.toolbox.javabuilder.MWNumericArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class NeuronsBean {
+    private static final Logger logger = LoggerFactory.getLogger(NeuronsBean.class);
 
 
     @Autowired
@@ -41,7 +44,7 @@ public class NeuronsBean {
 
             return n;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return n;
         }
     }

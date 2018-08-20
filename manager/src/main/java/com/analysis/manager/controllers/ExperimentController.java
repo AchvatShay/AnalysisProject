@@ -1,11 +1,10 @@
 package com.analysis.manager.controllers;
 
 import com.analysis.manager.Dao.*;
-import com.analysis.manager.Service.AnimalsService;
-import com.analysis.manager.Service.ProjectService;
-import com.analysis.manager.Service.TrialService;
-import com.analysis.manager.Service.UserService;
+import com.analysis.manager.Service.*;
 import com.analysis.manager.modle.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -19,13 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 @Controller
 public class ExperimentController {
     @Autowired
-    private ExperimentDao experimentDao;
+    private ExperimentService experimentDao;
 
     @Qualifier("tpaRepository")
     @Autowired
@@ -59,6 +59,8 @@ public class ExperimentController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(ExperimentController.class);
+
     @RequestMapping(value = "projects/{projectID}/experiments/{id}")
     public ModelAndView view(@PathVariable long id, @PathVariable("projectID") long project_id, Model m) {
         try {
@@ -72,6 +74,7 @@ public class ExperimentController {
 
             return new ModelAndView("experiment");
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ModelAndView("redirect:/projects/" + project_id);
         }
     }
@@ -116,6 +119,7 @@ public class ExperimentController {
             return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment.getId());
         } catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error while creating Experiment in DB");
             return new ModelAndView("redirect:/projects/" + id);
         }
@@ -148,6 +152,7 @@ public class ExperimentController {
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "error while delete experiment in DB");
             return new ModelAndView("redirect:/projects/" + projectId);
         }
@@ -167,7 +172,7 @@ public class ExperimentController {
             if (experiment == null)
             {
                 model.addFlashAttribute("error_message", "Can not find experiment by id = " + experiment_id);
-                return new ModelAndView("redirect:/projects/" + projectId);
+                return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
             }
 
             Trial trial = trialDao.findByIdAndExperiment(trial_id, experiment);
@@ -176,12 +181,46 @@ public class ExperimentController {
             experimentDao.save(experiment);
             trialDao.deleteTrial(trial);
 
-            return new ModelAndView("redirect:/projects/" + projectId);
+            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "error while delete trial in DB");
-            return new ModelAndView("redirect:/projects/" + projectId);
+            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
+        }
+    }
+
+    @RequestMapping(value = "projects/{id}/experiments/{experiment_id}/delete/trials")
+    public ModelAndView deleteTrials(@PathVariable("id") long projectId, @PathVariable("experiment_id") long experiment_id, RedirectAttributes model)
+    {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(projectId, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(experiment_id, project);
+
+
+            if (experiment == null)
+            {
+                model.addFlashAttribute("error_message", "Can not find experiment by id = " + experiment_id);
+                return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
+            }
+
+
+
+            experiment.setTrials(new LinkedList());
+            experimentDao.save(experiment);
+            trialDao.deleteAllByExperiment(experiment);
+
+            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
+        }
+        catch (Exception e)
+        {
+            logger.error(e.getMessage());
+            model.addFlashAttribute("error_message", "error while delete trial in DB");
+            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
         }
     }
 
@@ -197,6 +236,13 @@ public class ExperimentController {
             Experiment experiment = experimentDao.findByIdAndProject(id, project);
 
             List<Trial> trailsListFromFolder = experiment.createTrailsListFromFolder(filesLocation);
+
+            if (trailsListFromFolder.isEmpty()) {
+                model.addFlashAttribute("error_message", "The folder does not have trails");
+                return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
             for (Trial trial : trailsListFromFolder) {
 
                 if (trialDao.findByNameAndExperiment(trial.getName(), experiment) == null)
@@ -220,14 +266,18 @@ public class ExperimentController {
                     trialDao.save(trial);
                     experiment.AddTrial(trial);
                 } else {
-                    model.addFlashAttribute("error_message", "The trial already exists");
-                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
+                    stringBuilder.append("The trial already exists").append(trial.getName()).append("\n");
                 }
+            }
+
+            if (!stringBuilder.toString().isEmpty()) {
+                model.addFlashAttribute("error_message", stringBuilder.toString());
             }
 
             experimentDao.save(experiment);
         }
         catch (Exception e) {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error while Adding trials to DB");
         }
 
@@ -245,35 +295,53 @@ public class ExperimentController {
             Project project = projectDao.findByIdAndUser(projectId, user);
 
             Experiment experiment = experimentDao.findByIdAndProject(id, project);
-            TPA tpa = new TPA(TPALocation);
-            BDA bda = new BDA(BDALocation);
 
-            String trialName = TPALocation.replace("TPA", "");
-
-            if (trialDao.findByNameAndExperiment(trialName, experiment) == null)
+            if (!BDALocation.endsWith(".mat") || !BDALocation.contains("BDA"))
             {
-                TPA tpaDB = tpaRepository.findByFileLocation(tpa.getFileLocation());
-                if (tpaDB == null) {
-                    tpaRepository.save(tpa);
-                } else {
-                    model.addFlashAttribute("error_message", "The trial already exists");
-                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
-                }
+                model.addFlashAttribute("error_message", "The BDA location is incorrect");
+            } else if (!TPALocation.endsWith(".mat") || !TPALocation.contains("TPA")) {
+                model.addFlashAttribute("error_message", "The TPA location is incorrect");
+            } else {
+                File fileBDA = new File(BDALocation);
+                File fileTPA = new File(TPALocation);
 
-                BDA bdaDB = bdaDao.findByFileLocation(bda.getFileLocation());
-                if (bdaDB == null) {
-                    bdaDao.save(bda);
+                if (!fileBDA.exists() || fileBDA.isDirectory()) {
+                    model.addFlashAttribute("error_message", "The BDA location does not exist or the location is directory");
+                } else if (!fileTPA.exists() || fileTPA.isDirectory()) {
+                    model.addFlashAttribute("error_message", "The TPA location does not exist or the location is directory");
                 } else {
-                    model.addFlashAttribute("error_message", "The trial already exists");
-                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
-                }
+                    TPA tpa = new TPA(TPALocation);
+                    BDA bda = new BDA(BDALocation);
 
-                Trial trial = new Trial(trialName, tpa, null, bda, null, experiment);
-                trialDao.save(trial);
-                experiment.AddTrial(trial);
-                experimentDao.save(experiment);
+                    String trialName = fileTPA.getName().replace("TPA", "");
+
+                    if (trialDao.findByNameAndExperiment(trialName, experiment) == null)
+                    {
+                        TPA tpaDB = tpaRepository.findByFileLocation(tpa.getFileLocation());
+                        if (tpaDB == null) {
+                            tpaRepository.save(tpa);
+                        } else {
+                            model.addFlashAttribute("error_message", "The trial already exists");
+                            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
+                        }
+
+                        BDA bdaDB = bdaDao.findByFileLocation(bda.getFileLocation());
+                        if (bdaDB == null) {
+                            bdaDao.save(bda);
+                        } else {
+                            model.addFlashAttribute("error_message", "The trial already exists");
+                            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
+                        }
+
+                        Trial trial = new Trial(trialName, tpa, null, bda, null, experiment);
+                        trialDao.save(trial);
+                        experiment.AddTrial(trial);
+                        experimentDao.save(experiment);
+                    }
+                }
             }
         }catch (Exception e) {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error while Adding trial to DB");
         }
 

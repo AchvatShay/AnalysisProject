@@ -2,9 +2,6 @@ package com.analysis.manager.modle;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.LinkedList;
 import java.util.List;
 
 @Entity

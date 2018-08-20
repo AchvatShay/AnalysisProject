@@ -17,4 +17,6 @@ public interface LayerDao extends JpaRepository<Layer, Long> {
     boolean existsByName(String name);
     Layer findByIdAndProject(long id, Project project);
     Layer findByAnimalsContainsAndAndProject(Animal animal, Project project);
+
+    boolean existsByNameAndProject(String name, Project project);
 }

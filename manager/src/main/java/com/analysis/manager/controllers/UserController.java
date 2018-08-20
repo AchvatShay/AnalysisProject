@@ -1,9 +1,12 @@
 package com.analysis.manager.controllers;
 
 
+import com.analysis.manager.Service.AnimalsServiceImpl;
 import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.User;
 //import com.analysis.manager.Dao.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
     @RequestMapping(value = "/users")
     public String view(Model model)
@@ -41,6 +47,7 @@ public class UserController {
             }
         }
         catch (Exception ex) {
+            logger.error(ex.getMessage());
             model.addAttribute("error_message", "error while deleting user from DB");
         }
 

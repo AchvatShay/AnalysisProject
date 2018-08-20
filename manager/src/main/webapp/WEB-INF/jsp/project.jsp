@@ -503,7 +503,7 @@
 
                                   <div class="form-group space-btn-card border border-dark">
                                     <label class="table-analysis-label"><strong>Neurons To Plot : </strong></label>
-                                    <%--<input name="neurons_toPlot" hidden="hidden" checked="checked" type="checkbox" value="${experiment.getId()}_00">--%>
+                                    <%--<input name="neurons_toPlot" hidden="hidden" id="defualtNeuronsToPlot${experiment.getId()}"  type="checkbox" value="${experiment.getId()}_00">--%>
                                     <div class="table-responsive space-btn-card" style="margin-top:5%">
                                       <table class="table table-bordered dataTableTrials" id="dataTableNeuronsToPlot${experiment.getId()}" width="100%" cellspacing="0">
                                         <thead>
@@ -674,6 +674,7 @@
 
             setCheckBox('#dataTableTrials' + before, true);
             $('#trials' + before).fadeIn();
+            // $('#defualtNeuronsToPlot' + before).prop('checked', true);
 
             $("#trailsAnalysisExperiment").change(function () {
                 setCheckBox('#dataTableNeuronsToPlot' + before, false);
@@ -681,6 +682,8 @@
                 setCheckBox('#dataTableNeuronsForAnalysis' + before, false);
 
                 setCheckBox('#dataTableTrials' + before, false);
+
+                // $('#defualtNeuronsToPlot' + before).prop('checked', false);
 
                 var id_val = this.value;
                 $('#trials' + before).fadeOut();
@@ -690,6 +693,9 @@
                 setCheckBox('#dataTableNeuronsForAnalysis' + id_val, true);
 
                 setCheckBox('#dataTableTrials' + id_val, true);
+
+                // $('#defualtNeuronsToPlot' + id_val).prop('checked', true);
+
                 before = id_val;
             });
 

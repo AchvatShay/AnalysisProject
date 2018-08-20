@@ -25,13 +25,13 @@ xlimmin = generalProperty.visualization_startTime2plot-generalProperty.ToneTime;
 for nrind=1:length(nerons2plot)
     curr_nrn2plot = nerons2plot(nrind);
     currnrnind = find(imagingData.roiNames-curr_nrn2plot==0);
-    x = squeeze(X(imagingData.roiNames(currnrnind),:,:))';
+    x = squeeze(X(currnrnind,:,:))';
     
     
-    mA1 = min(mean(X(nerons2plot(nrind),:,faillabels==0),3));
-    MA1 = max(mean(X(nerons2plot(nrind),:,faillabels==0),3));
-    mA2 = min(mean(X(nerons2plot(nrind),:,faillabels==1),3));
-    MA2 = max(mean(X(nerons2plot(nrind),:,faillabels==1),3));
+    mA1 = min(mean(X(currnrnind,:,faillabels==0),3));
+    MA1 = max(mean(X(currnrnind,:,faillabels==0),3));
+    mA2 = min(mean(X(currnrnind,:,faillabels==1),3));
+    MA2 = max(mean(X(currnrnind,:,faillabels==1),3));
     mA = min(mA1, mA2);
     MA = max(MA1, MA2);
     DN = MA-mA;

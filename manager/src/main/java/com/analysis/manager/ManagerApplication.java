@@ -2,6 +2,8 @@ package com.analysis.manager;
 
 import com.analysis.manager.Dao.*;
 import com.analysis.manager.modle.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -12,13 +14,16 @@ import org.springframework.core.env.Environment;
 @SpringBootApplication
 public class ManagerApplication  extends SpringBootServletInitializer {
 
+    private static final Logger logger = LoggerFactory.getLogger(ManagerApplication.class);
+
     public static void main(String[] args) {
         try {
             SpringApplicationBuilder builder = new SpringApplicationBuilder(ManagerApplication.class);
             builder.headless(false).run(args);
+            logger.info("Start Analysis Manager Application");
         }
         catch (Exception e) {
-            System.out.println("Your Message : " + e.getMessage());
+            logger.error(e.getMessage());
         }
 
     }
@@ -47,6 +52,7 @@ public class ManagerApplication  extends SpringBootServletInitializer {
     @Bean
     public boolean dbInit()
     {
+        logger.info("Start Init of Db Static Values from application.property file");
         LoadExperimentType();
         LoadExperimentInjections();
         LoadUsersPermissions();

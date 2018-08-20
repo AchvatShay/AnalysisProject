@@ -6,6 +6,8 @@ import com.analysis.manager.Service.ProjectService;
 import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.*;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,6 +48,8 @@ public class ProjectsController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(ProjectsController.class);
+
     @GetMapping(value = {"", "projects"})
     public String index(Model m) {
         try {
@@ -54,6 +58,7 @@ public class ProjectsController {
             m.addAttribute("my_projects", projectDao.findAllByUser(user));
         } catch (Exception e)
         {
+            logger.error(e.getMessage());
             m.addAttribute("error_message", "Error getting projects list from DB");
         }
 
@@ -78,6 +83,7 @@ public class ProjectsController {
             return "project";
         } catch (Exception e)
         {
+            logger.error(e.getMessage());
             m.addAttribute("error_message", "Error getting project" + id + "from DB");
             return index(m);
         }
@@ -115,6 +121,7 @@ public class ProjectsController {
             }
         } catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addAttribute("error_message", "The Project DB creation failed");
             return index(model);
         }
@@ -133,6 +140,7 @@ public class ProjectsController {
                 projectDao.deleteProject(projectToDelete);
             }
         } catch (Exception e) {
+            logger.error(e.getMessage());
             m.addAttribute("error_message", "Error deleting project from list in DB");
         }
 

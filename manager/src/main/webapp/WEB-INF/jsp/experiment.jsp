@@ -1,3 +1,5 @@
+<%--<util:properties id="commonProperties" location="classpath:application.properties"/>--%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="input" uri="http://www.springframework.org/tags/form" %>
@@ -26,6 +28,7 @@
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin.css" rel="stylesheet">
 
   <link href="${pageContext.request.contextPath}/resources/css/analysis-custom.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/jqueryFileTree.css" media="screen" />
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -170,7 +173,11 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
-                <th></th>
+                <th>
+                    <a href="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/delete/trials/">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -193,8 +200,8 @@
                 <button id="addExperimentTrialBtn" data-toggle="collapse" href="#collapseTrial" type="button" class="btn btn-info" aria-expanded="true">
                     <i id="addExperimentTrialIcon" class="fa fa-plus-circle"></i> Add Trials
                 </button>
-                <div id="collapseTrial" class="collapse col-md-6" style="padding-top:1%;">
-                    <div class="card md-3 space-btn-card">
+                <div id="collapseTrial" class="collapse col-md-12" style="padding-top:1%;">
+                    <div class="card md-12 space-btn-card">
                         <div class="card-header">
                             <div class="card-title">
                                 Multiple Trails
@@ -202,10 +209,18 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trails" method="post" class="col-md-6">
+                                <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}/add_trails" method="post" class="col-md-12">
                                     <div class="form-group">
-                                        <label for="files_location">Trails BDA+TPA files location</label>
-                                        <input type="text" name="files_location" required="required" data-error="files location is required" class="form-control" id="files_location" placeholder="Enter files location">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="files_location">Trails BDA+TPA files location</label>
+                                                <input type="text" name="files_location" required="required" data-error="files location is required" class="form-control" id="files_location" placeholder="Enter files location">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card-text">File Browser :</div>
+                                                <div id="check" style="max-height: 25%" class="pre-scrollable border-dark border"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">ADD</button>
                                 </form>
@@ -291,6 +306,10 @@
     <!-- Custom scripts for this page-->
     <script src="${pageContext.request.contextPath}/resources/js/sb-admin-datatables.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/sb-admin-charts.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jqueryFileTree.js" type="text/javascript"></script>
+
+  <script src="${pageContext.request.contextPath}/resources/js/jqueryFileTree.jsp"></script>
+    <script src="${pageContext.request.contextPath}/resources/vendor/jquery-easing/jquery.easing.js" type="text/javascript"></script>
 
   <script>
       $(document).ready(function () {
@@ -302,6 +321,18 @@
                   $("#addExperimentTrialIcon").removeClass("fa-minus-circle");
                   $("#addExperimentTrialIcon").addClass("fa-plus-circle");
               }
+          });
+
+          <spring:eval var="location_bt" expression="@environment.getProperty('DBA-TPA-filesLocation')"/>
+
+          $('#check').fileTree({
+              root: '${location_bt}',
+              script: '${pageContext.request.contextPath}/resources/js/jqueryFileTree.jsp',
+              expandSpeed: 1000,
+              collapseSpeed: 1000,
+              multiFolder: false
+          }, function(file) {
+              $("#files_location").val(file);
           });
       })
   </script>

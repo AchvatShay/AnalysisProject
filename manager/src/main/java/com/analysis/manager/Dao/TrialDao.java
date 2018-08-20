@@ -17,4 +17,7 @@ public interface TrialDao extends JpaRepository<Trial, Long> {
 
     Trial findByNameAndExperiment(String name, Experiment experiment);
 
+    void deleteAllByExperiment(Experiment experiment);
+
+    List<Trial> findAllByExperiment(Experiment experiment);
 } // class UserDao

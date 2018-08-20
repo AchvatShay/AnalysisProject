@@ -5,6 +5,8 @@ import com.analysis.manager.Service.LayerService;
 import com.analysis.manager.Service.ProjectService;
 import com.analysis.manager.Service.UserService;
 import com.analysis.manager.modle.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +35,8 @@ public class AnimalsController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AnimalsController.class);
+
     @RequestMapping(value = "projects/{id}/animals", method = RequestMethod.POST)
     public ModelAndView createAnimalForProject(@PathVariable("id") long project_id, @RequestParam("name") String name,
                                                @RequestParam("description") String description, @RequestParam("animal_layer") long layer_id,
@@ -57,6 +61,7 @@ public class AnimalsController {
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error while creating Animal in DB");
             return new ModelAndView("redirect:/projects/" + project_id);
         }
@@ -91,6 +96,7 @@ public class AnimalsController {
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "error while delete animal in DB");
             return new ModelAndView("redirect:/projects/" + projectId);
         }

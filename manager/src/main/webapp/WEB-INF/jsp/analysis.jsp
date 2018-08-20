@@ -105,8 +105,18 @@
                 <i class="fa fa-info-circle"></i> Analysis info</div>
               <div class="card-body">
                 <div class="row">
-                  <div class="col-md-3 card-text space-btn-card">Description : </div>
+                  <div class="col-md-4 card-text space-btn-card">Description : </div>
                   <div class="col-md-5 card-text">${analysis.getDescription()} </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 card-text space-btn-card">Experiment Name : </div>
+                  <div class="col-md-5 card-text">
+                    <a href="${pageContext.request.contextPath}/projects/${analysis.getExperiment().getProject().getId()}/experiments/${analysis.getExperiment().getId()}/">${analysis.getExperiment().getName()}</a>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 card-text space-btn-card">Animal Name : </div>
+                  <div class="col-md-5 card-text">${analysis.getExperiment().getAnimal().getName()} </div>
                 </div>
               </div>
             </div>

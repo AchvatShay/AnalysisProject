@@ -13,4 +13,6 @@ public interface LayerService {
     Layer findByAnimalsContainsAndAndProject(Animal animal, Project project);
     void delete(Layer layer);
     void save(Layer layer);
+
+    boolean existsByNameAndProject(String name, Project project);
 }

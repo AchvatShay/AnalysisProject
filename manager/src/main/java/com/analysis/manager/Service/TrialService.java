@@ -15,4 +15,6 @@ public interface TrialService {
     void deleteTrial(Trial trial);
 
     void save(Trial trial);
+
+    void deleteAllByExperiment(Experiment experiment);
 }
