@@ -22,6 +22,9 @@ public class Experiment {
     @NotNull
     private String description;
 
+    @Lob
+    private String neurons_name;
+
     @OneToOne
     private ExperimentCondition experimentCondition;
 
@@ -37,7 +40,7 @@ public class Experiment {
     public Experiment(){
     }
 
-    public Experiment(String description, String name, ExperimentCondition experimentCondition, List<Trial> trials, Animal animal, Project project)
+    public Experiment(String description, String name, ExperimentCondition experimentCondition, List<Trial> trials, Animal animal, Project project, String neurons_name)
     {
         this.description = description;
         this.project = project;
@@ -45,6 +48,15 @@ public class Experiment {
         this.experimentCondition = experimentCondition;
         this.trials = trials;
         this.animal = animal;
+        this.neurons_name = neurons_name;
+    }
+
+    public String getNeuronsName() {
+        return neurons_name;
+    }
+
+    public void setNeuronsName(String neurons_name) {
+        this.neurons_name = neurons_name;
     }
 
     public Project getProject() {

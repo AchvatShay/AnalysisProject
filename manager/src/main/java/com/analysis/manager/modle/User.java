@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -104,4 +105,20 @@ public class User {
         this.roles = roles;
     }
 
+    public void addRole(Role userRole) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+
+        this.roles.add(userRole);
+    }
+
+    public void changeRole(Role userRole) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+
+        this.roles.clear();
+        this.roles.add(userRole);
+    }
 } // class User

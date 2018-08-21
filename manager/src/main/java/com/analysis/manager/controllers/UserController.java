@@ -8,6 +8,8 @@ import com.analysis.manager.modle.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +31,9 @@ public class UserController {
     @RequestMapping(value = "/users")
     public String view(Model model)
     {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        model.addAttribute("current_user", user.getName() + " " + user.getLastName());
         model.addAttribute("users", userService.findAll());
 
         return "users";
@@ -49,6 +54,26 @@ public class UserController {
         catch (Exception ex) {
             logger.error(ex.getMessage());
             model.addAttribute("error_message", "error while deleting user from DB");
+        }
+
+        return view(model);
+    }
+
+    @RequestMapping(value="/users/{id}/approval")
+    public String changeRole(@PathVariable long id, Model model) {
+        try {
+            User user = userService.findById(id);
+
+            if (user != null) {
+                userService.changeRole(user);
+                model.addAttribute("success_message", "User succesfully approved!");
+            } else {
+                model.addAttribute("error_message", "can not find user to delete");
+            }
+        }
+        catch (Exception ex) {
+            logger.error(ex.getMessage());
+            model.addAttribute("error_message", "error while approving user from DB");
         }
 
         return view(model);

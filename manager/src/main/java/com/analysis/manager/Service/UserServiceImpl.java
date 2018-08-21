@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
-        Role userRole = roleRepository.findByRole("REGULAR");
+        Role userRole = roleRepository.findByRole("WAITING");
         user.setRoles(new HashSet<>(Arrays.asList(userRole)));
         userRepository.save(user);
 
@@ -86,5 +86,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public void changeRole(User user) {
+        Role userRole = roleRepository.findByRole("REGULAR");
+
+        if (!user.getRoles().contains(userRole)) {
+            user.changeRole(userRole);
+            userRepository.save(user);
+        }
     }
 }

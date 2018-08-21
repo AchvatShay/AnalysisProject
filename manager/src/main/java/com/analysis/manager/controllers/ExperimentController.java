@@ -1,6 +1,7 @@
 package com.analysis.manager.controllers;
 
 import com.analysis.manager.Dao.*;
+import com.analysis.manager.NeuronsBean;
 import com.analysis.manager.Service.*;
 import com.analysis.manager.modle.*;
 import org.slf4j.Logger;
@@ -36,6 +37,12 @@ public class ExperimentController {
     private BDADao bdaDao;
 
     @Autowired
+    private AnalysisTypeDao analysisTypeDao;
+
+    @Autowired
+    private ExperimentEventsDao experimentEventsDao;
+
+    @Autowired
     private TrialService trialDao;
 
     @Autowired
@@ -59,6 +66,9 @@ public class ExperimentController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NeuronsBean neuronsBean;
+
     private static final Logger logger = LoggerFactory.getLogger(ExperimentController.class);
 
     @RequestMapping(value = "projects/{projectID}/experiments/{id}")
@@ -71,8 +81,29 @@ public class ExperimentController {
             Experiment experiment = experimentDao.findByIdAndProject(id, project);
 
             m.addAttribute("experiment", experiment);
-
+            m.addAttribute("current_user", user.getName() + " " + user.getLastName());
             return new ModelAndView("experiment");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ModelAndView("redirect:/projects/" + project_id);
+        }
+    }
+
+    @RequestMapping(value = "projects/{projectID}/experiments/{id}/createAnalysis")
+    public ModelAndView viewCreateAnalysis(@PathVariable long id, @PathVariable("projectID") long project_id, Model m) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByEmail(auth.getName());
+            Project project = projectDao.findByIdAndUser(project_id, user);
+
+            Experiment experiment = experimentDao.findByIdAndProject(id, project);
+            m.addAttribute("analysisTypes", analysisTypeDao.findAll());
+            m.addAttribute("experimentEvents", experimentEventsDao.findAll());
+            m.addAttribute("experiment", experiment);
+            m.addAttribute("neurons", experiment.getNeuronsName().split(","));
+            m.addAttribute("trials", experiment.getTrials());
+            m.addAttribute("current_user", user.getName() + " " + user.getLastName());
+            return new ModelAndView("createAnalysis");
         } catch (Exception e) {
             logger.error(e.getMessage());
             return new ModelAndView("redirect:/projects/" + project_id);
@@ -110,7 +141,7 @@ public class ExperimentController {
 
             experimentConditionDao.save(experimentCondition);
 
-            Experiment experiment = new Experiment(description, name, experimentCondition, new LinkedList<Trial>(), animal, project);
+            Experiment experiment = new Experiment(description, name, experimentCondition, new LinkedList<Trial>(), animal, project, "");
             experimentDao.save(experiment);
 
             project.AddExperiment(experiment);
@@ -178,6 +209,11 @@ public class ExperimentController {
             Trial trial = trialDao.findByIdAndExperiment(trial_id, experiment);
 
             experiment.deleteTrial(trial);
+
+            if (experiment.getTrials().isEmpty()) {
+                experiment.setNeuronsName("");
+            }
+
             experimentDao.save(experiment);
             trialDao.deleteTrial(trial);
 
@@ -211,6 +247,7 @@ public class ExperimentController {
 
 
             experiment.setTrials(new LinkedList());
+            experiment.setNeuronsName("");
             experimentDao.save(experiment);
             trialDao.deleteAllByExperiment(experiment);
 
@@ -272,6 +309,10 @@ public class ExperimentController {
 
             if (!stringBuilder.toString().isEmpty()) {
                 model.addFlashAttribute("error_message", stringBuilder.toString());
+            }
+
+            if (experiment.getNeuronsName() == null || experiment.getNeuronsName().isEmpty()) {
+                experiment.setNeuronsName(neuronsBean.getNeurons(experiment));
             }
 
             experimentDao.save(experiment);
@@ -336,7 +377,14 @@ public class ExperimentController {
                         Trial trial = new Trial(trialName, tpa, null, bda, null, experiment);
                         trialDao.save(trial);
                         experiment.AddTrial(trial);
+
+                        if (experiment.getNeuronsName() == null || experiment.getNeuronsName().isEmpty()) {
+                            experiment.setNeuronsName(neuronsBean.getNeurons(experiment));
+                        }
+
                         experimentDao.save(experiment);
+                    } else {
+                        model.addFlashAttribute("error_message", "The trial already exists" + trialName + "\n");
                     }
                 }
             }

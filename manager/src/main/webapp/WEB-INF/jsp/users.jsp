@@ -60,6 +60,9 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
+          <span class="nav-link nav-link-text">Welcome - ${current_user}</span>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
             <i class="fa fa-fw fa-sign-out"></i>Logout</a>
         </li>
@@ -122,6 +125,13 @@
                         <a href="${pageContext.request.contextPath}/users/${user.getId()}/delete">
                           <i id="analysis-delete-${user.getId()}" class="fa fa-trash"></i>
                         </a>
+                        <c:forEach var="role" items="${user.getRoles()}">
+                            <c:if test="${role.getRole().equals('WAITING')}">
+                              <a href="${pageContext.request.contextPath}/users/${user.getId()}/approval">
+                                <i id="analysis-approval-${user.getId()}" class="fa fa-thumbs-up"></i>
+                              </a>
+                            </c:if>
+                        </c:forEach>
                       </td>
                     </tr>
                   </c:forEach>
@@ -184,10 +194,7 @@
         $(window).on('load', function(){
             $('.loader').hide();
         });
-
-
     </script>
-
   </div>
 </body>
 

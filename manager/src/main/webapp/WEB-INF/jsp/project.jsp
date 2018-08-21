@@ -61,7 +61,10 @@
               </li>
           </ul>
           <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
+            <li class="nav-item">
+              <span class="nav-link nav-link-text">Welcome - ${current_user}</span>
+            </li>
+            <li class="nav-item">
                   <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
                       <i class="fa fa-fw fa-sign-out"></i>Logout</a>
               </li>
@@ -124,6 +127,9 @@
                       </a>
                       <a href="${pageContext.request.contextPath}/projects/${project.getId()}/experiments/${experiment.getId()}">
                         <i id="experiments-open-${experiment.getId()}" class="fa fa-arrow-circle-right"></i>
+                      </a>
+                      <a href="${pageContext.request.contextPath}/projects/${project.getId()}/experiments/${experiment.getId()}/createAnalysis">
+                        <i id="experiments-create-analysis-${experiment.getId()}" class="fa fa-line-chart"></i>
                       </a>
                     </td>
                   </tr>
@@ -398,202 +404,6 @@
             </table>
           </div>
           </c:if>
-
-          <c:if test="${analysisTypes != null and !analysisTypes.isEmpty() and project.getExperiments() != null and !project.getExperiments().isEmpty()}">
-              <button id="createProjectAnalysisBtn" data-toggle="collapse" href="#collapseAnalysis" type="button" class="btn btn-info" aria-expanded="true">
-                <i id="createProjectAnalysisIcon" class="fa fa-plus-circle"></i> Create New Project Analysis
-              </button>
-              <div id="collapseAnalysis" class="collapse" style="padding-top:1%;">
-                <div class="card md-3">
-                  <div class="card-body">
-                    <%--<div class="row">--%>
-                      <form action="${pageContext.request.contextPath}/projects/${project.getId()}/analysis" id="addanalysisForm" method="post">
-                        <div class="row">
-                          <div class="col-md-3">
-                            <div class="form-group">
-                              <label for="analysisName">Name</label>
-                              <input type="text" name="name" required="required" data-error="Analysis name is required" class="form-control" id="analysisName" aria-describedby="NameHelp" placeholder="Enter Name">
-                            </div>
-
-                            <div class="form-group">
-                              <label for="analysisDescription">Description</label>
-                              <textarea type="text" name="description" required="required" data-error="Analysis description is required" class="form-control" id="analysisDescription" placeholder="Enter Description"></textarea>
-                            </div>
-
-                              <div class="form-group">
-                                  <label for="analysisVisFontSize">visualization Font Size</label>
-                                  <input type="number" step="any" name="font_size" required="required" data-error="Analysis font size is required" class="form-control" id="analysisVisFontSize" placeholder="Enter Font Size">
-                              </div>
-                          </div>
-                          <div class="col-md-3">
-                              <div class="form-group">
-                                  <label for="analysisVisStartTime">visualization start time to plot</label>
-                                  <input type="number" step="any" name="startTime2plot" required="required" data-error="Analysis start time plot is required" class="form-control" id="analysisVisStartTime" placeholder="Enter start time to plot">
-                              </div>
-
-
-                              <div class="form-group">
-                                  <label for="time2startCountGrabs">Time to start count grabs</label>
-                                  <input type="number" step="any" name="time2startCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2startCountGrabs" placeholder="Enter time">
-                              </div>
-
-
-                              <div class="form-group">
-                                  <label for="time2endCountGrabs">Time to end count grabs</label>
-                                  <input type="number" step="any" name="time2endCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2endCountGrabs" placeholder="Enter time">
-                              </div>
-
-                            <div class="form-group">
-                              <label for="startBehaveTime4trajectory">Start behave time for trajctory</label>
-                              <input type="number" step="any" name="startBehaveTime4trajectory" required="required" data-error="Analysis Start behave time is required" class="form-control" id="startBehaveTime4trajectory" placeholder="Enter start behave time">
-                            </div>
-                            <div class="form-group">
-                              <label for="endBehaveTime4trajectory">End behave time for trajctory</label>
-                              <input type="number" step="any" name="endBehaveTime4trajectory" required="required" data-error="Analysis End behave time is required" class="form-control" id="endBehaveTime4trajectory" placeholder="Enter end behave time">
-                            </div>
-                            <div class="form-group">
-                              <label for="foldsNum">Foldes Num</label>
-                              <input type="number" step="any" name="foldsNum" required="required" data-error="Analysis End behave time is required" class="form-control" id="foldsNum" placeholder="Enter foldes num">
-                            </div>
-                          </div>
-                          <div class="col-md-3">
-                            <div class="form-group">
-                              <label for="analysisType">Analysis Types : </label>
-
-                              <c:forEach var="analysis_types" items="${analysisTypes}">
-                                <div class="row checkbox-space">
-                                  <label id="analysisType" class="checkbox"><input type="checkbox" name="types" value="${analysis_types.getId()}">${analysis_types.getName()}</label>
-                                </div>
-                              </c:forEach>
-                            </div>
-                              <div class="form-group">
-                                  <label for="experimentEvents">Experiments Events To Plot : </label>
-
-                                  <c:forEach var="experimentEvent" items="${experimentEvents}">
-                                      <div class="row checkbox-space">
-                                        <label id="experimentEvents" class="checkbox"><input type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
-                                      </div>
-                                  </c:forEach>
-                              </div>
-                          </div>
-
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                            <label for="trailsAnalysisExperiment">Experiment for analysis : </label>
-
-                            <select id="trailsAnalysisExperiment" name="experiment_id" class="form-control">
-                              <c:forEach var="experiment" items="${project.getExperiments()}">
-                                <option value="${experiment.getId()}">
-                                    ${experiment.getName()}
-                                </option>
-                              </c:forEach>
-                            </select>
-                          </div>
-
-                        </div>
-
-                        <div class="row space-btn-card">
-                          <%--<div class="col-md-6">--%>
-                            <c:forEach var="experiment" items="${project.getExperiments()}">
-                              <div  id="trials${experiment.getId()}">
-                                <div class="row">
-                                <div class="col-md-6">
-                                  <c:set var="neurons" value="${neuronsBean.getNeurons(experiment)}"/>
-
-                                  <div class="form-group space-btn-card border border-dark">
-                                    <label class="table-analysis-label"><strong>Neurons To Plot : </strong></label>
-                                    <%--<input name="neurons_toPlot" hidden="hidden" id="defualtNeuronsToPlot${experiment.getId()}"  type="checkbox" value="${experiment.getId()}_00">--%>
-                                    <div class="table-responsive space-btn-card" style="margin-top:5%">
-                                      <table class="table table-bordered dataTableTrials" id="dataTableNeuronsToPlot${experiment.getId()}" width="100%" cellspacing="0">
-                                        <thead>
-                                        <tr>
-                                          <td><input type="checkbox" name="select_all" value="1" id="dataTableNeuronsToPlot${experiment.getId()}-select-all"></td>
-                                          <th>Neuron Name</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <c:forEach var="neuron" items="${neurons}">
-                                          <tr>
-                                            <td>
-                                              <input name="neurons_toPlot" type="checkbox" value="${experiment.getId()}_${neuron}">
-                                            </td>
-                                            <td>${neuron}</td>
-                                          </tr>
-                                        </c:forEach>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-                                  <div class="form-group border border-dark">
-                                    <label class="table-analysis-label"><strong>Neurons For Analysis : </strong></label>
-                                  <div class="table-responsive space-btn-card" style="margin-top:5%">
-                                    <table class="table table-bordered dataTableTrials" id="dataTableNeuronsForAnalysis${experiment.getId()}" width="100%" cellspacing="0">
-                                      <thead>
-                                      <tr>
-                                        <td><input type="checkbox" name="select_all" value="1" id="dataTableNeuronsForAnalysis${experiment.getId()}-select-all"></td>
-                                        <th>Neuron Name</th>
-                                      </tr>
-                                      </thead>
-                                      <tbody>
-                                      <c:forEach var="neuron" items="${neuronsBean.getNeurons(experiment)}">
-                                        <tr>
-                                          <td>
-                                            <input name="neurons_forAnalysis" type="checkbox" value="${experiment.getId()}_${neuron}">
-                                          </td>
-                                          <td>${neuron}</td>
-                                        </tr>
-                                      </c:forEach>
-                                      </tbody>
-                                    </table>
-                                  </div>
-
-                                </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                 <div class="form-group border border-dark">
-                                   <label class="table-analysis-label"><strong>Trials for analysis : </strong></label>
-                                    <div class="table-responsive space-btn-card" style="margin-top:5%">
-                                        <table class="table table-bordered dataTableTrials" id="dataTableTrials${experiment.getId()}" width="100%" cellspacing="0">
-                                            <thead>
-                                            <tr>
-                                                <td><input type="checkbox" name="select_all" value="1" id="dataTableTrials${experiment.getId()}-select-all"></td>
-                                                <th>Trial Name</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <c:forEach var="trial" items="${experiment.getTrials()}">
-                                                <tr>
-                                                    <td>
-                                                        <input name="trialsSelected" type="checkbox" value="${experiment.getId()}_${trial.getId()}">
-                                                    </td>
-                                                    <td>${trial.getName()}</td>
-                                                </tr>
-                                            </c:forEach>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-                                </div>
-                                </div>
-                              </div>
-                            </c:forEach>
-
-                          <%--</div>--%>
-                        </div>
-                      <div class="row space-btn-card col-md-3">
-                          <button id="createAnalysisSubmit" type="submit" class="btn btn-primary">Save</button>
-                      </div>
-                      </form>
-                    <%--</div>--%>
-
-                  </div>
-
-                </div>
-              </div>
-          </c:if>
         </div>
       </div>
 
@@ -649,62 +459,7 @@
     <script src="${pageContext.request.contextPath}/resources/vendor/bootstrap-4.0.0/js/bootstrap-treeview.js"></script>
 
     <script>
-
-        function setCheckBox(id, val)
-        {
-            $(id + '-select-all').prop('checked', val);
-            var tableNP = $(id).DataTable();
-            var rowsNP = tableNP.rows({ 'search': 'applied' }).nodes();
-            // Check/uncheck checkboxes for all rows in the table
-            $('input[type="checkbox"]', rowsNP).prop('checked', val);
-        }
-
         $(document).ready(function () {
-            // $('.loader').hide();
-            <c:forEach var="experiment_val" items="${project.getExperiments()}">
-                $('#trials' + ${experiment_val.getId()}).hide();
-            </c:forEach>
-
-            var before = $("#trailsAnalysisExperiment").val();
-
-
-            setCheckBox('#dataTableNeuronsToPlot' + before, false);
-
-            setCheckBox('#dataTableNeuronsForAnalysis' + before, true);
-
-            setCheckBox('#dataTableTrials' + before, true);
-            $('#trials' + before).fadeIn();
-            // $('#defualtNeuronsToPlot' + before).prop('checked', true);
-
-            $("#trailsAnalysisExperiment").change(function () {
-                setCheckBox('#dataTableNeuronsToPlot' + before, false);
-
-                setCheckBox('#dataTableNeuronsForAnalysis' + before, false);
-
-                setCheckBox('#dataTableTrials' + before, false);
-
-                // $('#defualtNeuronsToPlot' + before).prop('checked', false);
-
-                var id_val = this.value;
-                $('#trials' + before).fadeOut();
-                $('#trials' + id_val).fadeIn();
-                setCheckBox('#dataTableNeuronsToPlot' + id_val, false);
-
-                setCheckBox('#dataTableNeuronsForAnalysis' + id_val, true);
-
-                setCheckBox('#dataTableTrials' + id_val, true);
-
-                // $('#defualtNeuronsToPlot' + id_val).prop('checked', true);
-
-                before = id_val;
-            });
-
-            $("#addanalysisForm").submit(function() {
-                $('.loader').show();
-
-                return true; // allow regular form submission
-            });
-
             var checkboxes = $("input[name='types']"),
                 submitButt = $("input[id='createAnalysisSubmit']");
 
@@ -720,17 +475,6 @@
                 } else {
                     $("#" + id).removeClass("fa-minus-circle");
                     $("#" + id).addClass("fa-plus-circle");
-                }
-            });
-
-
-            $("#createProjectAnalysisBtn").click(function () {
-                if ($("#createProjectAnalysisIcon").hasClass("fa-plus-circle")) {
-                    $("#createProjectAnalysisIcon").removeClass("fa-plus-circle");
-                    $("#createProjectAnalysisIcon").addClass("fa-minus-circle");
-                } else {
-                    $("#createProjectAnalysisIcon").removeClass("fa-minus-circle");
-                    $("#createProjectAnalysisIcon").addClass("fa-plus-circle");
                 }
             });
 

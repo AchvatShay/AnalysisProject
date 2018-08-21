@@ -5,16 +5,28 @@ function plotAllNrnsAcrossTrials(outputPath, generalProperty, imagingData, Behav
 grabCount = getGrabCounts(BehaveData, generalProperty.time2startCountGrabs, generalProperty.time2endCountGrabs, generalProperty.ImagingSamplingRate);
 % 2. discard trials with no suc or fail 
 tryinginds = find(BehaveData.success | BehaveData.failure);
-grabCount = grabCount(tryinginds);
+
+if (~isnan(grabCount))
+    grabCount = grabCount(tryinginds);
+end
+
 % 3. obtain histograms of behave events
 [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, tryinginds);
 X = imagingData.samples;
 X=X(:,:,tryinginds);
-[~, igrabs] = sort(grabCount);        
-X=X(:,:,igrabs);
+
+
+if (~isnan(grabCount))
+    [~, igrabs] = sort(grabCount);        
+    X=X(:,:,igrabs);
+end
 
 faillabels = BehaveData.failure(tryinginds);
-faillabels = faillabels(igrabs);
+
+if (~isnan(grabCount))
+    faillabels = faillabels(igrabs);
+end
+
 toneTime = generalProperty.ToneTime;
 t = linspace(0, generalProperty.Duration, size(X,2)) - toneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;

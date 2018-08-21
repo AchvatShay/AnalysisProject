@@ -101,20 +101,24 @@ public class ManagerApplication  extends SpringBootServletInitializer {
         }
     }
 
-    private void LoadUsersPermissions()
-    {
-        if (roleDao.findByRole("ADMIN") == null)
-        {
+    private void LoadUsersPermissions() {
+        if (roleDao.findByRole("ADMIN") == null) {
             Role role = new Role();
             role.setRole("ADMIN");
             roleDao.save(role);
         }
 
-        if (roleDao.findByRole("REGULAR") == null)
-        {
+        if (roleDao.findByRole("REGULAR") == null) {
             Role role = new Role();
             role.setRole("REGULAR");
             roleDao.save(role);
+        }
+
+        if (roleDao.findByRole("WAITING") == null) {
+            Role role = new Role();
+            role.setRole("WAITING");
+            roleDao.save(role);
+
         }
     }
 }

@@ -93,6 +93,7 @@ public class AnalysisController {
             User user = userService.findUserByEmail(auth.getName());
             m.addAttribute("analysisTypes", analysisTypeDao.findAll());
             m.addAttribute("analysisList", analysisDao.findAllByUser(user));
+            m.addAttribute("current_user", user.getName() + " " + user.getLastName());
         }catch (Exception e)
         {
             logger.error(e.getMessage());
@@ -139,6 +140,7 @@ public class AnalysisController {
 
                 model.addAttribute("tif", map);
                 model.addAttribute("analysis", analysis);
+                model.addAttribute("current_user", user.getName() + " " + user.getLastName());
                 return new ModelAndView("analysis");
             } catch (Exception e) {
                 logger.error(e.getMessage());
@@ -215,9 +217,9 @@ public class AnalysisController {
     @RequestMapping(value = "projects/{projects_id}/analysis", method = RequestMethod.POST)
     public ModelAndView create(@PathVariable("projects_id") long id,
                          @RequestParam("name") String name, @RequestParam("description") String description,
-                         @RequestParam(value = "types", required = false) LinkedList<Long> types,
+                         @RequestParam(value = "types") LinkedList<Long> types,
                          @RequestParam(value = "neurons_toPlot", required = false) LinkedList<String> neurons_toPlot,
-                         @RequestParam(value = "neurons_forAnalysis", required = false) LinkedList<String> neurons_forAnalysis,
+                         @RequestParam(value = "neurons_forAnalysis") LinkedList<String> neurons_forAnalysis,
                          @RequestParam("startTime2plot") double startTime2plot,
                          @RequestParam("time2startCountGrabs") double time2startCountGrabs,
                          @RequestParam("time2endCountGrabs") double time2endCountGrabs,
@@ -227,7 +229,7 @@ public class AnalysisController {
                          @RequestParam(value = "events", required = false) LinkedList<Long> events,
                          @RequestParam("experiment_id") long experiment_id,
                          @RequestParam("font_size") double font_size,
-                         @RequestParam(value = "trialsSelected", required = false) LinkedList<String> trials,  RedirectAttributes model)
+                         @RequestParam(value = "trialsSelected") LinkedList<String> trials,  RedirectAttributes model)
     {
 
         if (trials == null || trials.isEmpty())
@@ -285,6 +287,12 @@ public class AnalysisController {
 
             if (neuronsPlot == null || neuronsAnalysis == null) {
                 model.addFlashAttribute("error_message", "Error can not select trials from different experiments");
+                return new ModelAndView("redirect:/projects/" + id);
+            }
+
+            // check that all neurons to plot exists in neurons to analysis\
+            if (!neuronsAnalysis.containsAll(neuronsPlot)) {
+                model.addFlashAttribute("error_message", "Error, you must select neurons to plot that includes in the analysis neurons selected");
                 return new ModelAndView("redirect:/projects/" + id);
             }
 
@@ -392,7 +400,8 @@ public class AnalysisController {
                 runAnalysis.CloseAllFigures();
             } catch (Exception e) {
                 logger.error(e.getMessage());
-                errors.append("Error matlab analysis failed for analysis type :").append(type.getName());
+                errors.append("Error matlab analysis failed for analysis type :").append(type.getName()).append("\n")
+                .append(e.getMessage());
                 errors.append("\n");
             }
         }

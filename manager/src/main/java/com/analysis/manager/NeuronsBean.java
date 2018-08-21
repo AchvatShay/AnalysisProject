@@ -20,8 +20,8 @@ public class NeuronsBean {
     private RunAnalysis analysisMatlab;
 
 
-    public List<String> getNeurons(Experiment experiment) {
-        List<String> n = new LinkedList<>();
+    public String getNeurons(Experiment experiment) {
+        StringBuilder n = new StringBuilder();
         try {
             List<Trial> trials = experiment.getTrials();
             if (trials != null && trials.size() > 0) {
@@ -33,19 +33,20 @@ public class NeuronsBean {
                 if (results[0] instanceof MWNumericArray) {
                     MWNumericArray neurons_names = ((MWNumericArray) results[0]);
                     for (long[] j : (long[][]) neurons_names.toLongArray()) {
-                        n.add(String.valueOf(j[0]));
+                        n.append(String.valueOf(j[0])).append(',');
                     }
                 } else {
-                    return n;
+                    return "";
                 }
 
-                return n;
+                n.deleteCharAt(n.lastIndexOf(","));
+                return n.toString();
             }
 
-            return n;
+            return "";
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return n;
+            return "";
         }
     }
 }

@@ -28,9 +28,6 @@ public class ProjectsController {
     private ProjectService projectDao;
 
     @Autowired
-    private AnalysisTypeDao analysisTypeDao;
-
-    @Autowired
     private ExperimentPelletPertubationDao experimentPelletPertubationDao;
 
     @Autowired
@@ -38,12 +35,6 @@ public class ProjectsController {
 
     @Autowired
     private ExperimentTypeDao experimentTypeDao;
-
-    @Autowired
-    private ExperimentEventsDao experimentEventsDao;
-
-    @Autowired
-    private NeuronsBean neuronsBean;
 
     @Autowired
     private UserService userService;
@@ -55,6 +46,8 @@ public class ProjectsController {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
+
+            m.addAttribute("current_user", user.getName() + " " + user.getLastName());
             m.addAttribute("my_projects", projectDao.findAllByUser(user));
         } catch (Exception e)
         {
@@ -72,14 +65,12 @@ public class ProjectsController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
             Project project = projectDao.findByIdAndUser(id, user);
+
             m.addAttribute("project", project);
-            m.addAttribute("analysisTypes", analysisTypeDao.findAll());
             m.addAttribute("experiment_type", experimentTypeDao.findAll());
             m.addAttribute("experimentInjections", experimentInjectionsDao.findAll());
-            m.addAttribute("experimentEvents", experimentEventsDao.findAll());
             m.addAttribute("pelletPertubations", experimentPelletPertubationDao.findAll());
-            m.addAttribute("neuronsBean", neuronsBean);
-            m.addAttribute("tree_trials", new JSONObject(trailsToSelect(project)));
+            m.addAttribute("current_user", user.getName() + " " + user.getLastName());
             return "project";
         } catch (Exception e)
         {

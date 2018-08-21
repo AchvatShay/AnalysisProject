@@ -1,4 +1,9 @@
 function grabCount = getGrabCounts(BehaveData, startingAt, endingAt, frameRate)
+if (~isfield(BehaveData, 'grab_01'))
+    grabCount=nan;
+    return;
+end
+
 grabCount=zeros(size(BehaveData.grab_01.indicator,1), 1);
 
 NAMES = fieldnames(BehaveData);
