@@ -25,6 +25,11 @@ xlimmin = generalProperty.visualization_startTime2plot-generalProperty.ToneTime;
 for nrind=1:length(nerons2plot)
     curr_nrn2plot = nerons2plot(nrind);
     currnrnind = find(imagingData.roiNames-curr_nrn2plot==0);
+    
+    if isempty(currnrnind)
+        error('the neuron selected for ploting is not exists in the neurons selected for analysis');
+    end
+    
     x = squeeze(X(currnrnind,:,:))';
     
     
