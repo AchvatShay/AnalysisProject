@@ -46,23 +46,20 @@ for trialInd = 1:fileNumRoi
     usrData                    = load(fileNamesEvent{trialInd});
     allTrialEvents{trialInd}   = usrData.strEvent;
     for event_i = 1:length(allTrialEvents{trialInd})
-        if isempty(eventNameList) || ~any(strcmpi(eventNameList, allTrialEvents{trialInd}{event_i}.Name))
-            eventNameList{end+1} = lower(allTrialEvents{trialInd}{event_i}.Name);
+        if isempty(eventNameList) || ~any(strcmpi(eventNameList, allTrialEvents{trialInd}{event_i}.Name))           
+            eventNameList{end+1} = extractEventstr(allTrialEvents{trialInd}{event_i}.Name);
         end
     end
 end
 framNum = size(imagingData.samples,2);
 for eventName_i = 1:length(eventNameList)
-    eventNameList{eventName_i}(eventNameList{eventName_i}==':') = '_';
-    eventNameList{eventName_i}(eventNameList{eventName_i}=='-') = '_';
-    BehaveData.(eventNameList{eventName_i}).indicator = zeros(size(imagingData.samples,3), framNum);
+     BehaveData.(eventNameList{eventName_i}).indicator = zeros(size(imagingData.samples,3), framNum);
 end
 
 for trial_i = 1:fileNumRoi
     for m = 1:length(allTrialEvents{trial_i}) 
         eventname = lower(allTrialEvents{trial_i}{m}.Name);
-        eventname(eventname==':') = '_';
-        eventname(eventname=='-') = '_';
+        eventname = extractEventstr(eventname);
         if length(allTrialEvents{trial_i}{m}.tInd) ==2
             timeInd     = allTrialEvents{trial_i}{m}.tInd;
         else
