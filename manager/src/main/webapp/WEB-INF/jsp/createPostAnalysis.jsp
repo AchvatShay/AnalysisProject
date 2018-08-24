@@ -93,20 +93,20 @@
           <a href="${pageContext.request.contextPath}/projects">My Projects</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}">${experiment.getProject().getName()}</a>
+          <a href="${pageContext.request.contextPath}/projects/${project.getId()}">${project.getName()}</a>
         </li>
         <li class="breadcrumb-item active">
-          <a href="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/experiments/${experiment.getId()}">${experiment.getName()}</a>
+          Create Post Analysis
         </li>
       </ol>
 
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-line-chart"></i> Create new Analysis for experiment - ${experiment.getName()}</div>
+          <i class="fa fa-line-chart"></i> Create new Post Analysis</div>
         <div class="card-body">
 
         <div class="row">
-          <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/analysis" id="addanalysisForm" method="post" class="col-md-12">
+          <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/analysis/postAnalysis/create" id="addanalysisForm" method="post" class="col-md-12">
             <div class="row">
               <div class="col-md-3">
                 <div class="form-group">
@@ -118,50 +118,9 @@
                   <label for="analysisDescription">Description</label>
                   <textarea type="text" name="description" required="required" data-error="Analysis description is required" class="form-control" id="analysisDescription" placeholder="Enter Description"></textarea>
                 </div>
-
-                  <div class="form-group">
-                      <label for="analysisVisFontSize">visualization Font Size</label>
-                      <input type="number" step="any" name="font_size" required="required" data-error="Analysis font size is required" class="form-control" id="analysisVisFontSize" placeholder="Enter Font Size">
-                  </div>
-
-
-              </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="analysisVisStartTime">visualization start time to plot</label>
-                        <input type="number" step="any" name="startTime2plot" required="required" data-error="Analysis start time plot is required" class="form-control" id="analysisVisStartTime" placeholder="Enter start time to plot">
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="time2startCountGrabs">Time to start count grabs</label>
-                        <input type="number" step="any" name="time2startCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2startCountGrabs" placeholder="Enter time">
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="time2endCountGrabs">Time to end count grabs</label>
-                        <input type="number" step="any" name="time2endCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2endCountGrabs" placeholder="Enter time">
-                    </div>
-
-                </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <label for="startBehaveTime4trajectory">Start behave time for trajctory</label>
-                  <input type="number" step="any" name="startBehaveTime4trajectory" required="required" data-error="Analysis Start behave time is required" class="form-control" id="startBehaveTime4trajectory" placeholder="Enter start behave time">
-                </div>
-                <div class="form-group">
-                  <label for="endBehaveTime4trajectory">End behave time for trajctory</label>
-                  <input type="number" step="any" name="endBehaveTime4trajectory" required="required" data-error="Analysis End behave time is required" class="form-control" id="endBehaveTime4trajectory" placeholder="Enter end behave time">
-                </div>
-                <div class="form-group">
-                  <label for="foldsNum">Foldes Num</label>
-                  <input type="number" step="any" name="foldsNum" required="required" data-error="Analysis End behave time is required" class="form-control" id="foldsNum" placeholder="Enter foldes num">
-                </div>
-
               </div>
               <div class="col-md-3">
-                  <div class="form-group">
+                  <div class="form-group" id="analysisTypesS">
                       <label for="analysisType">Analysis Types : </label>
 
                       <c:forEach var="analysis_types" items="${analysisTypes}">
@@ -170,72 +129,32 @@
                           </div>
                       </c:forEach>
                   </div>
-                  <div class="form-group">
-                      <label for="experimentEvents">Experiments Events To Plot : </label>
-
-                      <c:forEach var="experimentEvent" items="${experimentEvents}">
-                          <div class="row checkbox-space">
-                              <label id="experimentEvents" class="form-check-label checkbox"><input class="form-check-input" type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
-                          </div>
-                      </c:forEach>
-                  </div>
               </div>
 
             </div>
 
-            <input id="trailsAnalysisExperiment" type="number" name="experiment_id" hidden="hidden" value="${experiment.getId()}"/>
-
             <div class="row space-btn-card">
               <%--<div class="col-md-6">--%>
-                  <div  id="trials${experiment.getId()}" class="col-md-12">
+                  <div  id="trials" class="col-md-12">
                     <div class="row">
                     <div class="col-md-6">
-                      <div class="form-group space-btn-card border border-dark">
-                        <label class="table-analysis-label"><strong>Neurons Selection : </strong></label>
-                        <div class="table-responsive space-btn-card" style="margin-top:5%">
-                          <table class="table table-bordered dataTableNeurons" id="dataTableNeurons" width="100%" cellspacing="0">
-                            <thead>
-                            <tr>
-                              <td><input type="checkbox" name="select_all" value="1" id="dataTableNeuronsToPlot-select-all">Neurons To Plot</td>
-                              <td><input type="checkbox" name="select_all" value="1" id="dataTableNeuronsForAnalysis-select-all">Neurons For Analysis</td>
-                              <th>Neuron Name</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="neuron" items="${neurons}">
-                              <tr>
-                                <td>
-                                  <input name="neurons_toPlot" type="checkbox" value="${neuron}">
-                                </td>
-                                  <td>
-                                      <input name="neurons_forAnalysis" type="checkbox" value="${neuron}">
-                                  </td>
-                                <td>${neuron}</td>
-                              </tr>
-                            </c:forEach>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
                         <div class="form-group border border-dark">
-                        <label class="table-analysis-label"><strong>Trials for analysis : </strong></label>
+                        <label class="table-analysis-label"><strong>Analysis selection : </strong></label>
                         <div class="table-responsive space-btn-card" style="margin-top:5%">
                             <table class="table table-bordered dataTableTrials" id="dataTableTrials" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
                                     <td><input type="checkbox" name="select_all" value="1" id="dataTableTrials-select-all"></td>
-                                    <th>Trial Name</th>
+                                    <th>Analysis Name</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="trial" items="${experiment.getTrials()}">
+                                <c:forEach var="analysis" items="${project.getAnalyzes()}">
                                     <tr>
                                         <td>
-                                            <input name="trialsSelected" type="checkbox" value="${trial.getId()}">
+                                            <input name="analysisList" type="checkbox" value="${analysis.getId()}">
                                         </td>
-                                        <td>${trial.getName()}</td>
+                                        <td>${analysis.getName()}</td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
@@ -322,41 +241,90 @@
             $('input[type="checkbox"]', rowsNP).prop('checked', val);
         }
 
+        function getTypes() {
+            // clear all labels befor
+            $("#type-div").empty();
+
+            //do your own request an handle the results
+            $.ajax({
+                url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/postAnalysis/types',
+                type: 'GET',
+                dataType: 'application/json',
+                data: $("[name='analysisList']").serialize(),
+                complete: function (data) {
+                    var json = jQuery.parseJSON(JSON.stringify(data));
+                    var test = $.parseJSON(json.responseText);
+                    $(test).each(function () {
+                        $("#type-div").append('<div class="row checkbox-space">\n' + '<label class="checkbox form-check-label">' + '<input class="form-check-input" type="checkbox" name="types" value="' + this.id + '">' + this.name + '</label>\n' + '</div>');
+                    });
+                }
+            });
+        }
+
         $(document).ready(function () {
-            $('#dataTableNeuronsToPlot-select-all').prop('checked', false);
-            $('#dataTableNeuronsForAnalysis-select-all').prop('checked', true);
+            setCheckBox('#dataTableTrials', false);
 
-            var tableNP = $('#dataTableNeurons').DataTable();
-            var rowsNP = tableNP.rows({ 'search': 'applied' }).nodes();
-            // Check/uncheck checkboxes for all rows in the table
-            $("[name='neurons_forAnalysis']", rowsNP).prop('checked', true);
-            $("[name='neurons_toPlot']", rowsNP).prop('checked', false);
+            $('#dataTableTrials tbody').on('change', "[name='analysisList']", function(){
+                // If checkbox is not checked
+                if(!this.checked){
+                    var el = $('#dataTableTrials-select-all').get(0);
+                    // If "Select all" control is checked and has 'indeterminate' property
+                    if(el && el.checked && ('indeterminate' in el)){
+                        // Set visual state of "Select all" control
+                        // as 'indeterminate'
+                        el.indeterminate = true;
+                    }
+                } else {
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/postAnalysis/checkExperiments',
+                        type: 'POST',
+                        dataType: 'application/json',
+                        data: $("[name='analysisList']").serialize(),
+                        complete: function (data) {
+                            var json = jQuery.parseJSON(JSON.stringify(data));
 
+                            if (json.responseText === "false") {
+                                this.prop('checked', false);
+                                alert("please choose only analysis that have the same experiment conditions");
+                            }
+                        }
+                    });
+                }
+            });
 
-            setCheckBox('#dataTableTrials', true);
+            $('#analysisTypesS tbody').on('change', "[name='types']", function(){
+                if (this.checked) {
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/postAnalysis/types',
+                        type: 'POST',
+                        dataType: 'application/json',
+                        data: $("#addanalysisForm").serialize(),
+                        complete: function (data) {
+                            var json = jQuery.parseJSON(JSON.stringify(data));
+
+                            if (json.responseText === "false") {
+                                this.prop('checked', false);
+                                alert("please choose only analysis type that exists in the selected analysis list");
+                            }
+                        }
+                    });
+                }
+            });
 
 
             $("#addanalysisForm").submit(function() {
                 var count_checked_types = $("[name='types']:checked").length; // count the checked rows
-                var count_checked_neuronsAnalysis = $("[name='neurons_forAnalysis']:checked", rowsNP).length; // count the checked rows
 
                 var tableNT = $('#dataTableTrials').DataTable();
                 var rowsNT = tableNT.rows({ 'search': 'applied' }).nodes();
 
-                var count_checked_trialsSelected = $("[name='trialsSelected']:checked", rowsNT).length; // count the checked rows
+                var count_checked_trialsSelected = $("[name='analysisList']:checked", rowsNT).length; // count the checked rows
 
                 if(count_checked_types == 0)
                 {
                     alert("Please select at least one type for analysis");
                     return false;
                 }
-
-                if(count_checked_neuronsAnalysis == 0)
-                {
-                    alert("Please select at least one neuron for analysis");
-                    return false;
-                }
-
 
                 if(count_checked_trialsSelected == 0)
                 {
@@ -366,44 +334,9 @@
 
                 var form = this;
 
-                var table = $('#dataTableNeurons').DataTable();
-                // Iterate over all checkboxes in the table
-                table.$("[name='neurons_toPlot']").each(function(){
-                    // If checkbox doesn't exist in DOM
-                    if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        if(this.checked){
-                            // Create a hidden element
-                            $(form).append(
-                                $('<input>')
-                                    .attr('type', 'hidden')
-                                    .attr('name', this.name)
-                                    .val(this.value)
-                            );
-                        }
-                    }
-                });
-
-                // Iterate over all checkboxes in the table
-                table.$("[name='neurons_forAnalysis']").each(function(){
-                    // If checkbox doesn't exist in DOM
-                    if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        if(this.checked){
-                            // Create a hidden element
-                            $(form).append(
-                                $('<input>')
-                                    .attr('type', 'hidden')
-                                    .attr('name', this.name)
-                                    .val(this.value)
-                            );
-                        }
-                    }
-                });
-
                 var table2 = $('#dataTableTrials').DataTable();
                 // Iterate over all checkboxes in the table
-                table2.$("[name='trialsSelected']").each(function(){
+                table2.$("[name='analysisList']").each(function(){
                     // If checkbox doesn't exist in DOM
                     if(!$.contains(document, this)){
                         // If checkbox is checked
@@ -422,35 +355,6 @@
 
                 $('.loader').show();
                 return true; // allow regular form submission
-            });
-
-            var checkboxes = $("input[name='types']"),
-                submitButt = $("input[id='createAnalysisSubmit']");
-
-            checkboxes.click(function() {
-                submitButt.attr("disabled", !checkboxes.is(":checked"));
-            });
-
-            $(".experiment_trials_icon").click(function () {
-                var id = this.id;
-                if ($("#" + id).hasClass("fa-plus-circle")) {
-                    $("#" + id).removeClass("fa-plus-circle");
-                    $("#" + id).addClass("fa-minus-circle");
-                } else {
-                    $("#" + id).removeClass("fa-minus-circle");
-                    $("#" + id).addClass("fa-plus-circle");
-                }
-            });
-
-
-            $("#createProjectAnalysisBtn").click(function () {
-                if ($("#createProjectAnalysisIcon").hasClass("fa-plus-circle")) {
-                    $("#createProjectAnalysisIcon").removeClass("fa-plus-circle");
-                    $("#createProjectAnalysisIcon").addClass("fa-minus-circle");
-                } else {
-                    $("#createProjectAnalysisIcon").removeClass("fa-minus-circle");
-                    $("#createProjectAnalysisIcon").addClass("fa-plus-circle");
-                }
             });
 
         })

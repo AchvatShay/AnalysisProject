@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,14 +28,6 @@ import java.util.List;
 public class ExperimentController {
     @Autowired
     private ExperimentService experimentDao;
-
-    @Qualifier("tpaRepository")
-    @Autowired
-    private TpaRepository tpaRepository;
-
-    @Qualifier("bdaRepository")
-    @Autowired
-    private BDADao bdaDao;
 
     @Autowired
     private AnalysisTypeDao analysisTypeDao;
@@ -69,6 +62,10 @@ public class ExperimentController {
     @Autowired
     private NeuronsBean neuronsBean;
 
+    @Value("${accuracy.analysis.name}")
+    private String accuracyName;
+
+
     private static final Logger logger = LoggerFactory.getLogger(ExperimentController.class);
 
     @RequestMapping(value = "projects/{projectID}/experiments/{id}")
@@ -97,10 +94,18 @@ public class ExperimentController {
             Project project = projectDao.findByIdAndUser(project_id, user);
 
             Experiment experiment = experimentDao.findByIdAndProject(id, project);
-            m.addAttribute("analysisTypes", analysisTypeDao.findAll());
+            m.addAttribute("analysisTypes", analysisTypeDao.findAllByNameNotLike(accuracyName));
             m.addAttribute("experimentEvents", experimentEventsDao.findAll());
             m.addAttribute("experiment", experiment);
-            m.addAttribute("neurons", experiment.getNeuronsName().split(","));
+
+            String neuronName = experiment.getNeuronsName();
+
+            if (neuronName == null || neuronName.isEmpty()) {
+                m.addAttribute("neurons", new LinkedList<String>());
+            } else {
+                m.addAttribute("neurons", neuronName.split(","));
+            }
+
             m.addAttribute("trials", experiment.getTrials());
             m.addAttribute("current_user", user.getName() + " " + user.getLastName());
             return new ModelAndView("createAnalysis");
@@ -141,7 +146,7 @@ public class ExperimentController {
 
             experimentConditionDao.save(experimentCondition);
 
-            Experiment experiment = new Experiment(description, name, experimentCondition, new LinkedList<Trial>(), animal, project, "");
+            Experiment experiment = new Experiment(description, name, experimentCondition, new LinkedList<Trial>(), animal, project, "", "");
             experimentDao.save(experiment);
 
             project.AddExperiment(experiment);
@@ -212,6 +217,7 @@ public class ExperimentController {
 
             if (experiment.getTrials().isEmpty()) {
                 experiment.setNeuronsName("");
+                experiment.setLabelsName("");
             }
 
             experimentDao.save(experiment);
@@ -248,6 +254,7 @@ public class ExperimentController {
 
             experiment.setTrials(new LinkedList());
             experiment.setNeuronsName("");
+            experiment.setLabelsName("");
             experimentDao.save(experiment);
             trialDao.deleteAllByExperiment(experiment);
 
@@ -284,26 +291,10 @@ public class ExperimentController {
 
                 if (trialDao.findByNameAndExperiment(trial.getName(), experiment) == null)
                 {
-                    TPA tpa = tpaRepository.findByFileLocation(trial.getTpa().getFileLocation());
-                    if (tpa == null) {
-                        tpaRepository.save(trial.getTpa());
-                    } else {
-                        model.addFlashAttribute("error_message", "The trial already exists");
-                        return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
-                    }
-
-                    BDA bda = bdaDao.findByFileLocation(trial.getBda().getFileLocation());
-                    if (bda == null) {
-                        bdaDao.save(trial.getBda());
-                    } else {
-                        model.addFlashAttribute("error_message", "The trial already exists");
-                        return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
-                    }
-
                     trialDao.save(trial);
                     experiment.AddTrial(trial);
                 } else {
-                    stringBuilder.append("The trial already exists").append(trial.getName()).append("\n");
+                    stringBuilder.append("The trial already exists").append(trial.getName()).append("\n\r");
                 }
             }
 
@@ -313,6 +304,10 @@ public class ExperimentController {
 
             if (experiment.getNeuronsName() == null || experiment.getNeuronsName().isEmpty()) {
                 experiment.setNeuronsName(neuronsBean.getNeurons(experiment));
+            }
+
+            if (experiment.getLabelsName() == null || experiment.getLabelsName().isEmpty()) {
+                experiment.setLabelsName(neuronsBean.getLabels(experiment));
             }
 
             experimentDao.save(experiment);
@@ -351,35 +346,22 @@ public class ExperimentController {
                 } else if (!fileTPA.exists() || fileTPA.isDirectory()) {
                     model.addFlashAttribute("error_message", "The TPA location does not exist or the location is directory");
                 } else {
-                    TPA tpa = new TPA(TPALocation);
-                    BDA bda = new BDA(BDALocation);
+
 
                     String trialName = fileTPA.getName().replace("TPA", "");
 
                     if (trialDao.findByNameAndExperiment(trialName, experiment) == null)
                     {
-                        TPA tpaDB = tpaRepository.findByFileLocation(tpa.getFileLocation());
-                        if (tpaDB == null) {
-                            tpaRepository.save(tpa);
-                        } else {
-                            model.addFlashAttribute("error_message", "The trial already exists");
-                            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
-                        }
-
-                        BDA bdaDB = bdaDao.findByFileLocation(bda.getFileLocation());
-                        if (bdaDB == null) {
-                            bdaDao.save(bda);
-                        } else {
-                            model.addFlashAttribute("error_message", "The trial already exists");
-                            return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + id);
-                        }
-
-                        Trial trial = new Trial(trialName, tpa, null, bda, null, experiment);
+                        Trial trial = new Trial(trialName, TPALocation, "", BDALocation, "", experiment);
                         trialDao.save(trial);
                         experiment.AddTrial(trial);
 
                         if (experiment.getNeuronsName() == null || experiment.getNeuronsName().isEmpty()) {
                             experiment.setNeuronsName(neuronsBean.getNeurons(experiment));
+                        }
+
+                        if (experiment.getLabelsName() == null || experiment.getLabelsName().isEmpty()) {
+                            experiment.setLabelsName(neuronsBean.getLabels(experiment));
                         }
 
                         experimentDao.save(experiment);

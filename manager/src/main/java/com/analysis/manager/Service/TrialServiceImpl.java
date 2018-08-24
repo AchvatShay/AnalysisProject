@@ -21,17 +21,6 @@ public class TrialServiceImpl implements TrialService {
    @Autowired
    private TrialDao trialDao;
 
-    @Qualifier("tpaRepository")
-    @Autowired
-    private TpaRepository tpaDao;
-    @Qualifier("bdaRepository")
-    @Autowired
-    private BDADao bdaDao;
-    @Autowired
-    private ImagingDao imagingDao;
-    @Autowired
-    private BehavioralDao behavioralDao;
-
     private static final Logger logger = LoggerFactory.getLogger(TrialServiceImpl.class);
 
     @Override
@@ -46,20 +35,6 @@ public class TrialServiceImpl implements TrialService {
 
     @Override
     public void deleteTrial(Trial trial) {
-        if (trial.getTpa() != null) {
-            tpaDao.delete(trial.getTpa());
-        }
-
-        if (trial.getBda() != null) {
-            bdaDao.delete(trial.getBda());
-        }
-        if (trial.getBehavioral() != null) {
-            behavioralDao.delete(trial.getBehavioral());
-        }
-        if (trial.getImaging() != null) {
-            imagingDao.delete(trial.getImaging());
-        }
-
         logger.info("Delete Trial and the TPA BDA for this trial from DB");
         trialDao.delete(trial);
     }

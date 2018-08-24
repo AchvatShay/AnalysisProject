@@ -47,7 +47,9 @@ public class XmlCreator {
         Project project = analysis.getExperiment().getProject();
         for (AnalysisType type : analysis.getAnalysisType())
         {
-            String path = pathAnalysis + File.separator + project.getUser().getName() + File.separator + project.getName() + File.separator + analysis.getName();
+            String path = pathAnalysis + File.separator + project.getUser().getName() + "_" + project.getUser().getLastName() + File.separator + project.getName() + File.separator + analysis.getName();
+
+            path = path.toLowerCase();
 
             File xml_folder = new File(path);
             if (!xml_folder.exists()) {
@@ -58,7 +60,7 @@ public class XmlCreator {
                 }
             }
 
-            File type_folder = new File(path + File.separator + type.getName());
+            File type_folder = new File(path + File.separator + type.getName().toLowerCase());
             if (!type_folder.exists()) {
                 if (!type_folder.mkdirs()) {
                     results = false;

@@ -17,5 +17,7 @@ public interface AnalysisDao extends JpaRepository<Analysis, Long> {
 
     List<Analysis> findAllByExperiment(Experiment experiment);
 
+    List<Analysis> findAll();
+
     List<Analysis> findAllByExperimentNotLike(Experiment experiment);
 } // class UserDao

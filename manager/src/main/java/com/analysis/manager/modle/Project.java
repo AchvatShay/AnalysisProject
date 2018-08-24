@@ -185,4 +185,11 @@ public class Project {
     public void setAnalyzes(List<Analysis> analysis) {
         this.Analyzes = analysis;
     }
+
+    public void removeExperiment(Experiment experiment) {
+
+        if (this.experiments != null) {
+            this.experiments.remove(experiment);
+        }
+    }
 }

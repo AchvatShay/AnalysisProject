@@ -25,6 +25,9 @@ public class Experiment {
     @Lob
     private String neurons_name;
 
+    @Lob
+    private String labels_name;
+
     @OneToOne
     private ExperimentCondition experimentCondition;
 
@@ -40,15 +43,24 @@ public class Experiment {
     public Experiment(){
     }
 
-    public Experiment(String description, String name, ExperimentCondition experimentCondition, List<Trial> trials, Animal animal, Project project, String neurons_name)
+    public Experiment(String description, String name, ExperimentCondition experimentCondition, List<Trial> trials, Animal animal, Project project, String neurons_name, String labels_name)
     {
         this.description = description;
+        this.labels_name = labels_name;
         this.project = project;
         this.name = name;
         this.experimentCondition = experimentCondition;
         this.trials = trials;
         this.animal = animal;
         this.neurons_name = neurons_name;
+    }
+
+    public String getLabelsName() {
+        return labels_name;
+    }
+
+    public void setLabelsName(String labels_name) {
+        this.labels_name = labels_name;
     }
 
     public String getNeuronsName() {
@@ -127,7 +139,7 @@ public class Experiment {
             for (File f_BDA : filesBDA != null ? filesBDA : new File[0]) {
                 for (File f_TPA : filesTPA != null ? filesTPA : new File[0]) {
                     if (f_BDA.getName().replace("BDA", "TPA").equals(f_TPA.getName())) {
-                        trials.add(new Trial(f_TPA.getName().replace("TPA", ""),new TPA(f_TPA.getPath()), null, new BDA(f_BDA.getPath()), null, this));
+                        trials.add(new Trial(f_TPA.getName().replace("TPA", ""), f_TPA.getPath(), "", f_BDA.getPath(), "", this));
                     }
                 }
             }

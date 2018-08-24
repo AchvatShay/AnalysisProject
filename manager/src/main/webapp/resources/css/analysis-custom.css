@@ -41,6 +41,19 @@ a.navbar-brand {
     margin-left: 1rem;
 }
 
+#dataTableNeurons_info {
+    padding-top: 4em!important;
+}
+
+
+#dataTableTrials_info {
+    padding-top: 4em!important;
+}
+
+#dataTableTrialsAccuracy_info {
+    padding-top: 4em!important;
+}
+
 .table-analysis-label {
     padding-left: 2%;
     margin-top: 2%;

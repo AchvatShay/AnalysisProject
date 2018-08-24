@@ -2,6 +2,7 @@ package com.analysis.manager.Service;
 
 import com.analysis.manager.modle.*;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface AnalysisService {
@@ -15,4 +16,8 @@ public interface AnalysisService {
     void deleteByExperiment(Experiment experiment);
 
     List<Analysis> findAllByExperimentNotLike(Experiment experiment);
+
+    List<Analysis> findAll();
+
+    List<Analysis> findAllByExperiment(Experiment experiment);
 }

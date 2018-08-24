@@ -21,17 +21,17 @@ public class Trial {
 
     private String name;
 
-    @OneToOne
-    private TPA tpa;
+    @NotNull
+    private String tpa;
 
-    @OneToOne
-    private Imaging imaging;
+    @NotNull
+    private String imaging;
 
-    @OneToOne
-    private BDA bda;
+    @NotNull
+    private String bda;
 
-    @OneToOne
-    private Behavioral behavioral;
+    @NotNull
+    private String behavioral;
 
     @ManyToOne
     private Experiment experiment;
@@ -42,7 +42,7 @@ public class Trial {
 
     public Trial(){}
 
-    public Trial(String name, TPA tpa, Imaging imaging, BDA bda, Behavioral behavioral, Experiment experiment)
+    public Trial(String name, String tpa, String imaging, String bda, String behavioral, Experiment experiment)
     {
         this.name = name;
         this.bda = bda;
@@ -60,36 +60,36 @@ public class Trial {
         this.experiment = experiment;
     }
 
-    public TPA getTpa() {
+    public String getTpa() {
         return tpa;
     }
 
-    public BDA getBda() {
-        return bda;
+    public void setTpa(String tpa) {
+        this.tpa = tpa;
     }
 
-    public Behavioral getBehavioral() {
-        return behavioral;
-    }
-
-    public Imaging getImaging() {
+    public String getImaging() {
         return imaging;
     }
 
-    public void setBda(BDA bda) {
-        this.bda = bda;
-    }
-
-    public void setImaging(Imaging imaging) {
+    public void setImaging(String imaging) {
         this.imaging = imaging;
     }
 
-    public void setBehavioral(Behavioral behavioral) {
-        this.behavioral = behavioral;
+    public String getBda() {
+        return bda;
     }
 
-    public void setTpa(TPA tpa) {
-        this.tpa = tpa;
+    public void setBda(String bda) {
+        this.bda = bda;
+    }
+
+    public String getBehavioral() {
+        return behavioral;
+    }
+
+    public void setBehavioral(String behavioral) {
+        this.behavioral = behavioral;
     }
 
     public void setId(long id) {

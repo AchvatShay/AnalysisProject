@@ -12,4 +12,5 @@ import java.util.List;
 public interface AnalysisTypeDao extends JpaRepository<AnalysisType, Long> {
     AnalysisType findById(long id);
     AnalysisType findByName(String name);
+    List<AnalysisType> findAllByNameNotLike(String name);
 }

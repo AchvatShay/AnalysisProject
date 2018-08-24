@@ -52,15 +52,46 @@ public class ExperimentServiceImpl implements ExperimentService {
 
         analysisService.deleteByExperiment(experiment);
 
-        experiment.getProject().setAnalyzes(analysisService.findAllByExperimentNotLike(experiment));
+        Project project = experiment.getProject();
 
-        projectService.saveProject(experiment.getProject());
+        project.setAnalyzes(analysisService.findAllByExperimentNotLike(experiment));
+
+        project.removeExperiment(experiment);
+
+        projectService.saveProject(project);
 
         experimentConditionDao.delete(experiment.getExperimentCondition());
 
         logger.info("Delete Experiment " + experiment.getName() + " from DB");
 
         experimentDao.delete(experiment);
+    }
+
+    @Override
+    public void deleteAll(List<Experiment> experiments) {
+        for (Experiment experiment : experiments) {
+            if (experiment.getTrials() != null) {
+                for (Trial trial :experiment.getTrials()) {
+                    trialDao.deleteTrial(trial);
+                }
+            }
+
+            analysisService.deleteByExperiment(experiment);
+
+            Project project = experiment.getProject();
+
+            project.setAnalyzes(analysisService.findAllByExperimentNotLike(experiment));
+
+            project.removeExperiment(experiment);
+
+            projectService.saveProject(project);
+
+            experimentConditionDao.delete(experiment.getExperimentCondition());
+
+            logger.info("Delete Experiment " + experiment.getName() + " from DB");
+        }
+
+        experimentDao.deleteAll(experiments);
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service("projectService")
@@ -56,11 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void deleteProject(Project project) {
         if (project.getExperiments() != null) {
-            for (Experiment experiment : project.getExperiments())
-            {
-                experimentDao.delete(experiment);
-            }
-
+            experimentDao.deleteAll(new LinkedList<>(project.getExperiments()));
             project.setExperiments(null);
         }
 

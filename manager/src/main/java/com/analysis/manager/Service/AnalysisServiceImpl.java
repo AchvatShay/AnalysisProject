@@ -78,4 +78,14 @@ public class AnalysisServiceImpl implements AnalysisService {
     public List<Analysis> findAllByExperimentNotLike(Experiment experiment) {
         return analysisDao.findAllByExperimentNotLike(experiment);
     }
+
+    @Override
+    public List<Analysis> findAll() {
+        return analysisDao.findAll();
+    }
+
+    @Override
+    public List<Analysis> findAllByExperiment(Experiment experiment) {
+        return analysisDao.findAllByExperiment(experiment);
+    }
 }

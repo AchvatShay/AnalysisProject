@@ -92,7 +92,7 @@ public class AnalysisController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
             m.addAttribute("analysisTypes", analysisTypeDao.findAll());
-            m.addAttribute("analysisList", analysisDao.findAllByUser(user));
+            m.addAttribute("analysisList", analysisDao.findAll());
             m.addAttribute("current_user", user.getName() + " " + user.getLastName());
         }catch (Exception e)
         {
@@ -122,7 +122,8 @@ public class AnalysisController {
 
                 for (AnalysisType type : analysis.getAnalysisType()) {
                     Project project = analysis.getExperiment().getProject();
-                    File file = new File(pathAnalysis + File.separator + project.getUser().getName() + File.separator + project.getName() + File.separator + analysis.getName()+ File.separator + type.getName());
+                    String path = pathAnalysis + File.separator + project.getUser().getName() + "_" + project.getUser().getLastName() + File.separator + project.getName() + File.separator + analysis.getName()+ File.separator + type.getName();
+                    File file = new File(path.toLowerCase());
                     File[] files = file.listFiles((dir, name) -> name.endsWith(".tif"));
 
                     List<FilesManager> resourceLocation = new LinkedList<>();
@@ -130,7 +131,7 @@ public class AnalysisController {
                     if (files != null) {
                         for (File currentFile : files) {
                             String file_name = currentFile.getName().replace(".tif", "");
-                            FilesManager filesManager = new FilesManager(file_name, analysis.getName(), type.getName(), project.getName(), project.getUser().getName(), ".tif");
+                            FilesManager filesManager = new FilesManager(file_name, analysis.getName().toLowerCase(), type.getName().toLowerCase(), project.getName().toLowerCase(), project.getUser().getName().toLowerCase() + "_" + project.getUser().getLastName().toLowerCase(), ".tif");
                             resourceLocation.add(filesManager);
                         }
                     }
@@ -236,20 +237,20 @@ public class AnalysisController {
         {
             model.addFlashAttribute("error_message", "failed to create analysis, empty trials");
             model.addAttribute("tif", new LinkedList<String>());
-            return new ModelAndView("redirect:/projects/" + id);
+            return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
         }
 
         if (neurons_forAnalysis == null || neurons_forAnalysis.isEmpty())
         {
             model.addFlashAttribute("error_message", "failed to create analysis, empty neurons for analysis");
             model.addAttribute("tif", new LinkedList<String>());
-            return new ModelAndView("redirect:/projects/" + id);
+            return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
         }
 
         if (types == null || types.isEmpty())
         {
             model.addFlashAttribute("error_message", "failed to create analysis, empty analysis types");
-            return new ModelAndView("redirect:/projects/" + id);
+            return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
         }
 
         LinkedList<AnalysisType> analysisTypes = new LinkedList<>();
@@ -264,7 +265,7 @@ public class AnalysisController {
 
             if (analysisDao.existsByNameAndUser(name, user)) {
                 model.addFlashAttribute("error_message", "failed to create analysis, this analysis name already exists");
-                return new ModelAndView("redirect:/projects/" + id);
+                return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
             }
 
             Experiment experiment = experimentDao.findByIdAndProject(experiment_id, project);
@@ -282,32 +283,23 @@ public class AnalysisController {
 
             }
 
-            List<String> neuronsPlot = (neurons_toPlot == null) ? new LinkedList<>() : getNeuronsList(neurons_toPlot, experiment_id);
-            List<String> neuronsAnalysis = getNeuronsList(neurons_forAnalysis, experiment_id);
+//            List<String> neuronsPlot = (neurons_toPlot == null) ? new LinkedList<>() : getNeuronsList(neurons_toPlot, experiment_id);
+//            List<String> neuronsAnalysis = getNeuronsList(neurons_forAnalysis, experiment_id);
 
-            if (neuronsPlot == null || neuronsAnalysis == null) {
-                model.addFlashAttribute("error_message", "Error can not select trials from different experiments");
-                return new ModelAndView("redirect:/projects/" + id);
-            }
+           if (neurons_toPlot == null) {
+                neurons_toPlot = new LinkedList<>();
+           }
 
             // check that all neurons to plot exists in neurons to analysis\
-            if (!neuronsAnalysis.containsAll(neuronsPlot)) {
+            if (!neurons_forAnalysis.containsAll(neurons_toPlot)) {
                 model.addFlashAttribute("error_message", "Error, you must select neurons to plot that includes in the analysis neurons selected");
-                return new ModelAndView("redirect:/projects/" + id);
+                return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
             }
 
             LinkedList<Trial> allTrials = new LinkedList<>();
             for (String str : trials)
             {
-                String[] split = str.split("_");
-                long trialId = Long.parseLong(split[1]);
-                long experimentId = Long.parseLong(split[0]);
-
-                if (experimentId != experiment_id)
-                {
-                    model.addFlashAttribute("error_message", "Error can not select trials from different experiments");
-                    return new ModelAndView("redirect:/projects/" + id);
-                }
+                long trialId = Long.parseLong(str);
 
                 for (Trial trial: experiment.getTrials())
                 {
@@ -324,15 +316,15 @@ public class AnalysisController {
             projectDao.saveProject(project);
 
 
-            if (!xmlCreator.createXml(analysis, font_size, neuronsAnalysis, neuronsPlot, experimentEvents, startTime2plot, time2startCountGrabs, time2endCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum)) {
+            if (!xmlCreator.createXml(analysis, font_size, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2startCountGrabs, time2endCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum)) {
                 model.addFlashAttribute("error_message", "Error while creating Analysis Xml");
-                return new ModelAndView("redirect:/projects/" + id );
+                return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
             }
 
             if (runAnalysis == null)
             {
                 model.addFlashAttribute("error_message", "Error bean name for matlab");
-                return new ModelAndView("redirect:/projects/" + id);
+                return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
             }
 
             String errors = sendToMatlab(analysis);
@@ -348,27 +340,8 @@ public class AnalysisController {
         {
             logger.error(e.getMessage());
             model.addFlashAttribute("error_message", "Error while creating Analysis in DB");
-            return new ModelAndView("redirect:/projects/" + id);
+            return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
         }
-    }
-
-    private List<String> getNeuronsList(LinkedList<String> neuronsWithID,long experiment_id) {
-        LinkedList<String> neurons = new LinkedList<>();
-
-        for (String str : neuronsWithID)
-        {
-            String[] split = str.split("_");
-            String neuronName = split[1];
-            long experimentId = Long.parseLong(split[0]);
-
-            if (experimentId != experiment_id)
-            {
-                return null;
-            }
-
-            neurons.add(neuronName);
-        }
-        return neurons;
     }
 
     private String  sendToMatlab(Analysis analysis) {
@@ -378,19 +351,20 @@ public class AnalysisController {
         for (AnalysisType type : analysis.getAnalysisType())
         {
             Project project = analysis.getExperiment().getProject();
-            String path = pathAnalysis + File.separator + project.getUser().getName() + File.separator + project.getName() + File.separator + analysis.getName();
+            String path = pathAnalysis + File.separator + project.getUser().getName() + "_" + project.getUser().getLastName() + File.separator + project.getName() + File.separator + analysis.getName();
+            path = path.toLowerCase();
 
             try {
                 MWCharArray xmlLocation = new MWCharArray(path + File.separator + "XmlAnalysis.xml");
 
-                MWCharArray analysisOutputFolder = new MWCharArray(path + File.separator + type.getName());
+                MWCharArray analysisOutputFolder = new MWCharArray(path + File.separator + type.getName().toLowerCase());
                 MWStructArray BDA_TPA = new MWStructArray(1, analysis.getTrials().size(), new String[] {"BDA", "TPA"});
 
                 int count = 1;
                 for (Trial trial : analysis.getTrials())
                 {
-                    BDA_TPA.set("BDA", new int[] {1, count}, trial.getBda().getFileLocation());
-                    BDA_TPA.set("TPA", new int[] {1, count}, trial.getTpa().getFileLocation());
+                    BDA_TPA.set("BDA", new int[] {1, count}, trial.getBda());
+                    BDA_TPA.set("TPA", new int[] {1, count}, trial.getTpa());
                     count++;
                 }
 

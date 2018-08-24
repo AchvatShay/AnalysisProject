@@ -111,7 +111,11 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Animal</th>
-                <th></th>
+                <th>Experiment Type</th>
+                <th>Duration</th>
+                <th>Delete</th>
+                <th>View</th>
+                <th>Create Analysis</th>
               </tr>
               </thead>
               <tbody>
@@ -121,13 +125,19 @@
                     <td>${experiment.getName()}</td>
                     <td>${experiment.getDescription()}</td>
                     <td>${experiment.getAnimal().getName()}</td>
+                    <td>${experiment.getExperimentCondition().getExperimentType().getName()}</td>
+                    <td>${experiment.getExperimentCondition().getDuration()}</td>
                     <td>
                        <a href="${pageContext.request.contextPath}/projects/${project.getId()}/experiments/${experiment.getId()}/delete">
                         <i id="experiments-delete-${experiment.getId()}" class="fa fa-trash"></i>
                       </a>
+                    </td>
+                    <td>
                       <a href="${pageContext.request.contextPath}/projects/${project.getId()}/experiments/${experiment.getId()}">
                         <i id="experiments-open-${experiment.getId()}" class="fa fa-arrow-circle-right"></i>
                       </a>
+                    </td>
+                    <td>
                       <a href="${pageContext.request.contextPath}/projects/${project.getId()}/experiments/${experiment.getId()}/createAnalysis">
                         <i id="experiments-create-analysis-${experiment.getId()}" class="fa fa-line-chart"></i>
                       </a>
@@ -253,7 +263,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Layer</th>
-                <th></th>
+                <th>Delete</th>
               </tr>
               </thead>
               <tbody>
@@ -324,7 +334,7 @@
               <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th></th>
+                <th>Delete</th>
               </tr>
               </thead>
               <tbody>
@@ -373,7 +383,19 @@
         <div class="card-header">
           <i class="fa fa-line-chart"></i> All Analysis</div>
         <div class="card-body">
-          <c:if test="${!project.getAnalyzes().isEmpty() and project.getAnalyzes() != null}">
+            <div>
+              <div class="col-md-12" style="padding-bottom: 2%">
+                <a href="${pageContext.request.contextPath}/projects/${project.getId()}/analysis/accuracy/phaseA/">
+                    <i class="fa fa-plus-circle"></i>Create New Accuracy Analysis
+                </a>
+              </div>
+              <div class="col-md-12" style="padding-bottom: 2%">
+                <a href="${pageContext.request.contextPath}/projects/${project.getId()}/allAnalysis">
+                    <i class="fa fa-plus-circle">Create New All Analysis</i>
+                </a>
+              </div>
+            </div>
+          <c:if test="${project.getAnalyzes() != null and !project.getAnalyzes().isEmpty()}">
             <div class="table-responsive space-btn-card">
             <table class="table table-bordered" id="dataTableAnalysis" width="100%" cellspacing="0">
               <thead>
@@ -381,7 +403,10 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th></th>
+                <th>Experiment</th>
+                <th>Animal</th>
+                <th>Delete</th>
+                <th>View</th>
               </tr>
               </thead>
               <tbody>
@@ -390,10 +415,14 @@
                   <td>${analysis.getId()}</td>
                   <td>${analysis.getName()}</td>
                   <td>${analysis.getDescription()}</td>
+                  <td>${analysis.getExperiment().getName()}</td>
+                  <td>${analysis.getExperiment().getAnimal().getName()}</td>
                   <td>
                     <a href="${pageContext.request.contextPath}/projects/${project.getId()}/analysis/${analysis.getId()}/delete">
                       <i id="analysis-delete-${analysis.getId()}" class="fa fa-trash"></i>
                     </a>
+                  </td>
+                  <td>
                     <a href="${pageContext.request.contextPath}/projects/${project.getId()}/analysis/${analysis.getId()}">
                       <i id="analysis-open-${analysis.getId()}" class="fa fa-arrow-circle-right"></i>
                     </a>
@@ -403,6 +432,9 @@
               </tbody>
             </table>
           </div>
+          </c:if>
+          <c:if test="${project.getAnalyzes() == null or project.getAnalyzes().isEmpty()}">
+            <div class="card-text">Empty Analysis list for this project, please create new analysis for an experiment</div>
           </c:if>
         </div>
       </div>
