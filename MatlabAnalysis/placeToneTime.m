@@ -1,4 +1,4 @@
-function placeToneTime(toneTime, lw)
+function hline = placeToneTime(toneTime, lw)
 if ~isempty(toneTime)
-line([toneTime toneTime], get(gca, 'YLim'), 'Color','k','LineWidth',lw, 'LineStyle', ':');
+hline = line([toneTime toneTime], get(gca, 'YLim'), 'Color','k','LineWidth',lw, 'LineStyle', ':');
 end
