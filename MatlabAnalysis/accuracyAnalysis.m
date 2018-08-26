@@ -28,21 +28,31 @@ eventsStr = ['_' eventsList{1}];
 for event_i = 2:length(eventsList)
     eventsStr = [eventsStr '_' eventsList{event_i}];
 end
-resfile = fullfile(outputPath, ['acc_res_curr_' foldstr linstr eventsStr '.mat']);
-data4Svm = imagingData.samples(:, :, examinedInds);
-[chanceLevel, tmid, accSVM, accRandSVM, confMats] = slidingWinAcc(data4Svm, resfile, ...
-    labels, winstSec, winendSec, foldsnum, islin, duration);
-
-resfile = fullfile(outputPath, ['acc_res_seq_' foldstr linstr '.mat']);
-data4Svm = imagingData.samples(:, :, examinedInds(1:end-1));
-[chanceLevelseq, ~, accSVMlinseq, accRandSVMlinseq, confMatsseq] = slidingWinAcc(data4Svm, resfile, ...
-    labels(2:end), winstSec, winendSec, foldsnum, islin, duration);
-
-resfile = fullfile(outputPath, ['acc_res_prev_' foldstr linstr '.mat']);
-data4Svm = imagingData.samples(:, :, examinedInds(2:end));
-[chanceLevelPrev, ~, accSVMlinPrev, accRandSVMlinPrev, confMatsPrev] = slidingWinAcc(data4Svm, resfile, ...
-    labels(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
-
+resfileTot = fullfile(outputPath, ['acc_res_' foldstr linstr eventsStr '.mat']);
+if exist(resfileTot, 'file')
+    load(resfileTot);
+else
+    resfile_curr = fullfile(outputPath, ['acc_res_curr_' foldstr linstr eventsStr '.mat']);
+    data4Svm = imagingData.samples(:, :, examinedInds);
+    [chanceLevel, tmid, accSVM, accRandSVM, confMats, trialsNum] = slidingWinAcc(data4Svm, resfile_curr, ...
+        labels, winstSec, winendSec, foldsnum, islin, duration);
+    
+    resfile_seq = fullfile(outputPath, ['acc_res_seq_' foldstr linstr eventsStr '.mat']);
+    data4Svm = imagingData.samples(:, :, examinedInds(1:end-1));
+    [chanceLevelseq, ~, accSVMlinseq, accRandSVMlinseq, confMatsseq, trialsNumseq] = slidingWinAcc(data4Svm, resfile_seq, ...
+        labels(2:end), winstSec, winendSec, foldsnum, islin, duration);
+    
+    resfile_prev = fullfile(outputPath, ['acc_res_prev_' foldstr linstr eventsStr '.mat']);
+    data4Svm = imagingData.samples(:, :, examinedInds(2:end));
+    [chanceLevelPrev, ~, accSVMlinPrev, accRandSVMlinPrev, confMatsPrev, trialsNumPrev] = slidingWinAcc(data4Svm, resfile_prev, ...
+        labels(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
+    save(resfileTot, 'chanceLevel', 'tmid', 'accSVM', 'accRandSVM', 'confMats', 'trialsNum', ...
+        'chanceLevelseq', 'accSVMlinseq', 'accRandSVMlinseq', 'confMatsseq', 'trialsNumseq', ...
+        'chanceLevelPrev', 'accSVMlinPrev', 'accRandSVMlinPrev', 'confMatsPrev', 'trialsNumPrev');
+    delete(resfile_curr);
+    delete(resfile_seq);
+    delete(resfile_prev);
+end
 % visualize
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 xlimmin = generalProperty.visualization_startTime2plot;
@@ -74,7 +84,7 @@ end
 mysave(gcf, fullfile(outputPath, ['accWithLegendSTD_' foldstr linstr eventsStr]));
 
 %  Clustering - Linear Classifier (SVM) 95% Confidence
-if length(eventsList) == 2    
+if length(eventsList) == 2
     for ti=1:length(accSVM.raw.mean)
         accSVM.raw.C(:,ti) = getConfidenceInterval(accSVM.raw.mean(ti), accSVM.raw.std(ti), numel(accSVM.raw.accv)/foldsnum, conf_percent4acc);
         
@@ -84,7 +94,7 @@ if length(eventsList) == 2
     mysave(gcf, fullfile(outputPath, ['accWithLegendStanErr_' foldstr linstr eventsStr]));
     ylim(atop,[0 max(get(atop, 'YLim'))]);
     set(htoneLine, 'YData',[0 max(get(atop, 'YLim'))]);
-
+    
     mysave(gcf, fullfile(outputPath, ['accWithLegendStanErr01_' foldstr linstr eventsStr]));
     
     c=get(gcf, 'Children');
@@ -106,8 +116,8 @@ end
 
 %% S/F Clustering - Linear Classifier (SVM) of previous and next trial
 %% Note: Time axes for both figures is Time [secs]
-
-plotAccUnion(tmid-toneTime, accSVMlinseq, accSVM, accSVMlinPrev, labels(1:end-1), t, 0, labelsFontSz);
+chanceLevels = [chanceLevelseq chanceLevel chanceLevelPrev];
+plotAccUnion(tmid-toneTime, accSVMlinseq, accSVM, accSVMlinPrev, chanceLevels, 0, labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['accPrevNextstanErr_' foldstr linstr eventsStr]));
 
 for ti=1:length(accSVM.raw.mean)
@@ -117,5 +127,5 @@ atop=plotAccResFinal(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', F
 mysave(gcf, fullfile(outputPath, ['accNextTrialSTD_' foldstr linstr eventsStr]));
 [atop, hlabel] = plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 set(hlabel,'Position', [-3.1152    1.2576   -1.0000]);
-   
+
 mysave(gcf, fullfile(outputPath, ['accNextTrialstanErr_' foldstr linstr eventsStr]));
