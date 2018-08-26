@@ -1,4 +1,4 @@
-function  [chanceLevel, tmid, accSVM, accRandSVM, confMat] = slidingWinAcc(X, resfile, ...
+function  [chanceLevel, tmid, accSVM, accRandSVM, confMat, trialsNum] = slidingWinAcc(X, resfile, ...
     labels, winstSec, winendSec, foldsnum, islin, tendTrial)
 
 t = linspace(0,tendTrial, size(X,2));
@@ -7,7 +7,10 @@ tmid = (winendSec + winstSec)/2;
 rng('default');
 randinds = randperm(length(labels));
 randLabels = labels(randinds);
+trialsNum = size(X, 3);
 
+b=hist(labels,unique(labels));
+chanceLevel=max(b./sum(b));
 %% wins
 if exist(resfile,'file')
     load(resfile);
@@ -15,8 +18,6 @@ else
     accSVM.raw.mean=[];accRandSVM.raw.mean=[]; 
 end
 
-b=hist(labels,unique(labels));
-chanceLevel=max(b./sum(b));
 
 for win_i = length(accSVM.raw.mean)+1:length(winstSec)
     t1=tic;
@@ -37,7 +38,7 @@ for win_i = length(accSVM.raw.mean)+1:length(winstSec)
     clc;
     disp('---------------------');
     disp(win_i);    
-    save(resfile,'chanceLevel', 'tmid','accSVM','accRandSVM', 'confMat');    
+    save(resfile,'accSVM','accRandSVM', 'confMat');    
 end
 
 end

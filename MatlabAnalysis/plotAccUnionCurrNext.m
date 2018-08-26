@@ -1,20 +1,19 @@
-function [a1,a2]=plotAccUnionCurrNext(tmid, accSVMlin, accSVMlinPrev, labs, t, toneTime, labelsFontSz, xlimmin)
+function [a1,a2]=plotAccUnionCurrNext(tmid, accSVMlin, accSVMlinPrev, chanceLevels, toneTime, labelsFontSz, xlimmin)
 accSVMlinUnion.raw.mean = [ transpose(accSVMlin.raw.mean(:))  nan(1,5) transpose(accSVMlinPrev.raw.mean(:))];
 accSVMlinUnion.raw.std = [ transpose(accSVMlin.raw.std(:))  nan(1,5) transpose(accSVMlinPrev.raw.std(:)) ];
 % accSVMlinUnion.pca.mean = [accSVMlinConseq.pca.mean accSVMlin.pca.mean accSVMlinPrev.pca.mean ];
 % accSVMlinUnion.pca.std = [accSVMlinConseq.pca.std accSVMlin.pca.std accSVMlinPrev.pca.std ];
-b=hist(labs(1:end-1),0:1);
-    priorLabs=max(b./sum(b));
+
     
-m = 0.9*min([accSVMlinUnion.raw.mean-accSVMlinUnion.raw.std min(priorLabs)]);
-M = 1.1*max([accSVMlinUnion.raw.mean+accSVMlinUnion.raw.std max(priorLabs)]);
+m = 0.9*min([accSVMlinUnion.raw.mean-accSVMlinUnion.raw.std min(chanceLevels)]);
+M = 1.1*max([accSVMlinUnion.raw.mean+accSVMlinUnion.raw.std max(chanceLevels)]);
 
 
 
 
 f=figure('Color',[1 1 1]);
 a1 = subplot(1,2,1);
-plotAccRes(tmid, accSVMlin, [],labs(1:end-1), [], [], t, toneTime, false,labelsFontSz);
+plotAccRes(tmid, accSVMlin, [],chanceLevels(1), [], [], [], toneTime, false,labelsFontSz);
 ylim([m M]);xlim([xlimmin, tmid(end)]);
 fh=get(gca,'Children');
 set(fh(1),'YData', [m M])
@@ -26,7 +25,7 @@ ax = get(gca,'YAxis');
 set(ax,'Visible','off')
 ylim([m M]);xlim([xlimmin, tmid(end)]);
 hold all;
-  plot(tmid, ones(size(tmid))*priorLabs, '--k');
+  plot(tmid, ones(size(tmid))*chanceLevels(2), '--k');
 
 set(gca,'XLim', [tmid(1) tmid(end)])
 
@@ -57,20 +56,17 @@ set(d,'FontSize',labelsFontSz);
 % accSVMlin.raw.C = getConfidenceInterval(accSVMlin.raw.mean, accSVMlin.raw.std, accSVMlin.raw.accv
 % m, s, n, perc) 
 
-m = 0.9*min([accSVMlin.raw.C(1,:) min(priorLabs)]);
-M = 1.1*max([accSVMlin.raw.C(2,:) max(priorLabs)]);
+m = 0.9*min([accSVMlin.raw.C(1,:) min(chanceLevels)]);
+M = 1.1*max([accSVMlin.raw.C(2,:) max(chanceLevels)]);
 
 
 
- b=hist(labs(1:end-1),0:1);
-    priorLabs=max(b./sum(b));
-  
 
 f=figure('Color',[1 1 1]);
 a1 = subplot(1,2,1);
 shadedErrorBar(tmid,accSVMlin.raw.mean,accSVMlin.raw.mean-accSVMlin.raw.C(1,:),'lineprops',{'-k'});
 hold all;
-   plot(tmid, ones(size(tmid))*priorLabs, '--k');
+   plot(tmid, ones(size(tmid))*chanceLevels(1), '--k');
 set(gca, 'Box','off');
 ylim([m M]);xlim([xlimmin, tmid(end)]);
 placeToneTime(toneTime, 2);
@@ -87,7 +83,7 @@ ax = get(gca,'YAxis');
 set(ax,'Visible','off')
 ylim([m M]);
 hold all;
-   plot(tmid, ones(size(tmid))*priorLabs, '--k');
+   plot(tmid, ones(size(tmid))*chanceLevels(2), '--k');
 set(gca, 'Box','off');
 xlim([xlimmin, tmid(end)]);
 % Create line

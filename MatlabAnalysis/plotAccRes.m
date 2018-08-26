@@ -1,4 +1,4 @@
-function plotAccRes(tmid, accSVM, accRandSVM, labs, Sbehave, Fbehave, t, toneTime, newfig, labelsFontSz)
+function plotAccRes(tmid, accSVM, accRandSVM, chanceLevel, Sbehave, Fbehave, t, toneTime, newfig, labelsFontSz)
 if ~exist('labelsFontSz','var')
     labelsFontSz=11;
 end
@@ -36,9 +36,8 @@ shadedErrorBar(tmid,accSVM.raw.mean,accSVM.raw.std,'lineprops',{'-k'});
 xlabel('Time [sec]','FontSize',labelsFontSz);ylabel('Accuracy','FontSize',labelsFontSz);axis tight;
 hold all;
 if isempty(accRandSVM)
-    b=hist(labs,0:1);
-    priorLabs=max(b./sum(b));
-    plot(tmid, ones(size(tmid))*priorLabs, '--k');
+    
+    plot(tmid, ones(size(tmid))*chanceLevel, '--k');
 else
     shadedErrorBar(tmid,accRandSVM.raw.mean,accRandSVM.raw.std,'lineprops',{'-b'});
 
@@ -48,7 +47,7 @@ else
 ylabel('Accuracy','FontSize',labelsFontSz);axis tight;
 end
 % ylim([0 1]);
-ylim([min(priorLabs*.9, min(get(gca,'YLim'))), max(1,  max(get(gca,'YLim')))]);
+ylim([min(chanceLevel*.9, min(get(gca,'YLim'))), max(1,  max(get(gca,'YLim')))]);
 
 placeToneTime(toneTime, 2);
 set(gca, 'Box','off');
@@ -61,7 +60,7 @@ if plotP
 xlabel('Time [sec]','FontSize',labelsFontSz);ylabel('Accuracy','FontSize',labelsFontSz);axis tight;
     hold all;
     if isempty(accRandSVM)
-        plot(tmid, ones(size(tmid))*priorLabs, '--k');
+        plot(tmid, ones(size(tmid))*chanceLevel, '--k');
     else
             shadedErrorBar(tmid,accRandSVM.pca.mean,accRandSVM.pca.std,'lineprops',{'-b'});
 %         errorbar(tmid, accRandSVM.raw.mean, accRandSVM.raw.std);title('pca');

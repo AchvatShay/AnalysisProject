@@ -16,11 +16,18 @@ for k=1:20
 BdaTpaList(k).TPA = fullfile(pth, ['TPA_TSeries_03132018_0944_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
 BdaTpaList(k).BDA = fullfile(pth, ['BDA_TSeries_03132018_0944_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
 end
+eventsList = {'success','failure'}; % this is a list to to the accuracy on
+runAccuracy(outputPath, xmlfile, BdaTpaList, eventsList);
+
+% running analysis averaging
+analysisName = 'accuracy';
+generalProperty = Experiment(xmlfile);
+MatList = {'res/acc_res_folds10lin_success_failure.mat' 'res/acc_res_folds10lin_success_failure.mat'};
+runAverageAnalysis(outputPath, generalProperty, MatList, analysisName);
+
 % this is just an example to see how to extract the events' labels from a
 % bda file
 eventsLabels = getAllExperimentLabels({BdaTpaList.BDA});
-eventsList = {'success','failure'}; % this is a list to to the accuracy on
-runAccuracy(outputPath, xmlfile, BdaTpaList, eventsList);
 
 
 

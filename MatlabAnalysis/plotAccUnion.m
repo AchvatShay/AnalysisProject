@@ -1,4 +1,4 @@
-function plotAccUnion(tmid, accSVMlinConseq, accSVMlin, accSVMlinPrev, labs, t, toneTime, labelsFontSz)
+function plotAccUnion(tmid, accSVMlinConseq, accSVMlin, accSVMlinPrev, chanceLevels, toneTime, labelsFontSz)
 accSVMlinUnion.raw.mean = [transpose(accSVMlinConseq.raw.mean(:)) nan(1,5) transpose(accSVMlin.raw.mean(:))  nan(1,5) transpose(accSVMlinPrev.raw.mean(:))];
 accSVMlinUnion.raw.std = [transpose(accSVMlinConseq.raw.std(:)) nan(1,5) transpose(accSVMlin.raw.std(:))  nan(1,5) transpose(accSVMlinPrev.raw.std(:)) ];
 % accSVMlinUnion.pca.mean = [accSVMlinConseq.pca.mean accSVMlin.pca.mean accSVMlinPrev.pca.mean ];
@@ -13,12 +13,10 @@ f=figure('Color',[1 1 1]);
 a1 = subplot(1,3,1);
 shadedErrorBar(-fliplr(tmid),accSVMlinConseq.raw.mean,accSVMlinConseq.raw.std,'lineprops',{'-k'});
 ylabel('Accuracy','FontSize',labelsFontSz);hold all;
-    b=hist(labs(1:end-1),0:1);
-    priorLabs=max(b./sum(b));
-    
+    axis tight;
     ylim([m M]);
-    plot(-fliplr(tmid), ones(size(tmid))*priorLabs, '--k');
-    set(gca,'XLim', [-tmid(end),0]);
+    plot(-fliplr(tmid), ones(size(tmid))*chanceLevels(1), '--k');
+%     set(gca,'XLim', [-tmid(end),-tmid(1)]);
     d=get(a1,'XAxis');
 set(d,'FontSize',labelsFontSz);
    d=get(a1,'YAxis');
@@ -26,7 +24,7 @@ set(d,'FontSize',labelsFontSz);
 
 a2=subplot(1,3,2);
   
-plotAccRes(tmid, accSVMlin, [],labs(1:end-1), [], [], t, toneTime, false,labelsFontSz);
+plotAccRes(tmid, accSVMlin, [],chanceLevels(2), [], [], [], toneTime, false,labelsFontSz);
 ylabel('');xlabel('');
 d=get(a2,'XAxis');
 set(d,'FontSize',labelsFontSz);
@@ -44,7 +42,7 @@ set(ax,'Visible','off')
 ylim([m M]);
 hold all;
 
-    plot(tmid, ones(size(tmid))*priorLabs, '--k');
+    plot(tmid, ones(size(tmid))*chanceLevels(3), '--k');
 
 set(gca,'XLim', [tmid(1) tmid(end)])
 

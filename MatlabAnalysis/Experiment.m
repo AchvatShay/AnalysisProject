@@ -20,7 +20,7 @@ classdef Experiment %< handle
         PelletPertubation = 'None';
         Neurons2keep = 0;
         Neurons2plot = 0;
-%         Trials2keep = 0;
+        %         Trials2keep = 0;
         analysis_pca_thEffDim=0.01;
         visualization_legendLocation = 'Best';
         visualization_labelsFontSize = 14;
@@ -37,21 +37,25 @@ classdef Experiment %< handle
         slidingWinLen = 1;
         slidingWinHop = 0.5;
         visualization_conf_percent4acc = 0.05;
+        visualization_time4confplotNext = 2.5;
+        visualization_time4confplot = 2.5;
     end
     methods
         function obj = Experiment(xmlfile)
-            xmlstrct = xml2struct(xmlfile); 
+            xmlstrct = xml2struct(xmlfile);
             obj.slidingWinLen = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.slidingWinLen.Text);
             obj.slidingWinHop = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.slidingWinHop.Text);
             obj.linearSVN = xmlstrct.GeneralProperty.Experiment.analysisParams.linearSVN.Attributes.is_active;
             obj.startBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.startBehaveTime4trajectory.Text);
             obj.foldsNum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.foldsNum.Text);
-            obj.endBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.endBehaveTime4trajectory.Text);            
+            obj.endBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.endBehaveTime4trajectory.Text);
             obj.time2startCountGrabs = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.time2startCountGrabs.Text);
             obj.time2endCountGrabs = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.time2endCountGrabs.Text);
-            obj.visualization_conf_percent4acc= str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_conf_percent4acc.Text);            
-            obj.visualization_viewparams1 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams1.Text);            
-            obj.visualization_viewparams2 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams2.Text);            
+            obj.visualization_time4confplot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_time4confplotNext.Text);
+            obj.visualization_time4confplotNext=str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_time4confplot.Text);
+            obj.visualization_conf_percent4acc= str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_conf_percent4acc.Text);
+            obj.visualization_viewparams1 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams1.Text);
+            obj.visualization_viewparams2 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams2.Text);
             obj.visualization_legendLocation = xmlstrct.GeneralProperty.Experiment.visualization.legend.Attributes.Location;
             obj.visualization_labelsFontSize = str2double(xmlstrct.GeneralProperty.Experiment.visualization.labelsFontSize.Text);
             obj.visualization_startTime2plot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.startTime2plot.Text);
@@ -131,10 +135,10 @@ classdef Experiment %< handle
                     obj.Neurons2plot(nr) = str2double(neurons(nr).name.Text);
                 end
             end
-%             trials = [xmlstrct.GeneralProperty.Experiment.TrialsToPut.Trial{:}];
-%             for tr = 1:length(trials)
-%                 obj.Trials2keep(tr) = str2double(trials(tr).name.Text);
-%             end
+            %             trials = [xmlstrct.GeneralProperty.Experiment.TrialsToPut.Trial{:}];
+            %             for tr = 1:length(trials)
+            %                 obj.Trials2keep(tr) = str2double(trials(tr).name.Text);
+            %             end
             
         end
         
