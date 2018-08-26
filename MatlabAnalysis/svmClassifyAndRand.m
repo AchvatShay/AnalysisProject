@@ -76,6 +76,7 @@ SVMModel(fold_i) = svmtrain(Y(cvinds), Xnorm(:,cvinds)', ['-t 2 -q  -c ', num2st
     end
 end
 acc.acc_v = acc_v;
+% acc.mean = sum(Y(:)==Yhat(:))/length(Y);
 acc.mean = mean(acc_v(~isnan(acc_v)));
 acc.std  = std(acc_v(~isnan(acc_v)));
 accrand.mean = mean(acc_vrand(~isnan(acc_vrand)));

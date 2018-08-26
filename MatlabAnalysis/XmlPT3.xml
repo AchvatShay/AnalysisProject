@@ -59,7 +59,9 @@
 		</Neuron>
 	</NeuronesToPlot>
     </analysisParams>
-    <visualization>   
+    <visualization>           
+        <visualization_time4confplot>2.5</visualization_time4confplot>
+        <visualization_time4confplotNext>2.5</visualization_time4confplotNext>
         <visualization_conf_percent4acc>0.05</visualization_conf_percent4acc>
         <viewparams1>0</viewparams1>
         <viewparams2>0</viewparams2>
