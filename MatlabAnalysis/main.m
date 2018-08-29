@@ -23,7 +23,7 @@ runAccuracy(outputPath, xmlfile, BdaTpaList, eventsList);
 analysisName = 'accuracy';
 generalProperty = Experiment(xmlfile);
 MatList = {'res/acc_res_folds10lin_success_failure.mat' 'res/acc_res_folds10lin_success_failure.mat'};
-runAverageAnalysis(outputPath, generalProperty, MatList, analysisName);
+runAverageAnalysis(outputPath, generalProperty, MatList, analysisName, eventsList);
 
 % this is just an example to see how to extract the events' labels from a
 % bda file

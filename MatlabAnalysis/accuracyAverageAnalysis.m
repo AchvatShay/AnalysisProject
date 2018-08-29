@@ -1,10 +1,9 @@
-function accuracyAverageAnalysis(outputPath, generalProperty, analysisRes)
+function accuracyAverageAnalysis(outputPath, generalProperty, analysisRes, eventsList)
 
 
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 toneTime = generalProperty.ToneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;
-
 tmid = analysisRes(1).tmid - toneTime;
 %% Acc averaged over experiments
 allAccTot = collectAcc([analysisRes.accSVM], [analysisRes.trialsNum], [analysisRes.chanceLevel]);
@@ -28,7 +27,18 @@ set(aleft,'XLim',[0,max(get(aleft,'XLim'))]);
 set(aleft,'XTick',0:2:6);
 set(aright,'XLim',[min(get(aright,'XLim')) toneTime]);
 mysave(gcf, fullfile(outputPath, 'AverageAnalysis_accuracyNextStartingAtZero'));
-% 
+
+time4confplotNext = generalProperty.visualization_time4confplotNext;
+tind = findClosestDouble(time4confplotNext, tmid);
+w = [analysisRes.trialsNumPrev];
+f = myplotConfMat({analysisRes.confMatsPrev}, tind, w, eventsList);
+title(['Confusion matrix for next trial t = ' num2str(time4confplotNext) 'secs']);
+mysave(gcf, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
+time4confplot = generalProperty.visualization_time4confplot;
+w = [analysisRes.trialsNum];
+f = myplotConfMat({analysisRes.confMats}, tind, w, eventsList);
+title(['Confusion matrix for current trial t = ' num2str(time4confplot) 'secs']);
+mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
 % %% Accuracy with behave
 % plotAccResFinalCI(tmid, allAccTot,  chanceLevels(2), Sbehave, Fbehave, t, 0, labelsFontSz, xlimmin-toneTime)
 % mysave(gcf, fullfile(outputPath, 'accNoLegend'));

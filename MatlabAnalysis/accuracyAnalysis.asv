@@ -44,7 +44,7 @@ else
     
     resfile_prev = fullfile(outputPath, ['acc_res_prev_' foldstr linstr eventsStr '.mat']);
     data4Svm = imagingData.samples(:, :, examinedInds(2:end));
-    [chanceLevelPrev, ~, accSVMlinPrev, ~, confMatsPrev, trialsNumPrev] = slidingWinAcc(data4Svm, resfile_prev, ...
+    [chanceLevelPrev, ~, accSVMlinPrev, accRandSVMlinPrev, confMatsPrev, trialsNumPrev] = slidingWinAcc(data4Svm, resfile_prev, ...
         labels(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
     save(resfileTot, 'chanceLevel', 'tmid', 'accSVM', 'accRandSVM', 'confMats', 'trialsNum', ...
         'chanceLevelseq', 'accSVMlinseq', 'accRandSVMlinseq', 'confMatsseq', 'trialsNumseq', ...
@@ -123,17 +123,19 @@ mysave(gcf, fullfile(outputPath, ['accPrevNextstanErr_' foldstr linstr eventsStr
 for ti=1:length(accSVM.raw.mean)
     accSVMlinPrev.raw.C(:,ti) = getConfidenceInterval(accSVMlinPrev.raw.mean(ti), accSVMlinPrev.raw.std(ti), numel(accSVMlinPrev.raw.accv)/foldsnum, conf_percent4acc);
 end
-plotAccResFinal(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
+atop=plotAccResFinal(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 mysave(gcf, fullfile(outputPath, ['accNextTrialSTD_' foldstr linstr eventsStr]));
-[~, hlabel] = plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
+[atop, hlabel] = plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 set(hlabel,'Position', [-3.1152    1.2576   -1.0000]);
 
 mysave(gcf, fullfile(outputPath, ['accNextTrialstanErr_' foldstr linstr eventsStr]));
 time4confplotNext = generalProperty.visualization_time4confplotNext;
-f = myplotConfMat({confMatsPrev}, findClosestDouble(time4confplotNext, tmid), 1, eventsList);
+f = myplotConfMat({analysisRes.confMats}, tind, w, eventsList);
+plotConfMat(confMatsPrev(:,:,findClosestDouble(time4confplotNext, tmid)), eventsList);
 title(['Confusion matrix for next trial t = ' num2str(time4confplotNext) 'secs']);
-mysave(f, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
+mysave(gcf, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
 time4confplot = generalProperty.visualization_time4confplotNext;
-f=myplotConfMat({confMats}, findClosestDouble(time4confplot, tmid), 1, eventsList);
+figure;
+plotConfMat(confMats(:,:,findClosestDouble(time4confplot, tmid)), eventsList);
 title(['Confusion matrix for current trial t = ' num2str(time4confplot) 'secs']);
-mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
+mysave(gcf, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
