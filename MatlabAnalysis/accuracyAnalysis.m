@@ -48,7 +48,7 @@ else
         labels(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
     save(resfileTot, 'chanceLevel', 'tmid', 'accSVM', 'accRandSVM', 'confMats', 'trialsNum', ...
         'chanceLevelseq', 'accSVMlinseq', 'accRandSVMlinseq', 'confMatsseq', 'trialsNumseq', ...
-        'chanceLevelPrev', 'accSVMlinPrev', 'accRandSVMlinPrev', 'confMatsPrev', 'trialsNumPrev');
+        'chanceLevelPrev', 'accSVMlinPrev', 'confMatsPrev', 'trialsNumPrev');
     delete(resfile_curr);
     delete(resfile_seq);
     delete(resfile_prev);

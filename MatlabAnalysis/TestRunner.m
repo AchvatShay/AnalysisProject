@@ -2,7 +2,7 @@ function TestRunner
 
 xmlfile = 'XmlPT3.xml';
 
-bda_tpa_folder = 'E:\Data\Shahar\Den6\All\Trials';
+bda_tpa_folder = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Trials';
 
 listFiles = dir(bda_tpa_folder);
 
@@ -33,27 +33,27 @@ end
 % now for more than 1 neuron
 % xmlfile = 'XmlPT3.xml';
 
-% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\pcaTrajectories';
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
-% 
-% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\plotAllNrnsAcrossTrials';
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
-% % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-% 
-% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\Pca2D';
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
-% 
-% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\diffMap2D';
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
-% 
-% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\diffMapTrajectories';
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
-% 
-% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\Accuracy';
-% runAccuracy(outputPath, xmlfile, BdaTpaList, {'success','failure'});
-% 
-outputPath = 'E:\Data\Shahar\Den6\All\Analysis\Accuracy';
+outputPath = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Analysis\pcaTrajectories';
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+
+outputPath = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Analysis\plotAllNrnsAcrossTrials';
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
+
+outputPath = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Analysis\Pca2D';
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+
+outputPath = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Analysis\diffMap2D';
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
+
+outputPath = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Analysis\diffMapTrajectories';
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
+
+outputPath = 'E:\Data\Feedi\L5_PT_PD\HR5-1\02_15_16_S\Analysis\Accuracy';
 runAccuracy(outputPath, xmlfile, BdaTpaList, {'success','failure'});
+% 
+% outputPath = 'E:\Data\Shahar\Den7\All\Analysis\Accuracy';
+% runAccuracy(outputPath, xmlfile, BdaTpaList, {'success','failure'});
 
 % outputPath = 'E:\Data\Shahar\Den6\All\Analysis\PostAccuracy';
 
