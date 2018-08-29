@@ -47,6 +47,11 @@ if plotHist > 0
     set(h, 'Position',[-0.8111    1.2424   -1.0000]);
     set(atop, 'XLim', get(gca, 'XLim'));
     set(atop, 'XTick', get(gca, 'XTick'));
-    
+else
+    %     title('Events At Success');%ylabel('Event probability ')
+    ylabel('');xlim([xlmMin, tmid(end)]);
+    %     title('Events At Failure');
+    h=ylabel('Event Probability', 'FontSize',labelsFontSz);
+    set(h, 'Position',[-0.8111    1.2424   -1.0000]);
 end
 end

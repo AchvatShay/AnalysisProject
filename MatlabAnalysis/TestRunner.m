@@ -1,9 +1,8 @@
 function TestRunner
 
-xmlfile = 'D:\Shay\work\AnalysisProject\manager\src\main\webapp\resources\AnalysisResults\Shay\MainProject\testM\XmlAnalysis.xml';
+xmlfile = 'XmlPT3.xml';
 
-outputPath = 'res';
-bda_tpa_folder = 'D:\Shay\work\PT3\3_13_18_1';
+bda_tpa_folder = 'E:\Data\Shahar\Den6\All\Trials';
 
 listFiles = dir(bda_tpa_folder);
 
@@ -28,17 +27,50 @@ end
 
 % this is just an example to see how to extract the neurons' names from a
 % tpa file
-[Neurons] = getAllExperimentNeurons(BdaTpaList(1).TPA);
+% [Neurons] = getAllExperimentNeurons(BdaTpaList(1).TPA);
 
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 % now for more than 1 neuron
 % xmlfile = 'XmlPT3.xml';
+
+% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\pcaTrajectories';
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+% 
+% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\plotAllNrnsAcrossTrials';
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
+% % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
+% 
+% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\Pca2D';
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+% 
+% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\diffMap2D';
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
+% 
+% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\diffMapTrajectories';
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
+% 
+% outputPath = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\Accuracy';
+% runAccuracy(outputPath, xmlfile, BdaTpaList, {'success','failure'});
+% 
+outputPath = 'E:\Data\Shahar\Den6\All\Analysis\Accuracy';
+runAccuracy(outputPath, xmlfile, BdaTpaList, {'success','failure'});
+
+% outputPath = 'E:\Data\Shahar\Den6\All\Analysis\PostAccuracy';
+
+% Matlist{1} = 'E:\Data\Shahar\Den6\2_21_17_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{2} = 'E:\Data\Shahar\Den6\2_22_17_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{3} = 'E:\Data\Shahar\Den6\2_27_17_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{4} = 'E:\Data\Shahar\Den6\3_11_18_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{5} = 'E:\Data\Shahar\Den6\3_13_18_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{6} = 'E:\Data\Shahar\Den6\3_28_18_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{7} = 'E:\Data\Shahar\Den6\4_11_18_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{8} = 'E:\Data\Shahar\Den6\5_29_18_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{9} = 'E:\Data\Shahar\Den6\7_11_18_1\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
+% 
+% runAverageAnalysis(outputPath, xmlfile, Matlist, 'accuracy');
+
+
+
 % 
 % 
 %  [ res.quest.Trees{numConsecTrials}, ~, ~, res.quest.embedding{numConsecTrials}, dataN, vals] = RunGenericDimsQuestionnaire( params, permute(dataConsec{numConsecTrials},(runningOrder) ) );

@@ -9,11 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public class NeuronsBean {
-    private static final Logger logger = LoggerFactory.getLogger(NeuronsBean.class);
+public class ExperimentDataBean {
+    private static final Logger logger = LoggerFactory.getLogger(ExperimentDataBean.class);
 
 
     @Autowired
@@ -55,22 +54,22 @@ public class NeuronsBean {
         try {
             List<Trial> trials = experiment.getTrials();
             if (trials != null && trials.size() > 0) {
-//                MWCharArray tpa = new MWCharArray(trials.get(0).getBda());
+                MWCharArray tpa = new MWCharArray(trials.get(0).getBda());
 
-//                Object[] results = analysisMatlab.getAllExperimentNeurons(1, tpa);
-//
-//
-//                if (results[0] instanceof MWNumericArray) {
-//                    MWNumericArray neurons_names = ((MWNumericArray) results[0]);
-//                    for (long[] j : (long[][]) neurons_names.toLongArray()) {
-//                        n.append(String.valueOf(j[0])).append(',');
-//                    }
-//                } else {
+                Object[] results = analysisMatlab.getAllExperimentNeurons(1, tpa);
+
+
+                if (results[0] instanceof MWNumericArray) {
+                    MWNumericArray neurons_names = ((MWNumericArray) results[0]);
+                    for (long[] j : (long[][]) neurons_names.toLongArray()) {
+                        n.append(String.valueOf(j[0])).append(',');
+                    }
+                } else {
                     return "";
-//                }
-//
-//                n.deleteCharAt(n.lastIndexOf(","));
-//                return n.toString();
+                }
+
+                n.deleteCharAt(n.lastIndexOf(","));
+                return n.toString();
             }
 
             return "";
