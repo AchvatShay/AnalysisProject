@@ -35,10 +35,24 @@ for trialInd = 1:fileNumRoi
 end
 
 if any(any(diff(imagingData.roiNames.')))
-    error('ROI names are inconsistent through trials');
+    warning('ROI names are inconsistent through trials! Taking the joint ones');
+    combinds = imagingData.roiNames(:, 1);
+    for trial_i = 2:size(imagingData.roiNames, 2)
+        combinds = intersect(combinds, imagingData.roiNames(:,trial_i));
+    end
+    combinds = setdiff(combinds, 0);% avoid zero which is a place holder
+    newImagingData = zeros(length(combinds), size(imagingData.samples,2 ), size(imagingData.samples, 3));
+    for trial_i = 1:size(imagingData.roiNames, 2)
+        ind2comb = findIndsLoc(combinds, imagingData.roiNames(:, trial_i));
+        newImagingData(:, :, trial_i) = imagingData.samples(ind2comb, :, trial_i);
+    end
 end
 
+imagingData.roiNames = repmat(combinds, 1, size(imagingData.roiNames,2));
+imagingData.samples = newImagingData;
+
 [fileNamesEvent{1:fileNumRoi,1}] = deal(BdaTpaList.BDA);
+
 
 eventNameList = [];
 allTrialEvents                = cell(fileNumRoi,1);
@@ -110,4 +124,3 @@ for event_i = 1:length(eventNameList)
             BehaveData.(eventNameList{event_i}).indicator=BehaveData.(eventNameList{event_i}).indicator(:, :);
     end
 end
-imagingData = imagingData(:, :, :);
