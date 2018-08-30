@@ -5,6 +5,21 @@ labelsFontSz = generalProperty.visualization_labelsFontSize;
 toneTime = generalProperty.ToneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;
 tmid = analysisRes(1).tmid - toneTime;
+foldsnum = generalProperty.foldsNum;
+islin = generalProperty.linearSVN;
+
+foldstr = ['folds' num2str(foldsnum)];
+if islin
+    linstr = 'lin';
+else
+    linstr = 'Rbf';
+end
+eventsStr = ['_' eventsList{1}];
+for event_i = 2:length(eventsList)
+    eventsStr = [eventsStr '_' eventsList{event_i}];
+end
+
+
 %% Acc averaged over experiments
 allAccTot = collectAcc([analysisRes.accSVM], [analysisRes.trialsNum], [analysisRes.chanceLevel]);
 plotAccRes(analysisRes(1).tmid-toneTime, allAccTot, [], allAccTot.chanceLevel, [], [], [], 0);
