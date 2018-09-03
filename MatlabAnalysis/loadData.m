@@ -46,10 +46,10 @@ if any(any(diff(imagingData.roiNames.')))
         ind2comb = findIndsLoc(combinds, imagingData.roiNames(:, trial_i));
         newImagingData(:, :, trial_i) = imagingData.samples(ind2comb, :, trial_i);
     end
+    
+    imagingData.roiNames = repmat(combinds, 1, size(imagingData.roiNames,2));
+    imagingData.samples = newImagingData;
 end
-
-imagingData.roiNames = repmat(combinds, 1, size(imagingData.roiNames,2));
-imagingData.samples = newImagingData;
 
 [fileNamesEvent{1:fileNumRoi,1}] = deal(BdaTpaList.BDA);
 
@@ -103,10 +103,14 @@ if isfield(BehaveData, 'success')
 end
 
 if generalProperty.Neurons2keep ~= 0
-    
+     counter = 1;
      for nrind=1:length(generalProperty.Neurons2keep)
          curr_nrn2Keep = generalProperty.Neurons2keep(nrind);
-         currnrnind(nrind) = find(imagingData.roiNames(:, 1)-curr_nrn2Keep==0);
+         findResult = find(imagingData.roiNames(:, 1)-curr_nrn2Keep==0);
+         if ~isempty(findResult)
+            currnrnind(counter) = findResult;
+            counter = counter + 1;
+         end
      end
     
     imagingData.samples=imagingData.samples(currnrnind, :,:);

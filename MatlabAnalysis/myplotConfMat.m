@@ -2,9 +2,12 @@ function f = myplotConfMat(Ccell, tind, w, labels)
 numlabels = size(Ccell{1}, 1); % number of labels
 
 % calculate the percentage accuracies
-
+mat = zeros(size(sum(Ccell{1}(:,:,tind), 1)));
+valuesRep = repmat(mat, numlabels,1);
 for k=1:length(Ccell)
     confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 1),numlabels,1);
+    confpercent(isnan(confpercent)) = 0;
+    valuesRep = valuesRep + Ccell{k}(:,:,tind);
     C(:,:,k) = w(k)*confpercent;
 end
 % w=w/sum(w);
@@ -19,7 +22,10 @@ ylabel('Output Class'); xlabel('Target Class');
 colormap(flipud(gray));
 
 % Create strings from the matrix values and remove spaces
-textStrings = num2str(confpercent(:), '%.1f%%\n');
+textStrings = num2str(Ctot(:), '%.1f%%\n');
+textStringsCount = num2str(valuesRep(:), '(%.1f)\n');
+textStrings = strcat(textStrings, textStringsCount);
+
 textStrings = strtrim(cellstr(textStrings));
 
 % Create x and y coordinates for the strings and plot them
