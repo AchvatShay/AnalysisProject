@@ -5,7 +5,8 @@ numlabels = size(Ccell{1}, 1); % number of labels
 mat = zeros(size(sum(Ccell{1}(:,:,tind), 1)));
 valuesRep = repmat(mat, numlabels,1);
 for k=1:length(Ccell)
-    confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 1),numlabels,1);
+confpercent = 100*Ccell{k}(:,:,tind)./sum(sum(Ccell{k}(:,:,tind)));
+%     confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 1),numlabels,1);
     valuesRep = valuesRep + Ccell{k}(:,:,tind);
     C(:,:,k) = w(k)*confpercent;
 end
@@ -22,8 +23,8 @@ colormap(flipud(gray));
 
 % Create strings from the matrix values and remove spaces
 textStrings = num2str(Ctot(:), '%.1f%%\n');
-textStringsCount = num2str(valuesRep(:), '(%.1f)\n');
-textStrings = strcat(textStrings, textStringsCount);
+% textStringsCount = num2str(valuesRep(:), '(%.1f)\n');
+% textStrings = strcat(textStrings, textStringsCount);
 
 textStrings = strtrim(cellstr(textStrings));
 
@@ -37,7 +38,7 @@ midValue = mean(get(gca,'CLim'));
 
 % Choose white or black for the text color of the strings so
 % they can be easily seen over the background color
-textColors = repmat(confpercent(:) > midValue,1,3);
+textColors = repmat(Ctot(:) > midValue,1,3);
 set(hStrings,{'Color'},num2cell(textColors,2));
 
 % Setting the axis labels
