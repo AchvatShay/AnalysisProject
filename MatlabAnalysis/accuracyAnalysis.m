@@ -116,7 +116,11 @@ end
 
 %% S/F Clustering - Linear Classifier (SVM) of previous and next trial
 %% Note: Time axes for both figures is Time [secs]
-chanceLevels = [chanceLevelseq chanceLevel chanceLevelPrev];
+% chanceLevels = [chanceLevelseq chanceLevel chanceLevelPrev];
+% this is because there is no reason in presenting slightly different
+% chance levels, just because before and after is lessen with one sample.
+chanceLevels = [chanceLevel chanceLevel chanceLevel];
+
 plotAccUnion(tmid-toneTime, accSVMlinseq, accSVM, accSVMlinPrev, chanceLevels, 0, labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['accPrevNextstanErr_' foldstr linstr eventsStr]));
 

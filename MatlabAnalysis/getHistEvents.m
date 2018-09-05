@@ -16,5 +16,5 @@ for event_i = 1:length(Events2plot)
    end
 end
 allbehave = allbehave/length(tryinginds);
-Fbehave = Fbehave/length(tryinginds);
-Sbehave = Sbehave/length(tryinginds);
+Fbehave = Fbehave/sum(BehaveData.failure(tryinginds));
+Sbehave = Sbehave/sum(BehaveData.success(tryinginds));

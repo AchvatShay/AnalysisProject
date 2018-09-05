@@ -39,10 +39,20 @@ classdef Experiment %< handle
         visualization_conf_percent4acc = 0.05;
         visualization_time4confplotNext = 2.5;
         visualization_time4confplot = 2.5;
+        DetermineSucFailBy = 'suc';
     end
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
+if  strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.BySuc.Attributes.is_active, 'True')
+                obj.DetermineSucFailBy = 'suc';
+            elseif strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.lick.Attributes.is_active, 'True')
+                obj.DetermineSucFailBy = 'fail';
+            elseif strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.Type.DetermineSucFailBy.Attributes.is_active, 'True')
+                obj.DetermineSucFailBy = 'both';
+            else
+                error('Please choose one as true: 1. suc is suc and the rest are fail; 2. fail is fail and the rest is suc; 3. suc us suc, fail is fail and ignore the res.');
+            end
             obj.slidingWinLen = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.slidingWinLen.Text);
             obj.slidingWinHop = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.slidingWinHop.Text);
             obj.linearSVN = xmlstrct.GeneralProperty.Experiment.analysisParams.linearSVN.Attributes.is_active;
@@ -107,6 +117,7 @@ classdef Experiment %< handle
             else
                 error('All experiments Injection are false! Please set hand None/Saline/CNO as true');
             end
+
             % nerons for analyis
             
             if isfield(xmlstrct.GeneralProperty.Experiment.NeuronesToPut, 'Text')

@@ -60,18 +60,18 @@ for trialInd = 1:fileNumRoi
     usrData                    = load(fileNamesEvent{trialInd});
     allTrialEvents{trialInd}   = usrData.strEvent;
     for event_i = 1:length(allTrialEvents{trialInd})
-        if isempty(eventNameList) || ~any(strcmpi(eventNameList, allTrialEvents{trialInd}{event_i}.Name))           
+        if isempty(eventNameList) || ~any(strcmpi(eventNameList, allTrialEvents{trialInd}{event_i}.Name))
             eventNameList{end+1} = extractEventstr(allTrialEvents{trialInd}{event_i}.Name);
         end
     end
 end
 framNum = size(imagingData.samples,2);
 for eventName_i = 1:length(eventNameList)
-     BehaveData.(eventNameList{eventName_i}).indicator = zeros(size(imagingData.samples,3), framNum);
+    BehaveData.(eventNameList{eventName_i}).indicator = zeros(size(imagingData.samples,3), framNum);
 end
 
 for trial_i = 1:fileNumRoi
-    for m = 1:length(allTrialEvents{trial_i}) 
+    for m = 1:length(allTrialEvents{trial_i})
         eventname = lower(allTrialEvents{trial_i}{m}.Name);
         eventname = extractEventstr(eventname);
         if length(allTrialEvents{trial_i}{m}.tInd) ==2
@@ -103,15 +103,15 @@ if isfield(BehaveData, 'success')
 end
 
 if generalProperty.Neurons2keep ~= 0
-     counter = 1;
-     for nrind=1:length(generalProperty.Neurons2keep)
-         curr_nrn2Keep = generalProperty.Neurons2keep(nrind);
-         findResult = find(imagingData.roiNames(:, 1)-curr_nrn2Keep==0);
-         if ~isempty(findResult)
+    counter = 1;
+    for nrind=1:length(generalProperty.Neurons2keep)
+        curr_nrn2Keep = generalProperty.Neurons2keep(nrind);
+        findResult = find(imagingData.roiNames(:, 1)-curr_nrn2Keep==0);
+        if ~isempty(findResult)
             currnrnind(counter) = findResult;
             counter = counter + 1;
-         end
-     end
+        end
+    end
     
     imagingData.samples=imagingData.samples(currnrnind, :,:);
     imagingData.roiNames = imagingData.roiNames(currnrnind);
@@ -127,4 +127,15 @@ for event_i = 1:length(eventNameList)
         otherwise
             BehaveData.(eventNameList{event_i}).indicator=BehaveData.(eventNameList{event_i}).indicator(:, :);
     end
+end
+
+switch generalProperty.DetermineSucFailBy
+    case 'suc'
+        BehaveData.failure = zeros(size(BehaveData.failure));
+        BehaveData.failure(BehaveData.success == 0) = 1;
+    case 'fail'
+        BehaveData.success = zeros(size(BehaveData.success));
+        BehaveData.success(BehaveData.failure == 0) = 1;        
+    case 'both'
+        % do nothing
 end

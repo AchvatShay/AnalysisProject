@@ -36,6 +36,11 @@
 		</Trial>
 	</TrialsToPut>
     <analysisParams>
+        <DetermineSucFailBy>
+			<BySuc is_active='True'></BySuc>
+			<ByFail is_active='False'></ByFail>
+			<Both is_active='False'></Both>
+		</DetermineSucFailBy>
         <slidingWinLen>1</slidingWinLen>
         <slidingWinHop>0.5</slidingWinHop>
         <linearSVN is_active='True'></linearSVN>
