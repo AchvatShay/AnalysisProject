@@ -1,22 +1,25 @@
 function diffMapTrajectories(outputPath, generalProperty, imagingData, BehaveData)
 % analysis
-tryinginds = find(BehaveData.success == 1 | BehaveData.failure == 1);
-X = imagingData.samples(:, :, tryinginds);
-if exist(fullfile(outputPath, 'diff_map_res.mat'), 'file')
-    load(fullfile(outputPath, 'diff_map_res'), 'resDiffMap', 'ACC2D', 'runningOrder');
+error('Under construction');
+[labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
+generalProperty.labels2cluster, generalProperty.includeOmissions);
+[prevcurlabs, prevCurrLUT] = getPrevCurrLabels(labels, labelsLUT);
+
+X = imagingData.samples(:, :, examinedInds);
+if exist(fullfile(outputPath, ['diff_map_res' eventsStr '.mat']), 'file')
+    load(fullfile(outputPath, ['diff_map_res' eventsStr '.mat']));
 else
     [resDiffMap, runningOrder] = diffMapAnalysis(X, generalProperty.analysis_pca_thEffDim);
     labsOmissions = BehaveData.failure;    
     embedding = resDiffMap.embedding{runningOrder==3}(:,1:2);
-    labsOmissionstrying = labsOmissions(tryinginds);
     foldsNum = generalProperty.foldsNum;
-    ACC2D = svmClassifyAndRand(embedding(labsOmissions(tryinginds)~=2,:), labsOmissionstrying(labsOmissionstrying~=2), labsOmissionstrying(labsOmissionstrying~=2), foldsNum, '', 1, 0);
-    save(fullfile(outputPath, 'diff_map_res'), 'resDiffMap', 'ACC2D', 'runningOrder');
+    ACC2D = svmClassifyAndRand(embedding(labsOmissions(examinedInds)~=2,:), labsOmissionstrying(labsOmissionstrying~=2), labsOmissionstrying(labsOmissionstrying~=2), foldsNum, '', 1, 0);
+    save(fullfile(outputPath, ['diff_map_res' eventsStr '.mat']), 'resDiffMap', 'ACC2D', 'runningOrder');
 end
 
 
 
-faillabels = BehaveData.failure(tryinginds);
+faillabels = BehaveData.failure(examinedInds);
 [prevcurlabs, ~, ~] = getLabelsSeq(faillabels);
 
 startBehaveTime = generalProperty.startBehaveTime4trajectory*generalProperty.ImagingSamplingRate;
@@ -25,8 +28,8 @@ endBehaveTime = generalProperty.endBehaveTime4trajectory*generalProperty.Imaging
 % BehaveDatagrab
 tindicator = zeros(size(X, 2), 1);
 tindicator(startBehaveTime:endBehaveTime) = 1;
-[tstampFirst.grab, tstampLast.grab] = getStartEndEventTimes(tryinginds, BehaveData, 'grab', tindicator);
-[tstampFirst.atmouth, tstampLast.atmouth] = getStartEndEventTimes(tryinginds, BehaveData, 'atmouth', tindicator);
+[tstampFirst.grab, tstampLast.grab] = getStartEndEventTimes(examinedInds, BehaveData, 'grab', tindicator);
+[tstampFirst.atmouth, tstampLast.atmouth] = getStartEndEventTimes(examinedInds, BehaveData, 'atmouth', tindicator);
 
 
 %% visualize

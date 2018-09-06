@@ -40,29 +40,41 @@ classdef Experiment %< handle
         visualization_time4confplotNext = 2.5;
         visualization_time4confplot = 2.5;
         DetermineSucFailBy = 'suc';
+        includeOmissions = false;
+        labels2cluster = [];
+        prevcurrlabels2cluster = [];
+        prevcurrlabels2clusterClrs = [];
+        labels2clusterClrs = [];
+visualization_bestpcatrajectories2plot = 5;
     end
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
-if  strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.BySuc.Attributes.is_active, 'True')
+            obj.visualization_bestpcatrajectories2plot = str2double(xmlstrct.GeneralProperty.Experiment.visualization.bestpcatrajectories2plot.Text);
+
+
+            [obj.prevcurrlabels2cluster, obj.prevcurrlabels2clusterClrs] = extractLabels2cluster(xmlstrct.GeneralProperty.Experiment.analysisParams.prevcurrlabels2cluster);
+            [obj.labels2cluster, obj.labels2clusterClrs] = extractLabels2cluster(xmlstrct.GeneralProperty.Experiment.analysisParams.labels2cluster);
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.BySuc.Attributes.is_active)
                 obj.DetermineSucFailBy = 'suc';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.lick.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.lick.Attributes.is_active)
                 obj.DetermineSucFailBy = 'fail';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.Type.DetermineSucFailBy.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.Type.DetermineSucFailBy.Attributes.is_active)
                 obj.DetermineSucFailBy = 'both';
             else
                 error('Please choose one as true: 1. suc is suc and the rest are fail; 2. fail is fail and the rest is suc; 3. suc us suc, fail is fail and ignore the res.');
             end
+            obj.includeOmissions = str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.includeOmissions.Attributes.is_active);
             obj.slidingWinLen = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.slidingWinLen.Text);
             obj.slidingWinHop = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.slidingWinHop.Text);
-            obj.linearSVN = xmlstrct.GeneralProperty.Experiment.analysisParams.linearSVN.Attributes.is_active;
+            obj.linearSVN = str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.linearSVN.Attributes.is_active);
             obj.startBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.startBehaveTime4trajectory.Text);
             obj.foldsNum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.foldsNum.Text);
             obj.endBehaveTime4trajectory = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.endBehaveTime4trajectory.Text);
             obj.time2startCountGrabs = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.time2startCountGrabs.Text);
             obj.time2endCountGrabs = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.time2endCountGrabs.Text);
-            obj.visualization_time4confplot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_time4confplotNext.Text);
-            obj.visualization_time4confplotNext=str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_time4confplot.Text);
+            obj.visualization_time4confplotNext=str2timestamplist(xmlstrct.GeneralProperty.Experiment.visualization.visualization_time4confplotNext);
+            obj.visualization_time4confplot=str2timestamplist(xmlstrct.GeneralProperty.Experiment.visualization.visualization_time4confplot);
             obj.visualization_conf_percent4acc= str2double(xmlstrct.GeneralProperty.Experiment.visualization.visualization_conf_percent4acc.Text);
             obj.visualization_viewparams1 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams1.Text);
             obj.visualization_viewparams2 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams2.Text);
@@ -71,11 +83,11 @@ if  strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy
             obj.visualization_startTime2plot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.startTime2plot.Text);
             obj.name = xmlstrct.GeneralProperty.Experiment.name;
             obj.Type = xmlstrct.GeneralProperty.Experiment.Condition.Type;
-            if  strcmp(xmlstrct.GeneralProperty.Experiment.Condition.Type.hand_reach.Attributes.is_active, 'True')
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.Condition.Type.hand_reach.Attributes.is_active)
                 obj.Type = 'hand_reach';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.Condition.Type.lick.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.Condition.Type.lick.Attributes.is_active)
                 obj.Type = 'lick';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.Condition.Type.pedal.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.Condition.Type.pedal.Attributes.is_active)
                 obj.Type = 'pedal';
             else
                 error('All experiments types are false! Please set hand reach/lick/pedal as true');
@@ -87,37 +99,37 @@ if  strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy
             obj.ToneTime = str2double(xmlstrct.GeneralProperty.Experiment.Condition.ToneTime.Text);
             obj.Duration = str2double(xmlstrct.GeneralProperty.Experiment.Condition.Duration.Text);
             obj.Injection = xmlstrct.GeneralProperty.Experiment.Condition.Injection;
-            if  strcmp(xmlstrct.GeneralProperty.Experiment.Condition.Injection.None.Attributes.is_active, 'True')
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.Condition.Injection.None.Attributes.is_active)
                 obj.Injection = 'None';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.Condition.Injection.Saline.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.Condition.Injection.Saline.Attributes.is_active)
                 obj.Injection = 'Saline';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.Condition.Injection.CNO.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.Condition.Injection.CNO.Attributes.is_active)
                 obj.Injection = 'CNO';
             else
                 error('All experiments Injection are false! Please set hand None/Saline/CNO as true');
             end
             % visualization of events
             obj.Events2plot={};
-            if  strcmp(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.lift.Attributes.is_active, 'True')
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.lift.Attributes.is_active)
                 obj.Events2plot{end+1} = 'lift';
             end
-            if strcmp(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.grab.Attributes.is_active, 'True')
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.grab.Attributes.is_active)
                 obj.Events2plot{end+1} = 'grab';
             end
-            if strcmp(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.atmouth.Attributes.is_active, 'True')
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.atmouth.Attributes.is_active)
                 obj.Events2plot{end+1} = 'atmouth';
             end
             
-            if  strcmp(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.None.Attributes.is_active, 'True')
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.None.Attributes.is_active)
                 obj.PelletPertubation = 'None';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.Ommisions.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.Ommisions.Attributes.is_active)
                 obj.PelletPertubation = 'Ommisions';
-            elseif strcmp(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.Taste.Attributes.is_active, 'True')
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.Taste.Attributes.is_active)
                 obj.PelletPertubation = 'Taste';
             else
                 error('All experiments Injection are false! Please set hand None/Saline/CNO as true');
             end
-
+            
             % nerons for analyis
             
             if isfield(xmlstrct.GeneralProperty.Experiment.NeuronesToPut, 'Text')

@@ -1,18 +1,6 @@
-function accuracyAnalysis(outputPath, generalProperty, imagingData, BehaveData, eventsList)
+function accuracyAnalysis(BehaveData, outputPath, generalProperty, imagingData, labels, examinedInds, eventsStr, labelsLUT)
 
-examinedInds = [];
-for event_i = 1:length(eventsList)
-    examinedInds = cat(1, examinedInds, find(BehaveData.(eventsList{event_i})));
-end
-if length(examinedInds) ~= length(unique(examinedInds))
-    error('The events you chose for accuracy are true for the same trial. Please choose non-overlapping trials');
-end
-examinedInds = sort(examinedInds);
 
-labels = zeros(length(examinedInds), 1);
-for event_i = 1:length(eventsList)
-    labels = labels + BehaveData.(eventsList{event_i})(examinedInds)*2^(event_i-1);
-end
 foldsnum = generalProperty.foldsNum;
 islin = generalProperty.linearSVN;
 duration = generalProperty.Duration;
@@ -24,10 +12,7 @@ if islin
 else
     linstr = 'Rbf';
 end
-eventsStr = ['_' eventsList{1}];
-for event_i = 2:length(eventsList)
-    eventsStr = [eventsStr '_' eventsList{event_i}];
-end
+
 resfileTot = fullfile(outputPath, ['acc_res_' foldstr linstr eventsStr '.mat']);
 if exist(resfileTot, 'file')
     load(resfileTot);
@@ -59,8 +44,7 @@ xlimmin = generalProperty.visualization_startTime2plot;
 conf_percent4acc = generalProperty.visualization_conf_percent4acc;
 toneTime = generalProperty.ToneTime;
 duration = generalProperty.Duration;
-tryinginds = find(BehaveData.success | BehaveData.failure);
-[Sbehave, Fbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, tryinginds);
+[Sbehave, Fbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
 Sbehave=Sbehave.';
 Fbehave=Fbehave.';
 
@@ -84,7 +68,7 @@ end
 mysave(gcf, fullfile(outputPath, ['accWithLegendSTD_' foldstr linstr eventsStr]));
 
 %  Clustering - Linear Classifier (SVM) 95% Confidence
-if length(eventsList) == 2
+if length(labelsLUT) == 2
     for ti=1:length(accSVM.raw.mean)
         accSVM.raw.C(:,ti) = getConfidenceInterval(accSVM.raw.mean(ti), accSVM.raw.std(ti), numel(accSVM.raw.accv)/foldsnum, conf_percent4acc);
         
@@ -134,10 +118,16 @@ set(hlabel,'Position', [-3.1152    1.2576   -1.0000]);
 
 mysave(gcf, fullfile(outputPath, ['accNextTrialstanErr_' foldstr linstr eventsStr]));
 time4confplotNext = generalProperty.visualization_time4confplotNext;
-f = myplotConfMat({confMatsPrev}, findClosestDouble(time4confplotNext, tmid), 1, eventsList);
-title(['Confusion matrix for next trial t = ' num2str(time4confplotNext) 'secs']);
-mysave(f, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
-time4confplot = generalProperty.visualization_time4confplotNext;
-f=myplotConfMat({confMats}, findClosestDouble(time4confplot, tmid), 1, eventsList);
-title(['Confusion matrix for current trial t = ' num2str(time4confplot) 'secs']);
-mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
+for k = 1:length(time4confplotNext)
+f = myplotConfMat({confMatsPrev}, findClosestDouble(time4confplotNext(k), tmid-toneTime), 1, labelsLUT);
+title(['Confusion matrix for next trial t = ' num2str(time4confplotNext(k)) 'secs']);
+mysave(f, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr num2str(time4confplotNext(k))]));
+end
+
+time4confplot = generalProperty.visualization_time4confplot;
+for k = 1:length(time4confplot)
+
+f=myplotConfMat({confMats}, findClosestDouble(time4confplot(k), tmid-toneTime), 1, labelsLUT);
+title(['Confusion matrix for current trial t = ' num2str(time4confplot(k)) 'secs']);
+mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr num2str(time4confplot(k))]));
+end

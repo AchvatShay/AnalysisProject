@@ -1,20 +1,13 @@
-function [closest0, closest1] = plotTrajBest(trajData, labels, countTraj)
-if nargin == 2
-    dim=2;
-end
-inds0 = find(labels==0);
-inds1 = find(labels==1);
-closest0 = getClosestTrajectories(trajData, inds0, countTraj);
-closest1 = getClosestTrajectories(trajData, inds1, countTraj);
-for k = 1:length(closest1)
-    plot3(squeeze(trajData(1,:,closest1(k))), squeeze(trajData(2,:,closest1(k))), squeeze(trajData(3,:,closest1(k))),  '-r');
-    
+function plotTrajBest(clrs, trajData, labels, countTraj)
+
+classes = unique(labels);
+for ci = 1:length(classes)
+    inds{ci} = find(labels==classes(ci));
+    closest{ci} = getClosestTrajectories(trajData, inds{ci}, countTraj);
+for k=1:countTraj
+    plot3(squeeze(trajData(1,:,closest{ci}(k))), squeeze(trajData(2,:,closest{ci}(k))), squeeze(trajData(3,:,closest{ci}(k))),  'Color', clrs(ci, :));
     hold on;
 end
-for k = 1:length(closest0)    
-    plot3(squeeze(trajData(1,:,closest0(k))), squeeze(trajData(2,:,closest0(k))), squeeze(trajData(3,:,closest0(k))),  '-b');
-    
-    hold on;
 end
 
 axis tight;

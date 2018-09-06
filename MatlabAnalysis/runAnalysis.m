@@ -4,6 +4,5 @@ function runAnalysis(outputPath, xmlfile, BdaTpaList, analysisName)
 generalProperty = Experiment(xmlfile);
 
 [imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
-analysis(analysisName, outputPath, generalProperty, imagingData, BehaveData);
-
+feval(analysisName,outputPath, generalProperty, imagingData, BehaveData); 
 end

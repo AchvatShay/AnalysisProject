@@ -2,14 +2,14 @@ function f=plotTrajectoryUsingTube(xlimmin, t, trajData, labels, clrs, toneTime,
 
 f(1)=figure;
 map=colormap('jet');
-labels1=labels+1;
-labelsR=round(size(map,1)*(labels1)/(max(labels1)));
-classes = unique(labels1);
+
+labelsR=round(size(map,1)*(labels)/(max(labels)));
+classes = unique(labels);
 for k=1:length(classes)
     for d = 1:3
-    meanVals(d, :, k) = mean(permute(trajData(d,:,labels1==classes(k)),[2 3 1]),2);
-    eVals(d, :, k) = mean(std(permute(trajData(d,:,labels1==classes(k)),[2 3 1]),0,2),3);
-varVals(d, :, k) = mean(var(permute(trajData(d,:,labels1==classes(k)),[2 3 1]),0,2),3);
+    meanVals(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);
+    eVals(d, :, k) = mean(std(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
+varVals(d, :, k) = mean(var(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
     end
 %     shadedTraj(meanVals(1:2, :, k),eVals(1:2, :, k),'lineprops',{'-b'});
     tubeplot(meanVals(:, :, k), mean(mean(eVals(:, :, k))));hold all;
@@ -29,11 +29,11 @@ if length(classes) == 1
     return
 end
 trajData=trajData(:,:,2:end);
-labels1=labels1(1:end-1);
+labels=labels(1:end-1);
 for k=1:length(classes)
     for d = 1:3
-    meanValsNext(d, :, k) = mean(permute(trajData(d,:,labels1==classes(k)),[2 3 1]),2);
-varValsNext(d, :, k) = mean(var(permute(trajData(d,:,labels1==classes(k)),[2 3 1]),0,2),3);
+    meanValsNext(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);
+varValsNext(d, :, k) = mean(var(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
     end
 end
 

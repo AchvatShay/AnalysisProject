@@ -1,22 +1,26 @@
 function diffMap2D(outputPath, generalProperty, imagingData, BehaveData)
+% requested labels
+[labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
+generalProperty.labels2cluster, generalProperty.includeOmissions);
+[prevcurlabs, prevCurrLUT] = getPrevCurrLabels(labels, labelsLUT);
+
 % analysis
-tryinginds = find(BehaveData.success == 1 | BehaveData.failure == 1);
-X = imagingData.samples(:, :, tryinginds);
-if exist(fullfile(outputPath, 'diff_map_res.mat'), 'file')
-    load(fullfile(outputPath, 'diff_map_res'), 'resDiffMap', 'ACC2D', 'runningOrder');
+X = imagingData.samples(:, :, examinedInds);
+if exist(fullfile(outputPath, ['diff_map_res' eventsStr '.mat']), 'file')
+    load(fullfile(outputPath, ['diff_map_res' eventsStr '.mat']));
 else
     [resDiffMap, runningOrder] = diffMapAnalysis(X, generalProperty.analysis_pca_thEffDim);
-    labsOmissions = BehaveData.failure;    
     embedding = resDiffMap.embedding{runningOrder==3}(:,1:2);
-    labsOmissionstrying = labsOmissions(tryinginds);
     foldsNum = generalProperty.foldsNum;
-    ACC2D = svmClassifyAndRand(embedding(labsOmissions(tryinginds)~=2,:), labsOmissionstrying(labsOmissionstrying~=2), labsOmissionstrying(labsOmissionstrying~=2), foldsNum, '', 1, 0);
-    save(fullfile(outputPath, 'diff_map_res'), 'resDiffMap', 'ACC2D', 'runningOrder');
+ACC2D = svmClassifyAndRand(embedding, labels, labels, foldsNum, '', 1, 0);
+        
+ACC2Dprevcur = svmClassifyAndRand(embedding(2:end, :), prevcurlabs, prevcurlabs, foldsNum, '', 1, 0);    
+save(fullfile(outputPath, ['diff_map_res' eventsStr '.mat']), 'resDiffMap', 'ACC2D', 'runningOrder');
 end
 
 
 % visualize
-visualize2Dembedding(generalProperty, ACC2D, BehaveData, resDiffMap.embedding{runningOrder==3}, outputPath, 'diffMap')
+visualize2Dembedding(labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, resDiffMap.embedding{runningOrder==3}, outputPath, 'diffMap')
 
 
 

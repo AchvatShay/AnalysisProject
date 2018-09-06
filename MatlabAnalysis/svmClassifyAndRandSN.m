@@ -1,9 +1,7 @@
-function [ acc, accrand, scoresall, scoresallrand, confMat, confMatrand, ...
-    accclasses, accclassesrand, Yhat, SVMModel] = svmClassifyAndRand(X, Y, Yrand, foldsNum, filename, islin, tonorm)
+function [dprime acc, accrand] = svmClassifyAndRandSN(X, Y, Yrand, foldsNum, filename, islin, tonorm)
 if ~exist('islin', 'var')
     islin = false;
 end
-scoresall=[];scoresallrand=[];
 if exist(filename, 'file')
     load(filename)
     return;
@@ -45,15 +43,15 @@ SVMModel(fold_i) = svmtrain(Y(cvinds), Xnorm(:,cvinds)', ['-t 2 -q  -c ', num2st
     [predictions, ~, score] = svmpredict(Y(testinds), sparse(Xnorm(:,testinds))', SVMModel(fold_i));
     acc_v(fold_i) = sum(predictions==Y(testinds))/length(testinds);
     Yhat(testinds) = predictions;
-%     if nargout > 2
-%     scoresall(testinds,:)=score;
-%     end
+    if nargout > 2
+    scoresall(testinds,:)=score;
+    end
     [predictions, ~, score] = svmpredict(Yrand(testinds), sparse(Xnorm(:,testinds))', SVMModel(fold_i));
     acc_vrand(fold_i) = sum(predictions==Yrand(testinds))/length(testinds);
     Yhatrand(testinds) = predictions;
-%     if nargout > 2
-%     scoresallrand(testinds,:)=score;
-%     end
+    if nargout > 2
+    scoresallrand(testinds,:)=score;
+    end
     %     if length(unique(Y(testinds))) < 2
     %         auc_v(fold_i)=nan;
     %     else
