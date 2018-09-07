@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GeneralProperty>
+  <Experiment>
+	<name>shay</name>
+	<Condition>
+		<Type>
+			<lick is_active='False'></lick>
+			<hand_reach is_active='True'></hand_reach>
+			<pedal is_active='False'></pedal>
+		</Type>
+		<Depth>100</Depth>
+		<ImagingSamplingRate>30</ImagingSamplingRate>
+		<BehavioralSamplingRate>200</BehavioralSamplingRate>
+        <BehavioralDelay>20</BehavioralDelay>
+		<ToneTime>4</ToneTime>
+		<Duration>12</Duration>
+		<Injection>
+			<None is_active='True'></None>
+			<Saline is_active='False'></Saline>
+			<CNO is_active='False'></CNO>
+		</Injection>
+        <PelletPertubation>
+			<None is_active='True'></None>
+			<Ommisions is_active='False'></Ommisions>
+			<Taste is_active='False'></Taste>
+		</PelletPertubation>
+	</Condition>
+	<NeuronesToPut>
+	</NeuronesToPut>
+	<TrialsToPut>
+		<Trial>
+			<name>0</name>
+		</Trial>
+		<Trial>
+			<name>0</name>
+		</Trial>
+    </TrialsToPut>
+    <analysisParams>  
+        <prevcurrlabels2cluster>
+            <cluster>			
+                <name>success</name>
+                <color>blue</color>
+                <color>cyan</color>
+            </cluster>
+            <cluster>			
+                <name>failure</name> 
+                <color>purpule</color>
+                <color>red</color>
+            </cluster>
+        </prevcurrlabels2cluster>  
+        <labels2cluster>
+            <cluster>			
+				<name>success</name>
+                <color>blue</color>                
+        </cluster>
+		<cluster>			
+				<name>failure</name>  
+                <color>red</color>                
+		</cluster>
+        </labels2cluster>   
+        <includeOmissions is_active='False'></includeOmissions>
+        <DetermineSucFailBy>
+			<BySuc is_active='False'></BySuc>
+			<ByFail is_active='True'></ByFail>
+			<Both is_active='False'></Both>
+		</DetermineSucFailBy>
+        <slidingWinLen>1</slidingWinLen>
+        <slidingWinHop>0.5</slidingWinHop>
+        <linearSVN is_active='True'></linearSVN>
+        <foldsNum>10</foldsNum>
+        <time2startCountGrabs>4</time2startCountGrabs>
+        <time2endCountGrabs>6</time2endCountGrabs> 
+        <startBehaveTime4trajectory>4</startBehaveTime4trajectory>
+        <endBehaveTime4trajectory>6</endBehaveTime4trajectory>
+        <NeuronesToPlot>
+		<Neuron>
+			<name>1</name>
+		</Neuron>
+		<Neuron>
+			<name>2</name>
+		</Neuron>
+		<Neuron>
+			<name>3</name>
+		</Neuron>
+		<Neuron>
+			<name>4</name>
+		</Neuron>
+	</NeuronesToPlot>
+    </analysisParams>
+    <visualization> 
+        <bestpcatrajectories2plot>5</bestpcatrajectories2plot>
+        <visualization_time4confplot>
+            <time_stamp>-2</time_stamp>
+            <time_stamp>0</time_stamp>
+            <time_stamp>2</time_stamp>
+            <time_stamp>6</time_stamp>
+        </visualization_time4confplot>
+        <visualization_time4confplotNext>
+            <time_stamp>-2</time_stamp>
+        </visualization_time4confplotNext>
+        <visualization_conf_percent4acc>0.05</visualization_conf_percent4acc>
+        <viewparams1>0</viewparams1>
+        <viewparams2>0</viewparams2>
+        <legend Location='Best'></legend>
+        <labelsFontSize>14</labelsFontSize>
+        <startTime2plot>1.5</startTime2plot>
+        <Events2plot>
+			<grab is_active='True'></grab>
+			<lift is_active='True'></lift>
+			<atmouth is_active='True'></atmouth>
+            <lick is_active='True'></lick>
+		</Events2plot>
+    </visualization>
+  </Experiment>    
+</GeneralProperty>
+
+

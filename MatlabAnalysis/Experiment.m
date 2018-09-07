@@ -57,9 +57,9 @@ visualization_bestpcatrajectories2plot = 5;
             [obj.labels2cluster, obj.labels2clusterClrs] = extractLabels2cluster(xmlstrct.GeneralProperty.Experiment.analysisParams.labels2cluster);
             if  str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.BySuc.Attributes.is_active)
                 obj.DetermineSucFailBy = 'suc';
-            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.lick.Attributes.is_active)
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.ByFail.Attributes.is_active)
                 obj.DetermineSucFailBy = 'fail';
-            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.Type.DetermineSucFailBy.Attributes.is_active)
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.Both.DetermineSucFailBy.Attributes.is_active)
                 obj.DetermineSucFailBy = 'both';
             else
                 error('Please choose one as true: 1. suc is suc and the rest are fail; 2. fail is fail and the rest is suc; 3. suc us suc, fail is fail and ignore the res.');
