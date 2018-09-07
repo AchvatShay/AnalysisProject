@@ -1,30 +1,33 @@
 function plotAllNrnsAcrossTrials(outputPath, generalProperty, imagingData, BehaveData)
 % extract behavioral data stats
+[labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(...
+BehaveData, generalProperty.labels2cluster, generalProperty.includeOmissions);
+
 % 1. grab counts per trial
 % grabCount = getGrabCounts(eventTimeGrab{end}, findClosestDouble(t, toneTime), findClosestDouble(t, toneTime+2), frameRateRatio{1});
 grabCount = getGrabCounts(BehaveData, generalProperty.time2startCountGrabs, generalProperty.time2endCountGrabs, generalProperty.ImagingSamplingRate);
 % 2. discard trials with no suc or fail 
-tryinginds = find(BehaveData.success | BehaveData.failure);
 
 if (~isnan(grabCount))
-    grabCount = grabCount(tryinginds);
+    grabCount = grabCount(examinedInds);
 end
 
 % 3. obtain histograms of behave events
-[Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, tryinginds);
+[behaveHist, allbehave] = getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
+
 X = imagingData.samples;
-X=X(:,:,tryinginds);
+X=X(:,:,examinedInds);
 
 
 if (~isnan(grabCount))
     [~, igrabs] = sort(grabCount);        
     X=X(:,:,igrabs);
 end
+classes = unique(labels);
 
-faillabels = BehaveData.failure(tryinginds);
 
 if (~isnan(grabCount))
-    faillabels = faillabels(igrabs);
+    labels = labels(igrabs);
 end
 
 toneTime = generalProperty.ToneTime;
@@ -32,33 +35,38 @@ t = linspace(0, generalProperty.Duration, size(X,2)) - toneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 
-mA1 = min(mean(mean(X(:,:,faillabels==0),3),1));
-MA1 = max(mean(mean(X(:,:,faillabels==0),3),1));
-mA2 = min(mean(mean(X(:,:,faillabels==1),3),1));
-MA2 = max(mean(mean(X(:,:,faillabels==1),3),1));
-mA = min(mA1, mA2);
-MA = max(MA1, MA2);
-DN = MA-mA;
-mA=mA-DN*.1;
-MA=MA+DN*.1;
-
+mA = inf;
+    for ci = 1:length(classes)
+        mA = min(mA, min(mean(mean(X(:,:,labels==classes(ci)),3),1)));
+    end
+    MA = -inf;
+    for ci = 1:length(classes)
+        MA = max(MA, max(mean(mean(X(:,:,labels==classes(ci)),3),1)));
+    end
+    DN = MA-mA;
+    mA=mA-DN*.1;
+    MA=MA+DN*.1;
+    
 % visualize
-%% averaging all trials and neurons, suc and fail in blue and red
+%% averaging all trials and neurons
+[clrs, clrsprevCurr] = cellClr2matClrs(generalProperty.labels2clusterClrs, generalProperty.prevcurrlabels2clusterClrs);
+
 figure;
-plot(t, mean(mean(X(:, :, faillabels==0),1),3), 'b');
+for ci = 1:length(classes)
+plot(t, mean(mean(X(:, :, labels==classes(ci)),1),3), 'Color',clrs(ci,:));
 hold all;
-plot(t, mean(mean(X(:, :, faillabels==1),1),3), 'r');
+end
 xlabel('Time [secs]','FontSize', labelsFontSz);
 placeToneTime(0, 2);
 axis tight;
 set(gca,'XLim', [xlimmin, t(end)]);
 
 ylabel('Average Activity','FontSize', labelsFontSz);
-leg = legend({'Success','Failure'});
+leg = legend(labelsLUT);
 set(leg, 'FontSize', labelsFontSz);
 set(leg, 'Location','northeast');
 
-mysave(gcf, fullfile(outputPath, 'averagedActivitySucFail'));
+mysave(gcf, fullfile(outputPath, ['averagedActivity' eventsStr]));
 
 %% all trials
 figure;
@@ -92,10 +100,11 @@ xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
 mysave(gcf, fullfile(outputPath, 'alltrialsActivity'));
 
+for ci = 1:length(classes)
 figure;
 % 1
 htop = subplot(2,1,1);
-imagesc(t, 1:size(X,1),mean(X(:,:,faillabels==0),3),[-.15 2]);
+imagesc(t, 1:size(X,1),mean(X(:,:,labels==classes(ci)),3),[-.15 2]);
 colormap jet;ylabel('Neurons','FontSize',10);
 placeToneTime(0, 3);xlim([xlimmin,t(end)])
 
@@ -105,7 +114,7 @@ set(c,'Position',[0.9196    0.5810    0.0402    0.3452]);
 set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
 % 2
 hmid=subplot(4,1,3);
-plot(t,mean(mean(X(:,:,faillabels==0),3),1), 'LineWidth',3, 'Color','k');
+plot(t,mean(mean(X(:,:,labels==classes(ci)),3),1), 'LineWidth',3, 'Color','k');
 ylabel('Average','FontSize',10);
 set(gca, 'YLim', [mA MA]);
 placeToneTime(0, 2);
@@ -117,42 +126,11 @@ xa=get(gca, 'XAxis');
 set(xa,'Visible', 'off')
 % 3
 subplot(4,1,4);
-lh=plotBehaveHist(t, Sbehave, 0, generalProperty.Events2plot);
+lh=plotBehaveHist(t, behaveHist{ci}, 0, generalProperty.Events2plot);
 set(lh, 'Visible','off');
 xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
-mysave(gcf, fullfile(outputPath, 'sucTrialsActivity'));
+mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'trialsActivity']));
+end
 
-
-
-figure;
-% 1
-htop = subplot(2,1,1);
-imagesc(t, 1:size(X,1),mean(X(:,:,faillabels==1),3),[-.15 2]);
-colormap jet;ylabel('Neurons','FontSize',10);
-placeToneTime(0, 3);xlim([xlimmin,t(end)])
-
-c=colorbar;
-set(c,'Position',[0.9196    0.5810    0.0402    0.3452]);
-% set(htop,'Position',[0.1300    0.5071    0.7750    0.4179]);
-set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
-% 2
-hmid=subplot(4,1,3);
-plot(t,mean(mean(X(:,:,faillabels==1),3),1), 'LineWidth',3, 'Color','k');
-ylabel('Average','FontSize',10);
-set(gca, 'YLim', [mA MA]);
-placeToneTime(0, 2);
-set(gca, 'Box','off');
-set(gca, 'XTick',[]);
-% set(hmid, 'Position', [0.1300    0.3291    0.7750    0.1066]);
-xlim([xlimmin,t(end)]);
-xa=get(gca, 'XAxis');
-set(xa,'Visible', 'off')
-% 3
-subplot(4,1,4);
-lh=plotBehaveHist(t, Fbehave, 0, generalProperty.Events2plot);
-set(lh, 'Visible','off');
-xlabel('Time [sec]','FontSize',10);
-xlim([xlimmin,t(end)])
-mysave(gcf, fullfile(outputPath, 'failTrialsActivity'));
 

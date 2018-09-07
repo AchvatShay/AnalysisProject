@@ -44,12 +44,13 @@ xlimmin = generalProperty.visualization_startTime2plot;
 conf_percent4acc = generalProperty.visualization_conf_percent4acc;
 toneTime = generalProperty.ToneTime;
 duration = generalProperty.Duration;
-[Sbehave, Fbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
-Sbehave=Sbehave.';
-Fbehave=Fbehave.';
+% [Sbehave, Fbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
+% Sbehave=Sbehave.';
+% Fbehave=Fbehave.';
+[behaveHist, allbehave] = getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
 
-t=linspace(0,duration, size(Fbehave,1))-toneTime;
-[atop, htoneLine]=plotAccResFinal(tmid-toneTime, accSVM, chanceLevel, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
+t=linspace(0,duration, size(behaveHist{1},2))-toneTime;
+[atop, htoneLine]=plotAccResFinal(tmid-toneTime, accSVM, chanceLevel, behaveHist,  t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 mysave(gcf, fullfile(outputPath, ['accNoLegendSTD_' foldstr linstr eventsStr]));
 ylim(atop,[0 max(get(atop, 'YLim'))]);
 set(htoneLine, 'YData',[0 max(get(atop, 'YLim'))]);
@@ -73,7 +74,7 @@ if length(labelsLUT) == 2
         accSVM.raw.C(:,ti) = getConfidenceInterval(accSVM.raw.mean(ti), accSVM.raw.std(ti), numel(accSVM.raw.accv)/foldsnum, conf_percent4acc);
         
     end
-    [atop, hlabel, htoneLine] = plotAccResFinalCI(tmid-toneTime, accSVM, chanceLevel, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
+    [atop, hlabel, htoneLine] = plotAccResFinalCI(tmid-toneTime, accSVM, chanceLevel, behaveHist, t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
     set(hlabel,'Position', [-3.1152    1.2576   -1.0000]);
     mysave(gcf, fullfile(outputPath, ['accWithLegendStanErr_' foldstr linstr eventsStr]));
     ylim(atop,[0 max(get(atop, 'YLim'))]);
@@ -111,9 +112,9 @@ mysave(gcf, fullfile(outputPath, ['accPrevNextstanErr_' foldstr linstr eventsStr
 for ti=1:length(accSVM.raw.mean)
     accSVMlinPrev.raw.C(:,ti) = getConfidenceInterval(accSVMlinPrev.raw.mean(ti), accSVMlinPrev.raw.std(ti), numel(accSVMlinPrev.raw.accv)/foldsnum, conf_percent4acc);
 end
-plotAccResFinal(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
+plotAccResFinal(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, behaveHist, t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 mysave(gcf, fullfile(outputPath, ['accNextTrialSTD_' foldstr linstr eventsStr]));
-[~, hlabel] = plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, Sbehave.', Fbehave.', t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
+[~, hlabel] = plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, behaveHist, t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 set(hlabel,'Position', [-3.1152    1.2576   -1.0000]);
 
 mysave(gcf, fullfile(outputPath, ['accNextTrialstanErr_' foldstr linstr eventsStr]));

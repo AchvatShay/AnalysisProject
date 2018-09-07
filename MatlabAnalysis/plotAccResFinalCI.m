@@ -1,6 +1,8 @@
-function [atop, h, htoneLine] = plotAccResFinalCI(tmid, accSVM,  chanceLevel, Sbehave, Fbehave, t, toneTime, labelsFontSz, xlmMin, eventNames)
-
-if all(Sbehave(:) == 0)
+function [atop, h, htoneLine] = plotAccResFinalCI(tmid, accSVM,  chanceLevel, behaveHist, t, toneTime, labelsFontSz, xlmMin, eventNames)
+if length(behaveHist) ~= 2
+    error('This plot would not work well');
+end
+if all(behaveHist{1} == 0)
     plotHist = 0;
 else
     plotHist = 2;
@@ -31,13 +33,13 @@ end
 if plotHist > 0
     subplot(4,1,3);
     
-    l=plotBehaveHist(t, Sbehave, toneTime, eventNames);
+    l=plotBehaveHist(t, behaveHist{1}, toneTime, eventNames);
     set(l, 'Visible','off');
     %     title('Events At Success');%ylabel('Event probability ')
     ylabel('');xlim([xlmMin, tmid(end)]);
     
     subplot(4,1,4);
-    l=plotBehaveHist(t, Fbehave, toneTime, eventNames);
+    l=plotBehaveHist(t, behaveHist{2}, toneTime, eventNames);
     set(l,'Visible','off')
     xlim([xlmMin, tmid(end)]);
     

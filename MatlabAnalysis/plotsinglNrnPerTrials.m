@@ -32,4 +32,4 @@ xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
 
 
-mysave(gcf, fullfile(outputPath, [outputstr num2str(roiNames(currnrnind))]));
+% mysave(gcf, fullfile(outputPath, [outputstr num2str(roiNames(currnrnind))]));

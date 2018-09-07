@@ -14,7 +14,9 @@ if (~isnan(grabCount))
 end
 
 % 3. obtain histograms of behave events
-[Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
+[behaveHist, allbehave] = getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
+
+% [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
 X = imagingData.samples;
 X=X(:,:,examinedInds);
 
@@ -55,9 +57,9 @@ for nrind=1:length(nerons2plot)
     mA=mA-DN*.1;
     MA=MA+DN*.1;
     for ci = 1:length(classes)
-        plotsinglNrnPerTrials(labelsLUT{ci}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, 'SucNr', labels, classes(ci), xlimmin, t,...
-            m, M, X, Sbehave, generalProperty);        
-        mysave(gcf, fullfile(outputPath, [labelsLUT{ci} num2str(imagingData.roiNames(currnrnind))]));
+        plotsinglNrnPerTrials(labelsLUT{ci}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, '', labels, classes(ci), xlimmin, t,...
+            m, M, X, behaveHist{ci}, generalProperty);        
+        mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'Nr' num2str(imagingData.roiNames(currnrnind))]));
     end
     
 end

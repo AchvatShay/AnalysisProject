@@ -1,13 +1,9 @@
-function [atop, hline] = plotAccResFinal(tmid, accSVM,  chanceLevel, Sbehave, Fbehave, t, toneTime, labelsFontSz, xlimMin, eventNames)
+function [atop, hline] = plotAccResFinal(tmid, accSVM,  chanceLevel, behaveHist, t, toneTime, labelsFontSz, xlimMin, eventNames)
 
 
-if all(Sbehave(:) == 0)
-    plotHist = 0;
-else
-    plotHist = 2;
+if length(behaveHist) ~= 2
+    error('This plot would not work well');
 end
-
-
 figure;
 
 atop = subplot(2,1,1);
@@ -25,15 +21,15 @@ xlim([xlimMin, tmid(end)]);
 hline = placeToneTime(toneTime, 2);
 set(gca, 'Box','off');
 
-if plotHist > 0
+
     subplot(4,1,3);
-     l=plotBehaveHist(t, Sbehave, toneTime, eventNames);
+     l=plotBehaveHist(t, behaveHist{1}, toneTime, eventNames);
     set(l, 'Visible','off');
     %     title('Events At Success');%ylabel('Event probability ')
     ylabel('');xlim([xlimMin, tmid(end)]);
     
     subplot(4,1,4);
-    l=plotBehaveHist(t, Fbehave, toneTime, eventNames);
+    l=plotBehaveHist(t, behaveHist{2}, toneTime, eventNames);
     set(l,'Visible','off')
     xlim([xlimMin, tmid(end)]);
     
@@ -43,5 +39,5 @@ if plotHist > 0
     set(h, 'Position',[-3.1568    1.2544   -1.0000]);
     set(atop, 'XLim', get(gca, 'XLim'));
     set(atop, 'XTick', get(gca, 'XTick'))
-end
+
 end
