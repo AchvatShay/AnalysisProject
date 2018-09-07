@@ -30,7 +30,7 @@ for win_i = size(SVMsingle.raw.acc.mean,2)+1:length(winstSec)
     Xwin = X(:,t >= winstSec(win_i) & t <= winendSec(win_i),:);
     rawX=squeeze(mean(Xwin,2))';
     if isempty(SVMsingle.raw.acc.mean) ||  size(SVMsingle.raw.acc.mean, 2) < win_i
-        for nr_i  =1:2%size(rawX, 2)
+        for nr_i  =1:size(rawX, 2)
             [ACC, ACCrand] = ...
                 svmClassifyAndRand(rawX(:, nr_i), labels, randLabels, foldsnum, '', islin, false);
             SVMsingle.raw.acc.mean(nr_i,win_i) = ACC.mean;

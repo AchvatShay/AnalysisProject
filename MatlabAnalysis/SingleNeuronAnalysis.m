@@ -31,12 +31,15 @@ ts1 = tinv(0.98, (trialsNum)-1);      % T-Score
 isindicative5 = SVMsingle.raw.acc.mean-ts*SEM > chanceLevel;
 isindicative1 = SVMsingle.raw.acc.mean-ts1*SEM > chanceLevel;
 t = linspace(0, generalProperty.Duration, size(data4Svm, 2));
+% to run only on two label clustering
+classes = unique(labels);
+if length(classes) == 2
 % significant - just being from two different gaussians with 5% or 1%
 H1=[];pval1=[];H5=[];pval5=[];
 for win_i = 3:length(tmid)
     for nr=1:size(data4Svm,1)
-        Xs = squeeze(mean(data4Svm(nr,t >= winstSec(win_i) & t <= winendSec(win_i),labels==0),2));
-        Xf = squeeze(mean(data4Svm(nr,t >= winstSec(win_i) & t <= winendSec(win_i),labels==1),2));
+        Xs = squeeze(mean(data4Svm(nr,t >= winstSec(win_i) & t <= winendSec(win_i),labels==classes(1)),2));
+        Xf = squeeze(mean(data4Svm(nr,t >= winstSec(win_i) & t <= winendSec(win_i),labels==classes(2)),2));
         [H1(nr, win_i), pval1(nr, win_i)] = ttest2(Xs,Xf, 'vartype', 'unequal','alpha',0.01 );
         [H5(nr, win_i), pval5(nr, win_i)] = ttest2(Xs,Xf, 'vartype', 'unequal','alpha',0.05 );
     end
@@ -44,7 +47,7 @@ for win_i = 3:length(tmid)
     sigHist5(win_i, :) = hist(H5(:, win_i), 0:1);
 end
 
-
+end
 % visualize
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 xlimmin = generalProperty.visualization_startTime2plot;
@@ -77,6 +80,7 @@ set(gca, 'Box','off');
 ylabel('Indicative Neurons [%]');
 mysave(gcf, fullfile(outputPath, 'indicativeNrs1percent'));
 
+if length(classes) == 2
 
 %% Significant Neurons - 1percent
 errorbarbar(tmid(3:end)-toneTime, sigHist1(3:end,2)/size(data4Svm,1)*100, zeros(size(sigHist1.')), [], labelsFontSz);
@@ -101,3 +105,4 @@ a=get(gcf,'Children');
 setAxisFontSz(a(end), labelsFontSz);
 mysave(gcf, fullfile(outputPath, 'significantNrs5percent'));
 
+end
