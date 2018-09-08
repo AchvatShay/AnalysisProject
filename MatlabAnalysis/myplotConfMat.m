@@ -6,7 +6,7 @@ mat = zeros(size(sum(Ccell{1}(:,:,tind), 1)));
 valuesRep = repmat(mat, numlabels,1);
 for k=1:length(Ccell)
 % confpercent = 100*Ccell{k}(:,:,tind)./sum(sum(Ccell{k}(:,:,tind)));
-    confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 2),1,numlabels);
+    confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 1),numlabels,1);
     valuesRep = valuesRep + Ccell{k}(:,:,tind);
     C(:,:,k) = w(k)*confpercent;
 end
