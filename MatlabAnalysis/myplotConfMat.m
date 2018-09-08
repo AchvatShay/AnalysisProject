@@ -5,14 +5,14 @@ numlabels = size(Ccell{1}, 1); % number of labels
 mat = zeros(size(sum(Ccell{1}(:,:,tind), 1)));
 valuesRep = repmat(mat, numlabels,1);
 for k=1:length(Ccell)
-confpercent = 100*Ccell{k}(:,:,tind)./sum(sum(Ccell{k}(:,:,tind)));
-%     confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 1),numlabels,1);
+% confpercent = 100*Ccell{k}(:,:,tind)./sum(sum(Ccell{k}(:,:,tind)));
+    confpercent = 100*Ccell{k}(:,:,tind)./repmat(sum(Ccell{k}(:,:,tind), 2),1,numlabels);
     valuesRep = valuesRep + Ccell{k}(:,:,tind);
     C(:,:,k) = w(k)*confpercent;
 end
 % w=w/sum(w);
 Ctot = sum(C, 3)/sum(w);
-
+Ctot(isnan(Ctot))=0;
 f = figure;
 imagesc(Ctot, [0 100]);
 title(sprintf('Accuracy: %.2f%%', 100*trace(Ctot)/sum(Ctot(:))));

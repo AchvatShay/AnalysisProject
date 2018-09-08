@@ -1,6 +1,7 @@
 function plotsinglNrnPerTrials(titlestr, mA, MA, roiNames, currnrnind, x, outputPath, outputstr, faillabels, chosenLabelval, xlimmin, t, m, M, X, histbehave, generalProperty)
 figure;htop = subplot(2,1,1);
-imagesc(t, 1:sum(faillabels==chosenLabelval), x(faillabels==chosenLabelval,:));set(gca,'CLim',[m,M]);
+imagesc(t, 1:sum(faillabels==chosenLabelval), x(faillabels==chosenLabelval,:));
+set(gca,'CLim',[m,M]);
 colormap jet;ylabel('Trials #','FontSize',10);
 placeToneTime(0, 3);xlim([xlimmin,t(end)])
 

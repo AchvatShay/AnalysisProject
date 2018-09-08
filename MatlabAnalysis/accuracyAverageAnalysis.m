@@ -1,5 +1,8 @@
-function accuracyAverageAnalysis(outputPath, generalProperty, analysisRes, eventsList)
+function accuracyAverageAnalysis(outputPath, generalProperty, analysisRes, BehaveData)
 
+[labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
+    generalProperty.labels2cluster, generalProperty.includeOmissions);
+% [prevcurlabs, prevCurrLUT] = getPrevCurrLabels(labels, labelsLUT);
 
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 toneTime = generalProperty.ToneTime;
@@ -13,10 +16,6 @@ if islin
     linstr = 'lin';
 else
     linstr = 'Rbf';
-end
-eventsStr = ['_' eventsList{1}];
-for event_i = 2:length(eventsList)
-    eventsStr = [eventsStr '_' eventsList{event_i}];
 end
 
 
@@ -44,16 +43,22 @@ set(aright,'XLim',[min(get(aright,'XLim')) toneTime]);
 mysave(gcf, fullfile(outputPath, 'AverageAnalysis_accuracyNextStartingAtZero'));
 
 time4confplotNext = generalProperty.visualization_time4confplotNext;
-tind = findClosestDouble(time4confplotNext, tmid);
-w = [analysisRes.trialsNumPrev];
-f = myplotConfMat({analysisRes.confMatsPrev}, tind, w, eventsList);
-title(['Confusion matrix for next trial t = ' num2str(time4confplotNext) 'secs']);
-mysave(gcf, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
+for ti = 1:length(time4confplotNext)
+    tind = findClosestDouble(time4confplotNext(ti), tmid);
+    w = [analysisRes.trialsNumPrev];
+    f = myplotConfMat({analysisRes.confMatsPrev}, tind, w, labelsLUT);
+    title(['Confusion matrix for next trial t = ' num2str(time4confplotNext(ti)) 'secs']);
+    mysave(gcf, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
+end
 time4confplot = generalProperty.visualization_time4confplot;
 w = [analysisRes.trialsNum];
-f = myplotConfMat({analysisRes.confMats}, tind, w, eventsList);
-title(['Confusion matrix for current trial t = ' num2str(time4confplot) 'secs']);
-mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
+for ti = 1:length(time4confplot)
+    tind = findClosestDouble(time4confplot(ti), tmid);
+    
+    f = myplotConfMat({analysisRes.confMats}, tind, w, labelsLUT);
+    title(['Confusion matrix for current trial t = ' num2str(time4confplot(ti)) 'secs']);
+    mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
+end
 % %% Accuracy with behave
 % plotAccResFinalCI(tmid, allAccTot,  chanceLevels(2), Sbehave, Fbehave, t, 0, labelsFontSz, xlimmin-toneTime)
 % mysave(gcf, fullfile(outputPath, 'accNoLegend'));
@@ -68,6 +73,6 @@ mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
 % set(c(ind), 'Visible','on','Location','BestOutside');
 % end
 % mysave(gcf, fullfile(outputPath, 'accWithLegend'));
-% 
-% 
-% 
+%
+%
+%

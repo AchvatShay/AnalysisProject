@@ -17,6 +17,20 @@ for k=1:70
 BdaTpaList(k).TPA = fullfile(pth, ['TPA_TSeries_09282017_1010_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
 BdaTpaList(k).BDA = fullfile(pth, ['BDA_TSeries_09282017_1010_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
 end
+MatList={ 'C:\Users\Hadas\Dropbox\Results\Den6Analysis\23_27Cat\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat' ...
+        'C:\Users\Hadas\Dropbox\Results\Den6Analysis\23_27Cat\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat'...
+    'C:\Users\Hadas\Dropbox\Results\Den6Analysis\2_21_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat'...
+    'C:\Users\Hadas\Dropbox\Results\Den6Analysis\2_22_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat'...
+    'C:\Users\Hadas\Dropbox\Results\Den6Analysis\2_23_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat'...
+    'C:\Users\Hadas\Dropbox\Results\Den6Analysis\2_27_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat'...
+    'C:\Users\Hadas\Dropbox\Results\Den6Analysis\3_1_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat'
+};
+
+outputPath='resDen6all';
+mkNewFolder(outputPath);
+
+runAverageAnalysis(outputPath, xmlfile, BdaTpaList(1:10), MatList, 'accuracy');
+
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
@@ -55,5 +69,3 @@ eventsLabels = getAllExperimentLabels({BdaTpaList.BDA});
 % running analysis averaging
 analysisName = 'accuracy';
 % generalProperty = Experiment(xmlfile);
-MatList = {'res/acc_res_folds10lin_success_failure.mat' 'res/acc_res_folds10lin_success_failure.mat'};
-runAverageAnalysis(outputPath, xmlfile, MatList, analysisName, eventsList);
