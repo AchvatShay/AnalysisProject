@@ -90,13 +90,13 @@
     <visualization> 
         <bestpcatrajectories2plot>5</bestpcatrajectories2plot>
         <visualization_time4confplot>
-            <time_stamp>-2</time_stamp>
+            <time_stamp>-2.5</time_stamp>
             <time_stamp>0</time_stamp>
             <time_stamp>2</time_stamp>
             <time_stamp>6</time_stamp>
         </visualization_time4confplot>
         <visualization_time4confplotNext>
-            <time_stamp>-2</time_stamp>
+            <time_stamp>-2.5</time_stamp>
         </visualization_time4confplotNext>
         <visualization_conf_percent4acc>0.05</visualization_conf_percent4acc>
         <viewparams1>0</viewparams1>
