@@ -48,7 +48,7 @@ for ti = 1:length(time4confplotNext)
     w = [analysisRes.trialsNumPrev];
     f = myplotConfMat({analysisRes.confMatsPrev}, tind, w, labelsLUT);
     title(['Confusion matrix for next trial t = ' num2str(time4confplotNext(ti)) 'secs']);
-    mysave(gcf, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr]));
+    mysave(gcf, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr num2str(time4confplotNext(ti))]));
 end
 time4confplot = generalProperty.visualization_time4confplot;
 w = [analysisRes.trialsNum];
@@ -57,7 +57,7 @@ for ti = 1:length(time4confplot)
     
     f = myplotConfMat({analysisRes.confMats}, tind, w, labelsLUT);
     title(['Confusion matrix for current trial t = ' num2str(time4confplot(ti)) 'secs']);
-    mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr]));
+    mysave(f, fullfile(outputPath, ['conf_' foldstr linstr eventsStr num2str(time4confplot(ti))]));
 end
 % %% Accuracy with behave
 % plotAccResFinalCI(tmid, allAccTot,  chanceLevels(2), Sbehave, Fbehave, t, 0, labelsFontSz, xlimmin-toneTime)
