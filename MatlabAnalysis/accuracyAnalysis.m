@@ -1,4 +1,4 @@
-function accuracyAnalysis(BehaveData, outputPath, generalProperty, imagingData, labels, examinedInds, eventsStr, labelsLUT)
+function accuracyAnalysis(BehaveData, outputPath, generalProperty, imagingData, labels, examinedInds, eventsStr, labelsLUT, doprevcurr)
 
 
 foldsnum = generalProperty.foldsNum;
@@ -21,7 +21,7 @@ else
     data4Svm = imagingData.samples(:, :, examinedInds);
     [chanceLevel, tmid, accSVM, accRandSVM, confMats, trialsNum] = slidingWinAcc(data4Svm, resfile_curr, ...
         labels, winstSec, winendSec, foldsnum, islin, duration);
-    
+    if doprevcurr
     resfile_seq = fullfile(outputPath, ['acc_res_seq_' foldstr linstr eventsStr '.mat']);
     data4Svm = imagingData.samples(:, :, examinedInds(1:end-1));
     [chanceLevelseq, ~, accSVMlinseq, accRandSVMlinseq, confMatsseq, trialsNumseq] = slidingWinAcc(data4Svm, resfile_seq, ...
@@ -31,12 +31,19 @@ else
     data4Svm = imagingData.samples(:, :, examinedInds(2:end));
     [chanceLevelPrev, ~, accSVMlinPrev, ~, confMatsPrev, trialsNumPrev] = slidingWinAcc(data4Svm, resfile_prev, ...
         labels(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
+    
+        
     save(resfileTot, 'chanceLevel', 'tmid', 'accSVM', 'accRandSVM', 'confMats', 'trialsNum', ...
         'chanceLevelseq', 'accSVMlinseq', 'accRandSVMlinseq', 'confMatsseq', 'trialsNumseq', ...
         'chanceLevelPrev', 'accSVMlinPrev', 'confMatsPrev', 'trialsNumPrev');
     delete(resfile_curr);
     delete(resfile_seq);
     delete(resfile_prev);
+    else
+        save(resfileTot, 'chanceLevel', 'tmid', 'accSVM', 'accRandSVM', 'confMats', 'trialsNum');       
+       delete(resfile_curr); 
+    end
+    
 end
 % visualize
 labelsFontSz = generalProperty.visualization_labelsFontSize;
@@ -105,7 +112,7 @@ end
 % this is because there is no reason in presenting slightly different
 % chance levels, just because before and after is lessen with one sample.
 chanceLevels = [chanceLevel chanceLevel chanceLevel];
-
+if  doprevcurr
 plotAccUnion(tmid-toneTime, accSVMlinseq, accSVM, accSVMlinPrev, chanceLevels, 0, labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['accPrevNextstanErr_' foldstr linstr eventsStr]));
 
@@ -124,7 +131,7 @@ f = myplotConfMat({confMatsPrev}, findClosestDouble(time4confplotNext(k), tmid-t
 title(['Confusion matrix for next trial t = ' num2str(time4confplotNext(k)) 'secs']);
 mysave(f, fullfile(outputPath, ['confNext_' foldstr linstr eventsStr num2str(time4confplotNext(k))]));
 end
-
+    end
 time4confplot = generalProperty.visualization_time4confplot;
 for k = 1:length(time4confplot)
 

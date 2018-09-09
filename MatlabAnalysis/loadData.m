@@ -131,10 +131,10 @@ end
 
 switch generalProperty.DetermineSucFailBy
     case 'suc'
-        BehaveData.failure = zeros(size(BehaveData.failure));
+        BehaveData.failure = zeros(size(BehaveData.success));
         BehaveData.failure(BehaveData.success == 0) = 1;
     case 'fail'
-        BehaveData.success = zeros(size(BehaveData.success));
+        BehaveData.success = zeros(size(BehaveData.failure));
         BehaveData.success(BehaveData.failure == 0) = 1;        
     case 'both'
         % do nothing
