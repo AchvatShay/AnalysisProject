@@ -128,7 +128,7 @@ end
 switch generalProperty.DetermineSucFailBy
     case 'suc'
         BehaveData.failure.indicatorPerTrial = zeros(size(BehaveData.success.indicatorPerTrial));
-        BehaveData.failure.indicatorPerTrial(BehaveData.success == 0) = 1;
+        BehaveData.failure.indicatorPerTrial(BehaveData.success.indicatorPerTrial == 0) = 1;
     case 'fail'
         BehaveData.success.indicatorPerTrial = zeros(size(BehaveData.failure.indicatorPerTrial));
         BehaveData.success.indicatorPerTrial(BehaveData.failure.indicatorPerTrial == 0) = 1;        
