@@ -12,6 +12,17 @@ tpalist{5}= main('C:\Users\Hadas\Dropbox\biomedData\Den6\4_2_17\4_2_17_1', ...
 tpalist{6}= main('C:\Users\Hadas\Dropbox\biomedData\Den6\3_1_17\3_1_17_1', ...
     'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\3_1_17\Analysis\svmAccuracy');
 
+MatList={'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\2_21_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure'...
+ 'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\2_22_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure'...
+'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\2_23_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure'...
+'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\4_2_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure'...
+'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\3_1_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure'};
+
+outputPath='C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\All\PostAnalysis';
+mkNewFolder(outputPath); 
+runAverageAnalysis(outputPath, 'XmlM26.xml', tpalist{1}(1:10), MatList, 'accuracy');
+
+
 
 l=1;
 for k=1:length(tpalist)
@@ -23,7 +34,7 @@ for k=1:length(tpalist)
 end
 xmlfile = 'XmlM26.xml';
 
-outputPath = 'C:\Users\Hadas\Dropbox\Results9_9_17\PT3Analysis\All\Analysis\svmAccuracy';
+outputPath = 'C:\Users\Hadas\Dropbox\Results9_9_17\Den6Analysis\All\Analysis\svmAccuracy';
 mkNewFolder(outputPath);
 
 runAnalysis(outputPath, xmlfile, tpalistAll, 'svmAccuracy');

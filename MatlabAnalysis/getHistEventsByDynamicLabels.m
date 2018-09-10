@@ -14,7 +14,7 @@ for event_i = 1:length(Events2plot)
     for name_i = 1:length(NAMES)
         if ~isempty(strfind(NAMES{name_i}, Events2plot{event_i}))
             for ci = 1:length(classes)
-                behaveHist{ci}(event_i, :) = behaveHist{ci}(event_i, :) + sum(BehaveData.(NAMES{name_i}).indicator(intersect(find(BehaveData.(labelsLUT{ci})),examinedInds),:));
+                behaveHist{ci}(event_i, :) = behaveHist{ci}(event_i, :) + sum(BehaveData.(NAMES{name_i}).indicator(intersect(find(BehaveData.(labelsLUT{ci}).indicatorPerTrial),examinedInds),:));
             end
            allbehave(event_i, :) = allbehave(event_i, :) + sum(BehaveData.(NAMES{name_i}).indicator(examinedInds,:));
       end

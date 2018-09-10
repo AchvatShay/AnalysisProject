@@ -25,6 +25,7 @@ end
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
+close all;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 return;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
