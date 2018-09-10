@@ -54,9 +54,7 @@ xlimmin = generalProperty.visualization_startTime2plot;
 conf_percent4acc = generalProperty.visualization_conf_percent4acc;
 toneTime = generalProperty.ToneTime;
 duration = generalProperty.Duration;
-[Sbehave, Fbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
-Sbehave=Sbehave.';
-Fbehave=Fbehave.';
+% [behaveHist, allbehave]= getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
