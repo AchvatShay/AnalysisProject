@@ -22,5 +22,5 @@ for event_i = 1:length(Events2plot)
 end
 allbehave = allbehave/length(examinedInds);
 for ci = 1:length(classes)
-behaveHist{ci} = behaveHist{ci}/sum(BehaveData.(labelsLUT{ci})(examinedInds));
+behaveHist{ci} = behaveHist{ci}/sum(BehaveData.(labelsLUT{ci}).indicatorPerTrial(examinedInds));
 end

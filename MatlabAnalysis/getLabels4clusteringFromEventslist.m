@@ -7,12 +7,12 @@ for event_i = 1:length(eventsList)
     if ~isfield(BehaveData, eventsList{event_i}{1})
         error([eventsList{event_i}{1} ' is not labeled as a behavioral label on the BDA files']);
     end
-    currExaminedInds = find(BehaveData.(eventsList{event_i}{1}));
+    currExaminedInds = find(BehaveData.(eventsList{event_i}{1}).indicatorPerTrial);
     for name_i = 2:length(eventsList{event_i})
         if ~isfield(BehaveData, eventsList{event_i}{name_i})
             error([eventsList{event_i}{name_i} ' is not labeled as a behavioral label on the BDA files']);
         end
-        currExaminedInds = intersect(currExaminedInds, find(BehaveData.(eventsList{event_i}{name_i})));
+        currExaminedInds = intersect(currExaminedInds, find(BehaveData.(eventsList{event_i}{name_i}).indicatorPerTrial));
     end
     examinedInds = cat(1, examinedInds, currExaminedInds);
 end
@@ -32,7 +32,7 @@ else
 end
 labels = zeros(length(examinedInds), 1);
 for event_i = 1:length(eventsList)
-    currlabelsval = BehaveData.(eventsList{event_i}{1});
+    currlabelsval = BehaveData.(eventsList{event_i}{1}).indicatorPerTrial(examinedInds);
     for name_i = 2:length(eventsList{event_i})
         currlabelsval = currlabelsval &  BehaveData.(eventsList{event_i}{name_i});
     end

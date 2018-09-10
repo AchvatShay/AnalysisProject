@@ -59,7 +59,7 @@ visualization_bestpcatrajectories2plot = 5;
                 obj.DetermineSucFailBy = 'suc';
             elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.ByFail.Attributes.is_active)
                 obj.DetermineSucFailBy = 'fail';
-            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.Both.DetermineSucFailBy.Attributes.is_active)
+            elseif str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.Both.Attributes.is_active)
                 obj.DetermineSucFailBy = 'both';
             else
                 error('Please choose one as true: 1. suc is suc and the rest are fail; 2. fail is fail and the rest is suc; 3. suc us suc, fail is fail and ignore the res.');

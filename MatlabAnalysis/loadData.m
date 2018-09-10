@@ -91,15 +91,11 @@ for trial_i = 1:fileNumRoi
         BehaveData.(eventname).eventTimeStamps{trial_i} = timeInd;
     end
 end
-if isfield(BehaveData, 'failure')
-    [I,~] = find(BehaveData.failure.indicator);
-    BehaveData.failure = zeros(fileNumRoi,1);
-    BehaveData.failure(unique(I)) = 1;
-end
-if isfield(BehaveData, 'success')
-    [I,~] = find(BehaveData.success.indicator);
-    BehaveData.success = zeros(fileNumRoi,1);
-    BehaveData.success(unique(I)) = 1;
+NAMES = fieldnames(BehaveData);
+for name_i  =1:length(NAMES)
+    [I,~] = find(BehaveData.(NAMES{name_i}).indicator);
+    BehaveData.(NAMES{name_i}).indicatorPerTrial = zeros(fileNumRoi,1);
+    BehaveData.(NAMES{name_i}).indicatorPerTrial(unique(I)) = 1;
 end
 
 if generalProperty.Neurons2keep ~= 0
