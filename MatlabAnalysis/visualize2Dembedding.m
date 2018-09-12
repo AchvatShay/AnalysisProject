@@ -18,9 +18,9 @@ fclose(fid);
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 legendLoc = generalProperty.visualization_legendLocation;
 
-plot2Dembedding(outputPath, eventsStr, labelsLUT, labels,embedding, clrs, Method, legendLoc, labelsFontSz)
+plot2Dembedding(examinedInds, outputPath, eventsStr, labelsLUT, labels,embedding, clrs, Method, legendLoc, labelsFontSz)
 if length(unique(labels)) == 2
-    plot2Dembedding(examinedInds, outputPath, [eventsStr 'PrevCurr'], {prevCurrLUT.name}, prevcurlabs, embedding(2:end, :), clrsprevCurr, Method, legendLoc, labelsFontSz)
+    plot2Dembedding(examinedInds(2:end), outputPath, [eventsStr 'PrevCurr'], {prevCurrLUT.name}, prevcurlabs, embedding(2:end, :), clrsprevCurr, Method, legendLoc, labelsFontSz)
 end
 end
 
