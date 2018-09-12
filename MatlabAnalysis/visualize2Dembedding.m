@@ -1,4 +1,4 @@
-function visualize2Dembedding(labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, embedding, outputPath, Method)
+function visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, embedding, outputPath, Method)
 
 
 fid = fopen(fullfile(outputPath, [Method 'accuracy2D.txt']), 'w');
@@ -20,23 +20,23 @@ legendLoc = generalProperty.visualization_legendLocation;
 
 plot2Dembedding(outputPath, eventsStr, labelsLUT, labels,embedding, clrs, Method, legendLoc, labelsFontSz)
 if length(unique(labels)) == 2
-plot2Dembedding(outputPath, [eventsStr 'PrevCurr'], {prevCurrLUT.name}, prevcurlabs, embedding(2:end, :), clrsprevCurr, Method, legendLoc, labelsFontSz)
+    plot2Dembedding(examinedInds, outputPath, [eventsStr 'PrevCurr'], {prevCurrLUT.name}, prevcurlabs, embedding(2:end, :), clrsprevCurr, Method, legendLoc, labelsFontSz)
 end
 end
 
-function plot2Dembedding(outputPath, eventsStr, labelsLUT, labels,embedding, clrs, Method, legendLoc, labelsFontSz)
+function plot2Dembedding(examinedInds, outputPath, eventsStr, labelsLUT, labels,embedding, clrs, Method, legendLoc, labelsFontSz)
 
 
 classes = unique(labels);
 figure;
 for ci = 1:length(classes)
-scatter(embedding(labels==classes(ci),1)  ,embedding(labels==classes(ci),2),...
- 'o', 'MarkerFaceColor', clrs(ci, :), 'MarkerEdgeColor', clrs(ci, :));
-        hold all;
+    scatter(embedding(labels==classes(ci),1)  ,embedding(labels==classes(ci),2),...
+        'o', 'MarkerFaceColor', clrs(ci, :), 'MarkerEdgeColor', clrs(ci, :));
+    hold all;
 end
 xlabel('\psi_1', 'FontSize', labelsFontSz), ylabel('\psi_2', 'FontSize', labelsFontSz);
 l=legend(labelsLUT, 'Location',legendLoc);
-    
+
 set(gca, 'Box','off');
 set(l, 'FontSize',labelsFontSz);
 a=get(gcf,'Children');
@@ -46,17 +46,22 @@ for ai=1:length(a)
     end
 end
 mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr]));
-end            
 
 
-% 
-% 
+strs = cellstr(num2str(examinedInds));
+text(embedding(:,1),embedding(:,2),strs,'VerticalAlignment','bottom',...
+    'HorizontalAlignment','right');
+mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr 'withNumbers']));
+end
+
+%
+%
 % switch generalProperty.PelletPertubation
 %     case 'None'
 %         plotSF2D([],  embedding(:,1:2), BehaveData.failure(tryinginds), generalProperty.visualization_labelsFontSize, generalProperty.visualization_legendLocation);
 %         mysave(gcf, fullfile(outputPath, [ Method '2Dsucfail']));
-%         
-% 
+%
+%
 %     case 'Ommisions'
 %         if ~isfield(BehaveData, 'nopellet')
 %             warning('ommisions were not marked in BDA file!');
@@ -72,7 +77,7 @@ end
 %             set(l, 'FontSize',generalProperty.visualization_labelsFontSize);
 %         end
 %         mysave(gcf, fullfile(outputPath, [ Method '2Dsucfail']));
-%         
+%
 %     case 'Taste'
 %         plotSF2D([],  embedding(:,1:2), BehaveData.failure(tryinginds), generalProperty.visualization_labelsFontSize, generalProperty.visualization_legendLocation);
 %         mysave(gcf, fullfile(outputPath, [ Method '2Dsucfail']));
@@ -80,7 +85,7 @@ end
 %         if ~isempty(f)
 %             mysave(f(1), fullfile(outputPath, [ Method '2Dtaste']));
 %             mysave(f(2), fullfile(outputPath, [ Method '2Dtastesucfail']));
-%             
+%
 %         end
-%         
+%
 % end

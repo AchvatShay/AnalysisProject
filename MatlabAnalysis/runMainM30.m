@@ -1,5 +1,5 @@
 main('C:\Users\Hadas\Dropbox\biomedData\M30\8_7_18', ...
-    'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_7_18\Analysis\pcaTrajectories');
+    'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_7_18\Analysis\Pca2D');
 
 
 % this is for both

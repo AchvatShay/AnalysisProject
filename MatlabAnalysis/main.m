@@ -1,6 +1,7 @@
 function BdaTpaList = main(pth, outputPath)
 
 xmlfile = 'XmlM26.xml';
+xmlfile = 'XmlBoth.xml';
 % xmlfile = 'XmlPT3_1nrn.xml';
 % xmlfile = 'XmlPT3_nonrns.xml';
 
@@ -19,7 +20,7 @@ end
 
 
 
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');

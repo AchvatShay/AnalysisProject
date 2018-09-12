@@ -26,7 +26,7 @@ else
 end
   
 % visualize
-visualize2Dembedding(labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, pcares.embedding(:, 1:2), outputPath, 'pca')
+visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, pcares.embedding(:, 1:2), outputPath, 'pca')
 
 
 % %% 2D Projections Using PCA Colored by # grabs - all time span (0-12 seconds)
