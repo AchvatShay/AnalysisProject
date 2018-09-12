@@ -18,37 +18,59 @@ for trialInd = 1:fileNumRoi
         error([fileNamesRoi{trialInd} ' has no ROI']);
     end
     for m = 1:length(usrData.strROI)
-        imagingData.roiNames(m, trialInd)       = extractROIstr(usrData.strROI{m}.Name);
+        imagingDatatmp.roiNames{trialInd}{m}       = extractROIstr(usrData.strROI{m}.Name);
         % match new format to old format, the deltaF over F is saved in Data(:,2)
         % instead of procROI
         if ~isfield(usrData.strROI{m}, 'Data') && ~isprop(usrData.strROI{m}, 'Data')
             if ~isfield(usrData.strROI{m}, 'procROI')
                 error([fileNamesRoi{trialInd} ' unfamiliar TPA file, cannot extract data';]);
             else
-                imagingData.samples(m,:, trialInd) = usrData.strROI{m}.procROI;
+                imagingDatatmp.samples{trialInd}{m} = usrData.strROI{m}.procROI;
             end
         else
-            imagingData.samples(m,:, trialInd) = usrData.strROI{m}.Data(:,2);
+            imagingDatatmp.samples{trialInd}{m} = usrData.strROI{m}.Data(:,2);
         end
     end
     
 end
-
-if any(any(diff(imagingData.roiNames.')))
-    warning('ROI names are inconsistent through trials! Taking the joint ones');
-    combinds = imagingData.roiNames(:, 1);
-    for trial_i = 2:size(imagingData.roiNames, 2)
-        combinds = intersect(combinds, imagingData.roiNames(:,trial_i));
+notthesameNrns = false;
+Len = length(imagingDatatmp.roiNames{1});
+for trial_i = 2:length(imagingDatatmp.roiNames)
+    if Len ~= length(imagingDatatmp.roiNames{trial_i})
+        notthesameNrns = true;
+        break;
+    end
+end
+if ~notthesameNrns
+    reshapedROIs = reshape(cell2mat([imagingDatatmp.roiNames{:}]), length(imagingDatatmp.roiNames{1}), []);
+    if any(any(diff(reshapedROIs.')))
+           warning('ROI names are inconsistent through trials! Taking the joint ones');
+           notthesameNrns = true;
+    end 
+end
+if notthesameNrns
+    combinds = cell2mat(imagingDatatmp.roiNames{1});
+    for trial_i = 2:length(imagingDatatmp.roiNames)
+        combinds = intersect(combinds, cell2mat(imagingDatatmp.roiNames{trial_i}));
     end
     combinds = setdiff(combinds, 0);% avoid zero which is a place holder
-    newImagingData = zeros(length(combinds), size(imagingData.samples,2 ), size(imagingData.samples, 3));
-    for trial_i = 1:size(imagingData.roiNames, 2)
-        ind2comb = findIndsLoc(combinds, imagingData.roiNames(:, trial_i));
-        newImagingData(:, :, trial_i) = imagingData.samples(ind2comb, :, trial_i);
+    newImagingData = zeros(length(combinds), length(imagingDatatmp.samples{1}{1} ), length(imagingDatatmp.samples));
+    for trial_i = 1:length(imagingDatatmp.roiNames)
+        ind2comb = findIndsLoc(combinds, cell2mat(imagingDatatmp.roiNames{trial_i}));
+        for nr = 1:length(ind2comb)
+        newImagingData(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{ind2comb(nr)};
+        end
     end
     
-    imagingData.roiNames = repmat(combinds, 1, size(imagingData.roiNames,2));
+    imagingData.roiNames = repmat(combinds(:), 1, length(imagingDatatmp.roiNames));
     imagingData.samples = newImagingData;
+else
+   imagingData.roiNames = reshape(cell2mat([imagingDatatmp.roiNames{:}]), length(imagingDatatmp.roiNames{1}),[]);
+    for trial_i = 1:length(imagingDatatmp.roiNames)
+        for nr = 1:length(imagingDatatmp.roiNames{1})
+        imagingData.samples(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{(nr)};
+        end
+    end
 end
 
 [fileNamesEvent{1:fileNumRoi,1}] = deal(BdaTpaList.BDA);

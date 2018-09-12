@@ -1,28 +1,34 @@
+main('C:\Users\Hadas\Dropbox\biomedData\M30\8_7_18', ...
+    'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_7_18\Analysis\pcaTrajectories');
+
+
 % this is for both
 clear;
-xmlfile = 'XmlBoth.xml';
-% xmlfile = 'XmlBothfailure_i.xml';
-pth = 'C:\Users\Hadas\Dropbox\biomedData\M30\8_7_18';
-outputPath = 'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_7_18\Analysis\svmAccuracy\both';
-mkNewFolder(outputPath);
-
+pth = 'C:\Users\Hadas\Dropbox\biomedData\M30\8_5_18';
+% pth = 'C:\Users\Hadas\Dropbox\biomedData\M30\8_7_18';
 filesTPA = dir([pth, '\TPA*.mat']);
 filesBDA = dir([pth, '\BDA*.mat']);
-
+filesTPA=filesTPA([1:36 38:60]);
+filesBDA=filesBDA([1:36 38:60]);
 for k=1:length(filesTPA)
 BdaTpaList(k).TPA = fullfile(filesTPA(1).folder, filesTPA(k).name);
 BdaTpaList(k).BDA = fullfile(filesBDA(1).folder, filesBDA(k).name);
 end
 
+% xmlfile = 'XmlBoth.xml';
+% xmlfile = 'XmlBothfailure_i.xml';
+xmlfile = 'XmlM26.xml';
+analysisNames = {'Pca2D','pcaTrajectories','plotAllNrnsAcrossTrials','plotSingleNrnAcrossTrials','diffMap2D','svmAccuracy'};
+outputPath = 'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_5_18\Analysis\';
+for a_i = 1:length(analysisNames)
+    outptpth = fullfile(outputPath, analysisNames{a_i});
+mkNewFolder(outptpth);
+runAnalysis(outptpth, xmlfile, BdaTpaList, analysisNames{a_i});
+end
+return;
+outputPath = 'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_7_18\Analysis\both\svmAccuracy';
 
-outputPath = 'C:\Users\Hadas\Dropbox\Results9_9_17\M30Analysis\8_7_18\Analysis\Pca2D\both';
-outputPath = 'resM30';
 mkNewFolder(outputPath);
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
 
 close all;
