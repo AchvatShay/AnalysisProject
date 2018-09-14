@@ -132,7 +132,7 @@ if generalProperty.Neurons2keep ~= 0
     end
     
     imagingData.samples=imagingData.samples(currnrnind, :,:);
-    imagingData.roiNames = imagingData.roiNames(currnrnind);
+    imagingData.roiNames = imagingData.roiNames(currnrnind, 1);
 end
 % if generalProperty.Trials2keep == 0
 %     return;
