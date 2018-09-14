@@ -20,7 +20,7 @@ end
 
 
 % visualize
-visualize2Dembedding(labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, resDiffMap.embedding{runningOrder==3}, outputPath, 'diffMap')
+visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, resDiffMap.embedding{runningOrder==3}, outputPath, 'diffMap')
 
 
 
