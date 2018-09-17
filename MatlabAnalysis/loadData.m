@@ -149,11 +149,11 @@ end
 
 switch generalProperty.DetermineSucFailBy
     case 'suc'
-        BehaveData.failure.indicatorPerTrial = zeros(size(BehaveData.success.indicatorPerTrial));
-        BehaveData.failure.indicatorPerTrial(BehaveData.success.indicatorPerTrial == 0) = 1;
+        BehaveData.(generalProperty.failureLabel).indicatorPerTrial = zeros(size(BehaveData.(generalProperty.successLabel).indicatorPerTrial));
+        BehaveData.(generalProperty.failureLabel).indicatorPerTrial(BehaveData.(generalProperty.successLabel).indicatorPerTrial == 0) = 1;
     case 'fail'
-        BehaveData.success.indicatorPerTrial = zeros(size(BehaveData.failure.indicatorPerTrial));
-        BehaveData.success.indicatorPerTrial(BehaveData.failure.indicatorPerTrial == 0) = 1;        
+        BehaveData.(generalProperty.successLabel).indicatorPerTrial = zeros(size(BehaveData.(generalProperty.failureLabel).indicatorPerTrial));
+        BehaveData.(generalProperty.successLabel).indicatorPerTrial(BehaveData.(generalProperty.failureLabel).indicatorPerTrial == 0) = 1;        
     case 'both'
         % do nothing
 end
