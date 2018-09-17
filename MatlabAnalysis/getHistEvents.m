@@ -1,3 +1,4 @@
+
 % this is an older version with suc\fail hard coded. Please use the dynamic
 % one
 function [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, Events2plot, tryinginds)
