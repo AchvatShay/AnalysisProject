@@ -45,14 +45,16 @@ classdef Experiment %< handle
         prevcurrlabels2cluster = [];
         prevcurrlabels2clusterClrs = [];
         labels2clusterClrs = [];
-visualization_bestpcatrajectories2plot = 5;
+        visualization_bestpcatrajectories2plot = 5;
+        successLabel = 'success';
+        failureLabel = 'failure';
     end
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
             obj.visualization_bestpcatrajectories2plot = str2double(xmlstrct.GeneralProperty.Experiment.visualization.bestpcatrajectories2plot.Text);
-
-
+            
+            
             [obj.prevcurrlabels2cluster, obj.prevcurrlabels2clusterClrs] = extractLabels2cluster(xmlstrct.GeneralProperty.Experiment.analysisParams.prevcurrlabels2cluster);
             [obj.labels2cluster, obj.labels2clusterClrs] = extractLabels2cluster(xmlstrct.GeneralProperty.Experiment.analysisParams.labels2cluster);
             if  str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.DetermineSucFailBy.BySuc.Attributes.is_active)
