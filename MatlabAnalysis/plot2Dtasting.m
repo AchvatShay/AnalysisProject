@@ -1,3 +1,5 @@
+% this is an older version with suc\fail hard coded. Please use the dynamic
+% one
 function f=plot2Dtasting(allLabels, expinds, embedding, labelsFontSz)
 f=[];
 if isfield(allLabels, 'sucrose') && any(allLabels.sucrose)

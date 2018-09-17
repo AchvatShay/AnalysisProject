@@ -36,6 +36,8 @@
 		</Trial>
     </TrialsToPut>
     <analysisParams>  
+        <successLabel>success</successLabel> 
+        <failureLabel>failure</failureLabel>
         <prevcurrlabels2cluster>
             <cluster>			
                 <name>success</name>

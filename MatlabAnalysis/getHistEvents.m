@@ -1,4 +1,7 @@
+% this is an older version with suc\fail hard coded. Please use the dynamic
+% one
 function [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, Events2plot, tryinginds)
+
 
 NAMES = fieldnames(BehaveData);
 Sbehave = zeros(length(Events2plot), size(BehaveData.(NAMES{1}).indicator,2));

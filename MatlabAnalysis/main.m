@@ -1,7 +1,7 @@
 function BdaTpaList = main(pth, outputPath)
 
 xmlfile = 'XmlM26.xml';
-xmlfile = 'XmlBoth.xml';
+% xmlfile = 'XmlBoth.xml';
 % xmlfile = 'XmlPT3_1nrn.xml';
 % xmlfile = 'XmlPT3_nonrns.xml';
 
