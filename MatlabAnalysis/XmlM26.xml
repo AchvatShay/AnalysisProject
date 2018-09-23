@@ -36,6 +36,8 @@
 		</Trial>
     </TrialsToPut>
     <analysisParams>  
+        <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
+        <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
         <successLabel>success</successLabel> 
         <failureLabel>failure</failureLabel>
         <prevcurrlabels2cluster>

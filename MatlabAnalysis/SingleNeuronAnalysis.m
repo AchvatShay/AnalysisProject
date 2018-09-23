@@ -54,7 +54,30 @@ xlimmin = generalProperty.visualization_startTime2plot;
 conf_percent4acc = generalProperty.visualization_conf_percent4acc;
 toneTime = generalProperty.ToneTime;
 duration = generalProperty.Duration;
+time2st = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanStartTime);
+time2end = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanEndTime);
 % [behaveHist, allbehave]= getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
+
+fid = fopen(fullfile(outputPath, 'indicative_report.txt'), 'w');
+fprintf(fid, 'chance is: %2.2f\n',chanceLevel);
+ count = getIndicativeNrnsMean(isindicative5, 'consecutive', 2, time2st, time2end);
+    fprintf(fid, 'mean indicative nrns  starting from %f to %f with %d consecutive bins and 5 percent confidence: %f\n',...
+        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, 2, count);
+   count = getIndicativeNrnsMean(isindicative1, 'consecutive', 2, time2st, time2end);
+
+    fprintf(fid, 'mean indicative nrns  starting from %f to %f with %d consecutive bins and 1 percent confidence: %f\n',...
+        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, 2, count);
+   
+for binsnum = 1:2
+    count = getIndicativeNrnsMean(isindicative5, 'any', binsnum, time2st, time2end);
+    fprintf(fid, 'mean indicative nrns  starting from %f to %f with any %d bins and 5 percent confidence: %f\n',...
+        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, binsnum, count);
+    
+     count = getIndicativeNrnsMean(isindicative1, 'any', binsnum, time2st, time2end);
+      fprintf(fid, 'mean indicative nrns  starting from %f to %f with any %d bins and 1 percent confidence: %f\n',...
+        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, binsnum, count);
+   end
+fclose(fid);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
