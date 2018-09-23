@@ -56,19 +56,22 @@ toneTime = generalProperty.ToneTime;
 duration = generalProperty.Duration;
 time2st = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanStartTime);
 time2end = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanEndTime);
+maxbinnum = generalProperty.indicativeNrns_maxbinnum;
+
 % [behaveHist, allbehave]= getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
 
-fid = fopen(fullfile(outputPath, 'indicative_report.txt'), 'w');
+fid = fopen(fullfile(outputPath, ['indicative_report' foldstr linstr eventsStr '.txt']), 'w');
 fprintf(fid, 'chance is: %2.2f\n',chanceLevel);
- count = getIndicativeNrnsMean(isindicative5, 'consecutive', 2, time2st, time2end);
+for binsnum = 2:maxbinnum
+ count = getIndicativeNrnsMean(isindicative5, 'consecutive', maxbinnum, time2st, time2end);
     fprintf(fid, 'mean indicative nrns  starting from %f to %f with %d consecutive bins and 5 percent confidence: %f\n',...
-        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, 2, count);
-   count = getIndicativeNrnsMean(isindicative1, 'consecutive', 2, time2st, time2end);
+        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, maxbinnum, count);
+   count = getIndicativeNrnsMean(isindicative1, 'consecutive', maxbinnum, time2st, time2end);
 
     fprintf(fid, 'mean indicative nrns  starting from %f to %f with %d consecutive bins and 1 percent confidence: %f\n',...
-        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, 2, count);
-   
-for binsnum = 1:2
+        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, maxbinnum, count);
+end
+for binsnum = 1:maxbinnum
     count = getIndicativeNrnsMean(isindicative5, 'any', binsnum, time2st, time2end);
     fprintf(fid, 'mean indicative nrns  starting from %f to %f with any %d bins and 5 percent confidence: %f\n',...
         generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, binsnum, count);
@@ -91,7 +94,7 @@ placeToneTime(0, 2);
 xlabel('Time [sec]');
 ylabel('Indicative Neurons [%]');
 set(gca, 'Box','off');
-mysave(gcf, fullfile(outputPath, 'indicativeNrs5percent'));
+mysave(gcf, fullfile(outputPath, ['indicativeNrs5percent' foldstr linstr eventsStr]));
 percentage1=hist(isindicative1,0:1);
 errorbarbar(tmid-toneTime, percentage1(2,:)/size(data4Svm,1)*100, zeros(size(percentage1)), [], labelsFontSz);
 xlim([xlimmin, tmid(end)+1]-toneTime);
@@ -99,7 +102,7 @@ placeToneTime(0, 2);
 xlabel('Time [sec]');
 set(gca, 'Box','off');
 ylabel('Indicative Neurons [%]');
-mysave(gcf, fullfile(outputPath, 'indicativeNrs1percent'));
+mysave(gcf, fullfile(outputPath, ['indicativeNrs1percent' foldstr linstr eventsStr]));
 
 if length(classes) == 2
 
@@ -112,7 +115,7 @@ ylabel('Significant Neurons [%]', 'FontSize',labelsFontSz);
 set(gca, 'Box','off');
 a=get(gcf,'Children');
 setAxisFontSz(a(end), labelsFontSz);
-mysave(gcf, fullfile(outputPath, 'significantNrs1percent'));
+mysave(gcf, fullfile(outputPath, ['significantNrs1percent' foldstr linstr eventsStr]));
 
 
 %% Significant Neurons - 5percent
@@ -124,6 +127,6 @@ ylabel('Significant Neurons [%]', 'FontSize',labelsFontSz);
 set(gca, 'Box','off');
 a=get(gcf,'Children');
 setAxisFontSz(a(end), labelsFontSz);
-mysave(gcf, fullfile(outputPath, 'significantNrs5percent'));
+mysave(gcf, fullfile(outputPath, ['significantNrs5percent' foldstr linstr eventsStr]));
 
 end
