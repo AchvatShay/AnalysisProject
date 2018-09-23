@@ -20,12 +20,12 @@ end
 
 
 
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
 close all;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 return;
