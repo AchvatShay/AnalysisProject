@@ -48,10 +48,16 @@ classdef Experiment %< handle
         visualization_bestpcatrajectories2plot = 5;
         successLabel = 'success';
         failureLabel = 'failure';
+        indicativeNrnsMeanStartTime = 0;
+        indicativeNrnsMeanEndTime = 8;
+        indicativeNrns_maxbinnum = 2;
     end
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
+            obj.indicativeNrns_maxbinnum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrns_maxbinnum.Text);
+            obj.indicativeNrnsMeanStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanStartTime.Text);
+            obj.indicativeNrnsMeanEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanEndTime.Text);
             obj.visualization_bestpcatrajectories2plot = str2double(xmlstrct.GeneralProperty.Experiment.visualization.bestpcatrajectories2plot.Text);
             obj.successLabel = xmlstrct.GeneralProperty.Experiment.analysisParams.successLabel.Text;
             obj.failureLabel = xmlstrct.GeneralProperty.Experiment.analysisParams.failureLabel.Text;

@@ -123,6 +123,7 @@ plotAccResFinal(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, behaveHist, t, 0,
 mysave(gcf, fullfile(outputPath, ['accNextTrialSTD_' foldstr linstr eventsStr]));
 [~, hlabel] = plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, behaveHist, t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 set(hlabel,'Position', [-3.1152    1.2576   -1.0000]);
+plotAccResFinalCI(tmid-toneTime, accSVMlinPrev, chanceLevelPrev, behaveHist, t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 
 mysave(gcf, fullfile(outputPath, ['accNextTrialstanErr_' foldstr linstr eventsStr]));
 time4confplotNext = generalProperty.visualization_time4confplotNext;
