@@ -69,13 +69,13 @@ public class UserServiceImpl implements UserService {
             projectService.deleteProject(project);
         }
 
-        String path = pathAnalysis + File.separator + user.getName();
+        String path = pathAnalysis + File.separator + user.getName() + "_" + user.getLastName();
 
 
         logger.info("Delete user " + user.getName() + " from DB");
 
         try {
-            FileUtils.deleteDirectory(new File(path));
+            FileUtils.deleteDirectory(new File(path.toLowerCase()));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

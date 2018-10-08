@@ -137,14 +137,14 @@
 
                         </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="table-analysis-label"><strong>Experiments Labels : </strong></label>
-                                <div id="labels-div" class="col-md-12">
+                        <%--<div class="col-md-3">--%>
+                            <%--<div class="form-group">--%>
+                                <%--<label class="table-analysis-label"><strong>Experiments Labels : </strong></label>--%>
+                                <%--<div id="labels-div" class="col-md-12">--%>
 
-                                </div>
-                            </div>
-                        </div>
+                                <%--</div>--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
                     </div>
                   </div>
 
@@ -222,43 +222,43 @@
             $('input[type="checkbox"]', rowsNP).prop('checked', val);
         }
 
-        function getLabels() {
-            // clear all labels befor
-            $("#labels-div").empty();
+        <%--function getLabels() {--%>
+            <%--// clear all labels befor--%>
+            <%--$("#labels-div").empty();--%>
 
-            //do your own request an handle the results
-            $.ajax({
-                url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/labels',
-                type: 'GET',
-                dataType: 'application/json',
-                data: $("[name='trialsSelected']").serialize(),
-                complete: function (data) {
-                    var json = jQuery.parseJSON(JSON.stringify(data));
-                    var test = $.parseJSON(json.responseText);
-                    $(test).each(function () {
-                        $("#labels-div").append('<div class="row checkbox-space">\n' + '<label class="checkbox form-check-label">' + '<input class="form-check-input" type="checkbox" name="labels" value="' + this + '">' + this + '</label>\n' + '</div>');
-                    });
-                }
-            });
-        }
+            <%--//do your own request an handle the results--%>
+            <%--$.ajax({--%>
+                <%--url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/labels',--%>
+                <%--type: 'GET',--%>
+                <%--dataType: 'application/json',--%>
+                <%--data: $("[name='trialsSelected']").serialize(),--%>
+                <%--complete: function (data) {--%>
+                    <%--var json = jQuery.parseJSON(JSON.stringify(data));--%>
+                    <%--var test = $.parseJSON(json.responseText);--%>
+                    <%--$(test).each(function () {--%>
+                        <%--$("#labels-div").append('<div class="row checkbox-space">\n' + '<label class="checkbox form-check-label">' + '<input class="form-check-input" type="checkbox" name="labels" value="' + this + '">' + this + '</label>\n' + '</div>');--%>
+                    <%--});--%>
+                <%--}--%>
+            <%--});--%>
+        <%--}--%>
 
         $(document).ready(function () {
             setCheckBox('#dataTableTrialsAccuracy', true);
 
-            //do your own request an handle the results
-            $.ajax({
-                url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/labels',
-                type: 'GET',
-                dataType: 'application/json',
-                data: $("[name='trialsSelected']").serialize(),
-                complete: function (data) {
-                    var json = jQuery.parseJSON(JSON.stringify(data));
-                    var test = $.parseJSON(json.responseText);
-                    $(test).each(function () {
-                        $("#labels-div").append('<div class="row checkbox-space">\n' + '<label class="checkbox form-check-label">' + '<input class="form-check-input" type="checkbox" name="labels" value="' + this + '">' + this + '</label>\n' + '</div>');
-                    });
-                }
-            });
+            <%--//do your own request an handle the results--%>
+            <%--$.ajax({--%>
+                <%--url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/labels',--%>
+                <%--type: 'GET',--%>
+                <%--dataType: 'application/json',--%>
+                <%--data: $("[name='trialsSelected']").serialize(),--%>
+                <%--complete: function (data) {--%>
+                    <%--var json = jQuery.parseJSON(JSON.stringify(data));--%>
+                    <%--var test = $.parseJSON(json.responseText);--%>
+                    <%--$(test).each(function () {--%>
+                        <%--$("#labels-div").append('<div class="row checkbox-space">\n' + '<label class="checkbox form-check-label">' + '<input class="form-check-input" type="checkbox" name="labels" value="' + this + '">' + this + '</label>\n' + '</div>');--%>
+                    <%--});--%>
+                <%--}--%>
+            <%--});--%>
 
             $('#dataTableTrialsAccuracy tbody').on('change', "[name='trialsSelected']", function(){
                 // If checkbox is not checked
@@ -271,7 +271,7 @@
                         el.indeterminate = true;
                     }
 
-                    getLabels();
+                    // getLabels();
                 } else {
                     $.ajax({
                         url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/accuracy/checkExperiments',
@@ -282,7 +282,7 @@
                             var json = jQuery.parseJSON(JSON.stringify(data));
 
                             if (json.responseText === "true") {
-                                getLabels();
+                                // getLabels();
                             } else {
                                 this.prop('checked', false);
                                 alert("please choose only experiments that have the same conditions");
@@ -304,13 +304,13 @@
                     return false;
                 }
 
-                var count_checked_labels = $("[name='labels']:checked").length; // count the checked rows
-
-                if(count_checked_labels == 0)
-                {
-                    alert("Please select at least one Label for analysis");
-                    return false;
-                }
+                // var count_checked_labels = $("[name='labels']:checked").length; // count the checked rows
+                //
+                // if(count_checked_labels == 0)
+                // {
+                //     alert("Please select at least one Label for analysis");
+                //     return false;
+                // }
 
                 var form = this;
 

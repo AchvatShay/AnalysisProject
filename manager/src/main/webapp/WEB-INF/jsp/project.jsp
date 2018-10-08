@@ -390,8 +390,8 @@
                 </a>
               </div>
               <div class="col-md-12" style="padding-bottom: 2%">
-                <a href="${pageContext.request.contextPath}/projects/${project.getId()}/allAnalysis">
-                    <i class="fa fa-plus-circle">Create New All Analysis</i>
+                <a href="${pageContext.request.contextPath}/projects/${project.getId()}/analysis/postAnalysis">
+                    <i class="fa fa-plus-circle"></i>Create New post Analysis
                 </a>
               </div>
             </div>

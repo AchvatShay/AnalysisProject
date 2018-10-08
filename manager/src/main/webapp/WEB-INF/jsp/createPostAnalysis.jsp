@@ -106,7 +106,7 @@
         <div class="card-body">
 
         <div class="row">
-          <form action="${pageContext.request.contextPath}/projects/${experiment.getProject().getId()}/analysis/postAnalysis/create" id="addanalysisForm" method="post" class="col-md-12">
+          <form action="${pageContext.request.contextPath}/projects/${project.getId()}/analysis/postAnalysis/create" id="addanalysisForm" method="post" class="col-md-12">
             <div class="row">
               <div class="col-md-3">
                 <div class="form-group">
@@ -118,7 +118,62 @@
                   <label for="analysisDescription">Description</label>
                   <textarea type="text" name="description" required="required" data-error="Analysis description is required" class="form-control" id="analysisDescription" placeholder="Enter Description"></textarea>
                 </div>
+
+                  <div class="form-group">
+                      <label for="analysisVisFontSize">visualization Font Size</label>
+                      <input type="number" step="any" name="font_size" required="required" data-error="Analysis font size is required" class="form-control" id="analysisVisFontSize" value="14">
+                  </div>
+                  <div class="form-group">
+                      <label for="analysisVisStartTime">visualization start time to plot</label>
+                      <input type="number" step="any" name="startTime2plot" required="required" data-error="Analysis start time plot is required" class="form-control" id="analysisVisStartTime" value="1.5">
+                  </div>
+                  <div class="form-group">
+                      <label for="experimentEvents">Experiments Events To Plot : </label>
+
+                      <c:forEach var="experimentEvent" items="${experimentEvents}">
+                          <div class="row checkbox-space">
+                              <label id="experimentEvents" class="form-check-label checkbox"><input class="form-check-input" type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
+                          </div>
+                      </c:forEach>
+                  </div>
               </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="foldsNum">Foldes Num</label>
+                        <input type="number" step="any" name="foldsNum" required="required" data-error="Analysis End behave time is required" class="form-control" id="foldsNum" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>linearSVN : </label>
+                        <label><input type="radio" name="linearSVN" value="True" checked>True</label>
+                        <label><input type="radio" name="linearSVN" value="False">False</label>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Include omissions : </label>
+                        <label><input type="radio" name="includeO" value="True">True</label>
+                        <label><input type="radio" name="includeO" value="False" checked>False</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DetermineSucFailBy">Determine Success or Failur </label>
+                        <select id="DetermineSucFailBy" name="DetermineSucFailBy" class="form-control">
+                            <option value="BySuc">By-Success</option>
+                            <option value="ByFail">By-Fail</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time4confplot">Time for conf plot</label>
+                        <input type="number" step="any" name="time4confplot" required="required" data-error="time4confplot is required" class="form-control" id="time4confplot" value="-2.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time4confplotNext">Time for conf plot Next</label>
+                        <input type="number" step="any" name="time4confplotNext" required="required" data-error="time4confplotNext is required" class="form-control" id="time4confplotNext" value="-2.5">
+                    </div>
+                </div>
               <div class="col-md-3">
                   <div class="form-group" id="analysisTypesS">
                       <label for="analysisType">Analysis Types : </label>
@@ -128,6 +183,16 @@
                               <label id="analysisType" class="checkbox form-check-label"><input class="form-check-input" type="checkbox" name="types" value="${analysis_types.getId()}">${analysis_types.getName()}</label>
                           </div>
                       </c:forEach>
+                  </div>
+                  <div class="form-group">
+                      <label for="analysisLabel">Analysis Labels : </label>
+                      <div class="container-c">
+                          <c:forEach var="label_A" items="${labels}">
+                              <div class="row checkbox-space">
+                                  <label id="analysisLabel" class="checkbox form-check-label"><input type="checkbox" name="labels" value="${label_A}">${label_A}</label>
+                              </div>
+                          </c:forEach>
+                      </div>
                   </div>
               </div>
 
@@ -239,26 +304,6 @@
             var rowsNP = tableNP.rows({ 'search': 'applied' }).nodes();
             // Check/uncheck checkboxes for all rows in the table
             $('input[type="checkbox"]', rowsNP).prop('checked', val);
-        }
-
-        function getTypes() {
-            // clear all labels befor
-            $("#type-div").empty();
-
-            //do your own request an handle the results
-            $.ajax({
-                url: '${pageContext.request.contextPath}/projects/' + ${project.getId()} + '/analysis/postAnalysis/types',
-                type: 'GET',
-                dataType: 'application/json',
-                data: $("[name='analysisList']").serialize(),
-                complete: function (data) {
-                    var json = jQuery.parseJSON(JSON.stringify(data));
-                    var test = $.parseJSON(json.responseText);
-                    $(test).each(function () {
-                        $("#type-div").append('<div class="row checkbox-space">\n' + '<label class="checkbox form-check-label">' + '<input class="form-check-input" type="checkbox" name="types" value="' + this.id + '">' + this.name + '</label>\n' + '</div>');
-                    });
-                }
-            });
         }
 
         $(document).ready(function () {

@@ -41,7 +41,7 @@ public class XmlCreator {
     @Value("${analysis.results.location}")
     private String pathAnalysis;
 
-    public boolean createXml(Analysis analysis, double font_size, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2startCountGrabs, double time2endCountGrabs, double startBehaveTime4trajectory, double endBehaveTime4trajectory, double foldsNum) throws Exception {
+    public boolean createXml(Analysis analysis, double font_size, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2startCountGrabs, double time2endCountGrabs, double startBehaveTime4trajectory, double endBehaveTime4trajectory, double foldsNum, String linearSVN, double slidingWinLen, double slidingWinHop, double conf_percent4acc, double time4confplot, double time4confplotNext, String includeO, String determineSucFailBy, List<String> labels, double bestpcatrajectories2plot) throws Exception {
         boolean results = true;
 
         Project project = analysis.getExperiment().getProject();
@@ -73,7 +73,7 @@ public class XmlCreator {
             File xml = new File(xml_folder.getAbsolutePath() + File.separator + "XmlAnalysis.xml");
             if (!xml.exists())
             {
-                results = createXmlDoc(analysis.getExperiment(), xml_folder, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2endCountGrabs, time2startCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum, font_size);
+                results = createXmlDoc(analysis.getExperiment(), xml_folder, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2endCountGrabs, time2startCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum, font_size, linearSVN, slidingWinLen, slidingWinHop, conf_percent4acc, time4confplot, time4confplotNext, includeO, determineSucFailBy, labels, bestpcatrajectories2plot);
 
                 if (!results)
                 {
@@ -86,7 +86,7 @@ public class XmlCreator {
         return results;
     }
 
-    private boolean createXmlDoc(Experiment experiment, File type_folder, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2endCountGrabs, double time2startCountGrabs, double startBehaveTime4trajectory, double endBehaveTime4trajectory, double foldsNum, double font_size){
+    private boolean createXmlDoc(Experiment experiment, File type_folder, List<String> neurons_forAnalysis, List<String> neurons_toPlot, LinkedList<ExperimentEvents> experimentEvents, double startTime2plot, double time2endCountGrabs, double time2startCountGrabs, double startBehaveTime4trajectory, double endBehaveTime4trajectory, double foldsNum, double font_size, String linearSVN, double slidingWinLen, double slidingWinHop, double conf_percent4acc, double time4confplot, double time4confplotNext, String includeO, String determineSucFailBy, List<String> labels, double bestpcatrajectories2plot){
 
 
         try {
@@ -176,19 +176,142 @@ public class XmlCreator {
 
             Element analysisParams = doc.createElement("analysisParams");
 
+
+            Element indicativeNrns_maxbinnum = doc.createElement("indicativeNrns_maxbinnum");
+            indicativeNrns_maxbinnum.appendChild(doc.createTextNode("2"));
+            analysisParams.appendChild(indicativeNrns_maxbinnum);
+
+            Element indicativeNrnsMeanStartTime = doc.createElement("indicativeNrnsMeanStartTime");
+            indicativeNrnsMeanStartTime.appendChild(doc.createTextNode("0"));
+            analysisParams.appendChild(indicativeNrnsMeanStartTime);
+
+            Element indicativeNrnsMeanEndTime = doc.createElement("indicativeNrnsMeanEndTime");
+            indicativeNrnsMeanEndTime.appendChild(doc.createTextNode("8"));
+            analysisParams.appendChild(indicativeNrnsMeanEndTime);
+
             Element time2startCountGrabsE = doc.createElement("time2startCountGrabs");
             time2startCountGrabsE.appendChild(doc.createTextNode(String.valueOf(time2startCountGrabs)));
             analysisParams.appendChild(time2startCountGrabsE);
-
 
             Element time2endCountGrabsE = doc.createElement("time2endCountGrabs");
             time2endCountGrabsE.appendChild(doc.createTextNode(String.valueOf(time2endCountGrabs)));
             analysisParams.appendChild(time2endCountGrabsE);
 
+            Element slidingWinLenE = doc.createElement("slidingWinLen");
+            slidingWinLenE.appendChild(doc.createTextNode(String.valueOf(slidingWinLen)));
+            analysisParams.appendChild(slidingWinLenE);
+
+            Element slidingWinHopE = doc.createElement("slidingWinHop");
+            slidingWinHopE.appendChild(doc.createTextNode(String.valueOf(slidingWinHop)));
+            analysisParams.appendChild(slidingWinHopE);
+
+            Element linearSVNE = doc.createElement("linearSVN");
+            linearSVNE.setAttribute("is_active", linearSVN);
+            analysisParams.appendChild(linearSVNE);
+
+            Element includeOmissions = doc.createElement("includeOmissions");
+            includeOmissions.setAttribute("is_active", includeO);
+            analysisParams.appendChild(includeOmissions);
+
+
+            Element DetermineSucFailBy = doc.createElement("DetermineSucFailBy");
+            Element bySuc = doc.createElement("BySuc");
+
+            if (determineSucFailBy.equals("BySuc")) {
+                bySuc.setAttribute("is_active", "True");
+            } else {
+                bySuc.setAttribute("is_active", "False");
+            }
+            DetermineSucFailBy.appendChild(bySuc);
+
+            Element ByFail = doc.createElement("ByFail");
+
+            if (determineSucFailBy.equals("ByFail")) {
+                ByFail.setAttribute("is_active", "True");
+            } else {
+                ByFail.setAttribute("is_active", "False");
+            }
+            DetermineSucFailBy.appendChild(ByFail);
+
+            Element Both = doc.createElement("Both");
+
+            if (determineSucFailBy.equals("Both")) {
+                Both.setAttribute("is_active", "True");
+            } else {
+                Both.setAttribute("is_active", "False");
+            }
+            DetermineSucFailBy.appendChild(Both);
+
+
+            analysisParams.appendChild(DetermineSucFailBy);
+
+            Element successLabel = doc.createElement("successLabel");
+            successLabel.appendChild(doc.createTextNode(labels.get(0)));
+            analysisParams.appendChild(successLabel);
+
+            Element failureLabel = doc.createElement("failureLabel");
+            failureLabel.appendChild(doc.createTextNode(labels.get(1)));
+            analysisParams.appendChild(failureLabel);
+
+            Element prevcurrlabels2cluster = doc.createElement("prevcurrlabels2cluster");
+
+            Element lb1 = doc.createElement("cluster");
+            Element nameLabel = doc.createElement("name");
+            nameLabel.appendChild(doc.createTextNode(labels.get(0)));
+            Element color1 = doc.createElement("color");
+            color1.appendChild(doc.createTextNode("blue"));
+            Element color2 = doc.createElement("color");
+            color2.appendChild(doc.createTextNode("cyan"));
+            lb1.appendChild(nameLabel);
+            lb1.appendChild(color1);
+            lb1.appendChild(color2);
+
+            Element lb2 = doc.createElement("cluster");
+            Element nameLabe2 = doc.createElement("name");
+            nameLabe2.appendChild(doc.createTextNode(labels.get(1)));
+            Element color3 = doc.createElement("color");
+            color3.appendChild(doc.createTextNode("purpule"));
+            Element color4 = doc.createElement("color");
+            color4.appendChild(doc.createTextNode("red"));
+            lb2.appendChild(nameLabe2);
+            lb2.appendChild(color3);
+            lb2.appendChild(color4);
+
+
+            prevcurrlabels2cluster.appendChild(lb1);
+            prevcurrlabels2cluster.appendChild(lb2);
+
+            analysisParams.appendChild(prevcurrlabels2cluster);
+
+
+
+            Element labels2cluster = doc.createElement("labels2cluster");
+
+            Element lb3 = doc.createElement("cluster");
+            Element nameLabe3 = doc.createElement("name");
+            nameLabe3.appendChild(doc.createTextNode(labels.get(0)));
+            Element color5 = doc.createElement("color");
+            color5.appendChild(doc.createTextNode("blue"));
+            lb3.appendChild(nameLabe3);
+            lb3.appendChild(color5);
+
+            Element lb4 = doc.createElement("cluster");
+            Element nameLabe4 = doc.createElement("name");
+            nameLabe4.appendChild(doc.createTextNode(labels.get(1)));
+            Element color6 = doc.createElement("color");
+            color6.appendChild(doc.createTextNode("red"));
+            lb4.appendChild(nameLabe4);
+            lb4.appendChild(color6);
+
+
+            labels2cluster.appendChild(lb3);
+            labels2cluster.appendChild(lb4);
+
+            analysisParams.appendChild(labels2cluster);
+
             Element startBehaveTime4trajectoryE = doc.createElement("startBehaveTime4trajectory");
             startBehaveTime4trajectoryE.appendChild(doc.createTextNode(String.valueOf(startBehaveTime4trajectory)));
             analysisParams.appendChild(startBehaveTime4trajectoryE);
-
 
             Element endBehaveTime4trajectoryE = doc.createElement("endBehaveTime4trajectory");
             endBehaveTime4trajectoryE.appendChild(doc.createTextNode(String.valueOf(endBehaveTime4trajectory)));
@@ -231,9 +354,30 @@ public class XmlCreator {
             labelsFontSize.appendChild(doc.createTextNode(String.valueOf(font_size)));
             visualization.appendChild(labelsFontSize);
 
+            Element visualization_time4confplot = doc.createElement("visualization_time4confplot");
+            Element time_stamp = doc.createElement("time_stamp");
+            time_stamp.appendChild(doc.createTextNode(String.valueOf(time4confplot)));
+            visualization_time4confplot.appendChild(time_stamp);
+            visualization.appendChild(visualization_time4confplot);
+
+            Element visualization_time4confplotNext = doc.createElement("visualization_time4confplotNext");
+            Element time_stamp2 = doc.createElement("time_stamp");
+            time_stamp2.appendChild(doc.createTextNode(String.valueOf(time4confplotNext)));
+            visualization_time4confplotNext.appendChild(time_stamp2);
+            visualization.appendChild(visualization_time4confplotNext);
+
+            Element visualization_conf_percent4acc = doc.createElement("visualization_conf_percent4acc");
+            visualization_conf_percent4acc.appendChild(doc.createTextNode(String.valueOf(conf_percent4acc)));
+            visualization.appendChild(visualization_conf_percent4acc);
+
             Element startTime2plotE = doc.createElement("startTime2plot");
             startTime2plotE.appendChild(doc.createTextNode(String.valueOf(startTime2plot)));
             visualization.appendChild(startTime2plotE);
+
+
+            Element bestpcatrajectories2plotE = doc.createElement("bestpcatrajectories2plot");
+            bestpcatrajectories2plotE.appendChild(doc.createTextNode(String.valueOf(bestpcatrajectories2plot)));
+            visualization.appendChild(bestpcatrajectories2plotE);
 
             Element eventsElement = doc.createElement("Events2plot");
 

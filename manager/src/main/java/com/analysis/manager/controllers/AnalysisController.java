@@ -3,14 +3,13 @@ package com.analysis.manager.controllers;
 import AnalysisManager.RunAnalysis;
 import com.analysis.manager.Dao.AnalysisTypeDao;
 import com.analysis.manager.Dao.ExperimentEventsDao;
+import com.analysis.manager.ExperimentDataBean;
 import com.analysis.manager.Service.AnalysisService;
 import com.analysis.manager.Service.ExperimentService;
 import com.analysis.manager.Service.ProjectService;
 import com.analysis.manager.Service.UserService;
 import com.analysis.manager.XmlCreator;
 import com.analysis.manager.modle.*;
-import com.mathworks.toolbox.javabuilder.MWCharArray;
-import com.mathworks.toolbox.javabuilder.MWStructArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +55,18 @@ public class AnalysisController {
     private ExperimentEventsDao experimentEventsDao;
 
     @Autowired
+    private ExperimentDataBean experimentDataBean;
+
+    @Autowired
     private UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(AnalysisController.class);
 
     @Value("${analysis.results.location}")
     private String pathAnalysis;
+
+    @Value("${accuracy.analysis.name}")
+    private String accuracyName;
 
     @RequestMapping(value = "analysis", method = RequestMethod.POST)
     public ModelAndView createAnalysisType(@RequestParam String name, RedirectAttributes model)
@@ -80,6 +85,29 @@ public class AnalysisController {
         else
         {
             model.addFlashAttribute("error_message", "analysis type already exists");
+        }
+
+        return new ModelAndView("redirect:/analysis");
+    }
+
+    @RequestMapping(value = "analysis/{id}/delete")
+    public ModelAndView deleteAnalysisTypes(@PathVariable long id, RedirectAttributes model)
+    {
+        AnalysisType type = analysisTypeDao.findById(id);
+        if (type != null)
+        {
+            try {
+                analysisTypeDao.delete(type);
+            }
+            catch (Exception e)
+            {
+                logger.error(e.getMessage());
+                model.addFlashAttribute("error_message", "failed to delete analysis type in DB");
+            }
+        }
+        else
+        {
+            model.addFlashAttribute("error_message", "analysis type does not exist");
         }
 
         return new ModelAndView("redirect:/analysis");
@@ -230,12 +258,29 @@ public class AnalysisController {
                          @RequestParam(value = "events", required = false) LinkedList<Long> events,
                          @RequestParam("experiment_id") long experiment_id,
                          @RequestParam("font_size") double font_size,
-                         @RequestParam(value = "trialsSelected") LinkedList<String> trials,  RedirectAttributes model)
+                         @RequestParam("linearSVN") String linearSVN,
+                         @RequestParam("slidingWinLen") double slidingWinLen,
+                         @RequestParam("slidingWinHop") double slidingWinHop,
+                         @RequestParam("conf_percent4acc") double conf_percent4acc,
+                         @RequestParam("time4confplot") double time4confplot,
+                         @RequestParam("time4confplotNext") double time4confplotNext,
+                         @RequestParam("bestpcatrajectories2plot") double bestpcatrajectories2plot,
+                         @RequestParam("includeO") String includeO,
+                         @RequestParam("DetermineSucFailBy") String DetermineSucFailBy,
+                         @RequestParam(value = "trialsSelected") LinkedList<String> trials,
+                         @RequestParam(value = "labels", required = false) List<String> labels,  RedirectAttributes model)
     {
 
         if (trials == null || trials.isEmpty())
         {
             model.addFlashAttribute("error_message", "failed to create analysis, empty trials");
+            model.addAttribute("tif", new LinkedList<String>());
+            return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
+        }
+
+        if (labels == null || labels.isEmpty() || labels.size() != 2)
+        {
+            model.addFlashAttribute("error_message", "failed to create analysis, must has 2 labels");
             model.addAttribute("tif", new LinkedList<String>());
             return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
         }
@@ -283,9 +328,6 @@ public class AnalysisController {
 
             }
 
-//            List<String> neuronsPlot = (neurons_toPlot == null) ? new LinkedList<>() : getNeuronsList(neurons_toPlot, experiment_id);
-//            List<String> neuronsAnalysis = getNeuronsList(neurons_forAnalysis, experiment_id);
-
            if (neurons_toPlot == null) {
                 neurons_toPlot = new LinkedList<>();
            }
@@ -316,7 +358,7 @@ public class AnalysisController {
             projectDao.saveProject(project);
 
 
-            if (!xmlCreator.createXml(analysis, font_size, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2startCountGrabs, time2endCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum)) {
+            if (!xmlCreator.createXml(analysis, font_size, neurons_forAnalysis, neurons_toPlot, experimentEvents, startTime2plot, time2startCountGrabs, time2endCountGrabs, startBehaveTime4trajectory, endBehaveTime4trajectory, foldsNum, linearSVN, slidingWinLen, slidingWinHop, conf_percent4acc, time4confplot, time4confplotNext, includeO, DetermineSucFailBy, labels, bestpcatrajectories2plot)) {
                 model.addFlashAttribute("error_message", "Error while creating Analysis Xml");
                 return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
             }
@@ -327,7 +369,7 @@ public class AnalysisController {
                 return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
             }
 
-            String errors = sendToMatlab(analysis);
+            String errors = experimentDataBean.sendToMatlab(analysis);
 
             if (!errors.isEmpty()) {
                 model.addFlashAttribute("error_message", errors);
@@ -342,44 +384,5 @@ public class AnalysisController {
             model.addFlashAttribute("error_message", "Error while creating Analysis in DB");
             return new ModelAndView("redirect:/projects/" + id + "/experiments/" + experiment_id + "/createAnalysis");
         }
-    }
-
-    private String  sendToMatlab(Analysis analysis) {
-        StringBuilder errors = new StringBuilder();
-        analysis.getTrials().sort(Comparator.comparing(Trial::getName));
-
-        for (AnalysisType type : analysis.getAnalysisType())
-        {
-            Project project = analysis.getExperiment().getProject();
-            String path = pathAnalysis + File.separator + project.getUser().getName() + "_" + project.getUser().getLastName() + File.separator + project.getName() + File.separator + analysis.getName();
-            path = path.toLowerCase();
-
-            try {
-                MWCharArray xmlLocation = new MWCharArray(path + File.separator + "XmlAnalysis.xml");
-
-                MWCharArray analysisOutputFolder = new MWCharArray(path + File.separator + type.getName().toLowerCase());
-                MWStructArray BDA_TPA = new MWStructArray(1, analysis.getTrials().size(), new String[] {"BDA", "TPA"});
-
-                int count = 1;
-                for (Trial trial : analysis.getTrials())
-                {
-                    BDA_TPA.set("BDA", new int[] {1, count}, trial.getBda());
-                    BDA_TPA.set("TPA", new int[] {1, count}, trial.getTpa());
-                    count++;
-                }
-
-                MWCharArray analysisName = new MWCharArray(type.getName());
-
-                runAnalysis.runAnalysis(analysisOutputFolder, xmlLocation, BDA_TPA, analysisName);
-                runAnalysis.CloseAllFigures();
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                errors.append("Error matlab analysis failed for analysis type :").append(type.getName()).append("\n")
-                .append(e.getMessage());
-                errors.append("\n");
-            }
-        }
-
-        return errors.toString();
     }
 }

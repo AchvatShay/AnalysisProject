@@ -121,66 +121,121 @@
 
                   <div class="form-group">
                       <label for="analysisVisFontSize">visualization Font Size</label>
-                      <input type="number" step="any" name="font_size" required="required" data-error="Analysis font size is required" class="form-control" id="analysisVisFontSize" placeholder="Enter Font Size">
+                      <input type="number" step="any" name="font_size" required="required" data-error="Analysis font size is required" class="form-control" id="analysisVisFontSize" value="14">
                   </div>
-
-
+                  <div class="form-group">
+                      <label for="startBehaveTime4trajectory">Start behave time for trajctory</label>
+                      <input type="number" step="any" name="startBehaveTime4trajectory" required="required" data-error="Analysis Start behave time is required" class="form-control" id="startBehaveTime4trajectory" value="4">
+                  </div>
+                  <div class="form-group">
+                      <label for="endBehaveTime4trajectory">End behave time for trajctory</label>
+                      <input type="number" step="any" name="endBehaveTime4trajectory" required="required" data-error="Analysis End behave time is required" class="form-control" id="endBehaveTime4trajectory" value="6">
+                  </div>
+                  <div class="form-group">
+                      <label for="foldsNum">Foldes Num</label>
+                      <input type="number" step="any" name="foldsNum" required="required" data-error="Analysis End behave time is required" class="form-control" id="foldsNum" value="10">
+                  </div>
               </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="analysisVisStartTime">visualization start time to plot</label>
-                        <input type="number" step="any" name="startTime2plot" required="required" data-error="Analysis start time plot is required" class="form-control" id="analysisVisStartTime" placeholder="Enter start time to plot">
+                        <input type="number" step="any" name="startTime2plot" required="required" data-error="Analysis start time plot is required" class="form-control" id="analysisVisStartTime" value="1.5">
                     </div>
 
 
                     <div class="form-group">
                         <label for="time2startCountGrabs">Time to start count grabs</label>
-                        <input type="number" step="any" name="time2startCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2startCountGrabs" placeholder="Enter time">
+                        <input type="number" step="any" name="time2startCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2startCountGrabs" value="4">
                     </div>
 
 
                     <div class="form-group">
                         <label for="time2endCountGrabs">Time to end count grabs</label>
-                        <input type="number" step="any" name="time2endCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2endCountGrabs" placeholder="Enter time">
+                        <input type="number" step="any" name="time2endCountGrabs" required="required" data-error="Analysis start time plot is required" class="form-control" id="time2endCountGrabs" value="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="analysisType">Analysis Types : </label>
+
+                        <c:forEach var="analysis_types" items="${analysisTypes}">
+                            <div class="row checkbox-space">
+                                <label id="analysisType" class="checkbox form-check-label"><input class="form-check-input" type="checkbox" name="types" value="${analysis_types.getId()}">${analysis_types.getName()}</label>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>linearSVN : </label>
+                        <label><input type="radio" name="linearSVN" value="True" checked>True</label>
+                        <label><input type="radio" name="linearSVN" value="False">False</label>
                     </div>
 
-                </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <label for="startBehaveTime4trajectory">Start behave time for trajctory</label>
-                  <input type="number" step="any" name="startBehaveTime4trajectory" required="required" data-error="Analysis Start behave time is required" class="form-control" id="startBehaveTime4trajectory" placeholder="Enter start behave time">
-                </div>
-                <div class="form-group">
-                  <label for="endBehaveTime4trajectory">End behave time for trajctory</label>
-                  <input type="number" step="any" name="endBehaveTime4trajectory" required="required" data-error="Analysis End behave time is required" class="form-control" id="endBehaveTime4trajectory" placeholder="Enter end behave time">
-                </div>
-                <div class="form-group">
-                  <label for="foldsNum">Foldes Num</label>
-                  <input type="number" step="any" name="foldsNum" required="required" data-error="Analysis End behave time is required" class="form-control" id="foldsNum" placeholder="Enter foldes num">
-                </div>
+                    <div class="form-group">
+                        <label>Include omissions : </label>
+                        <label><input type="radio" name="includeO" value="True">True</label>
+                        <label><input type="radio" name="includeO" value="False" checked>False</label>
+                    </div>
 
-              </div>
-              <div class="col-md-3">
-                  <div class="form-group">
-                      <label for="analysisType">Analysis Types : </label>
+                    <div class="form-group">
+                        <label for="DetermineSucFailBy">Determine Success or Failur </label>
+                        <select id="DetermineSucFailBy" name="DetermineSucFailBy" class="form-control">
+                            <option value="BySuc">By-Success</option>
+                            <option value="ByFail">By-Fail</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
 
-                      <c:forEach var="analysis_types" items="${analysisTypes}">
-                          <div class="row checkbox-space">
-                              <label id="analysisType" class="checkbox form-check-label"><input class="form-check-input" type="checkbox" name="types" value="${analysis_types.getId()}">${analysis_types.getName()}</label>
-                          </div>
-                      </c:forEach>
-                  </div>
-                  <div class="form-group">
-                      <label for="experimentEvents">Experiments Events To Plot : </label>
+                    <div class="form-group">
+                        <label for="slidingWinLen">SlidingWinLen</label>
+                        <input type="number" step="any" name="slidingWinLen" required="required" data-error="slidingWinLen is required" class="form-control" id="slidingWinLen" value="1">
+                    </div>
 
-                      <c:forEach var="experimentEvent" items="${experimentEvents}">
-                          <div class="row checkbox-space">
-                              <label id="experimentEvents" class="form-check-label checkbox"><input class="form-check-input" type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
-                          </div>
-                      </c:forEach>
-                  </div>
-              </div>
+                    <div class="form-group">
+                        <label for="slidingWinHop">SlidingWinHop</label>
+                        <input type="number" step="any" name="slidingWinHop" required="required" data-error="slidingWinHop is required" class="form-control" id="slidingWinHop" value="0.5">
+                    </div>
+                    <c:if test="${!experiment.getLabelsName().isEmpty()}">
+                        <div class="form-group">
+                            <label>Experiment Labels : </label>
+                            <div class="container-c">
+                                <c:forEach var="label" items="${experiment.getLabelsName().split(',')}">
+                                    <div class="row checkbox-space">
+                                        <label  class="checkbox form-check-label"><input type="checkbox" name="labels" value="${label}">${label}</label>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </c:if>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="bestpcatrajectories2plot">best pca trajectories to plot</label>
+                        <input type="number" step="any" name="bestpcatrajectories2plot" required="required" data-error="bestpcatrajectories2plot is required" class="form-control" id="bestpcatrajectories2plot" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="conf_percent4acc">conf percent for accuracy</label>
+                        <input type="number" step="any" name="conf_percent4acc" required="required" data-error="conf_percent4acc is required" class="form-control" id="conf_percent4acc" value="0.05">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="time4confplot">Time for conf plot</label>
+                        <input type="number" step="any" name="time4confplot" required="required" data-error="time4confplot is required" class="form-control" id="time4confplot" value="-2.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time4confplotNext">Time for conf plot Next</label>
+                        <input type="number" step="any" name="time4confplotNext" required="required" data-error="time4confplotNext is required" class="form-control" id="time4confplotNext" value="-2.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="experimentEvents">Experiments Events To Plot : </label>
+
+                        <c:forEach var="experimentEvent" items="${experimentEvents}">
+                            <div class="row checkbox-space">
+                                <label id="experimentEvents" class="form-check-label checkbox"><input class="form-check-input" type="checkbox" name="events" value="${experimentEvent.getId()}">${experimentEvent.getName()}</label>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </div>
             </div>
 
             <input id="trailsAnalysisExperiment" type="number" name="experiment_id" hidden="hidden" value="${experiment.getId()}"/>

@@ -88,10 +88,10 @@ public class ProjectServiceImpl implements ProjectService {
             project.setAnalyzes(null);
         }
 
-        String path = pathAnalysis + File.separator + project.getUser().getName() + File.separator + project.getName();
+        String path = pathAnalysis + File.separator + project.getUser().getName() + "_" + project.getUser().getLastName() + File.separator + project.getName();
 
         try {
-            FileUtils.deleteDirectory(new File(path));
+            FileUtils.deleteDirectory(new File(path.toLowerCase()));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

@@ -1,13 +1,12 @@
 package com.analysis.manager.controllers;
 
 import com.analysis.manager.Dao.*;
-import com.analysis.manager.NeuronsBean;
+import com.analysis.manager.ExperimentDataBean;
 import com.analysis.manager.Service.*;
 import com.analysis.manager.modle.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -60,7 +59,7 @@ public class ExperimentController {
     private UserService userService;
 
     @Autowired
-    private NeuronsBean neuronsBean;
+    private ExperimentDataBean experimentDataBean;
 
     @Value("${accuracy.analysis.name}")
     private String accuracyName;
@@ -94,7 +93,7 @@ public class ExperimentController {
             Project project = projectDao.findByIdAndUser(project_id, user);
 
             Experiment experiment = experimentDao.findByIdAndProject(id, project);
-            m.addAttribute("analysisTypes", analysisTypeDao.findAllByNameNotLike(accuracyName));
+            m.addAttribute("analysisTypes", analysisTypeDao.findAll());
             m.addAttribute("experimentEvents", experimentEventsDao.findAll());
             m.addAttribute("experiment", experiment);
 
@@ -218,6 +217,15 @@ public class ExperimentController {
             if (experiment.getTrials().isEmpty()) {
                 experiment.setNeuronsName("");
                 experiment.setLabelsName("");
+            } else {
+                String labelsFromMatlab = experimentDataBean.getLabels(experiment);
+
+                if (labelsFromMatlab == null) {
+                    model.addFlashAttribute("error_message", "error while getting labels from matlab");
+                    return new ModelAndView("redirect:/projects/" + projectId + "/experiments/" + experiment_id);
+                }
+
+                experiment.setLabelsName(labelsFromMatlab);
             }
 
             experimentDao.save(experiment);
@@ -303,13 +311,10 @@ public class ExperimentController {
             }
 
             if (experiment.getNeuronsName() == null || experiment.getNeuronsName().isEmpty()) {
-                experiment.setNeuronsName(neuronsBean.getNeurons(experiment));
+                experiment.setNeuronsName(experimentDataBean.getNeurons(experiment));
             }
 
-            if (experiment.getLabelsName() == null || experiment.getLabelsName().isEmpty()) {
-                experiment.setLabelsName(neuronsBean.getLabels(experiment));
-            }
-
+            experiment.setLabelsName(experimentDataBean.getLabels(experiment));
             experimentDao.save(experiment);
         }
         catch (Exception e) {
@@ -357,13 +362,10 @@ public class ExperimentController {
                         experiment.AddTrial(trial);
 
                         if (experiment.getNeuronsName() == null || experiment.getNeuronsName().isEmpty()) {
-                            experiment.setNeuronsName(neuronsBean.getNeurons(experiment));
+                            experiment.setNeuronsName(experimentDataBean.getNeurons(experiment));
                         }
 
-                        if (experiment.getLabelsName() == null || experiment.getLabelsName().isEmpty()) {
-                            experiment.setLabelsName(neuronsBean.getLabels(experiment));
-                        }
-
+                        experiment.setLabelsName(experimentDataBean.getLabels(experiment));
                         experimentDao.save(experiment);
                     } else {
                         model.addFlashAttribute("error_message", "The trial already exists" + trialName + "\n");

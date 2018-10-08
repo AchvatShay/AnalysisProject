@@ -1,7 +1,7 @@
 package com.analysis.manager.config;
 
 import AnalysisManager.RunAnalysis;
-import com.analysis.manager.NeuronsBean;
+import com.analysis.manager.ExperimentDataBean;
 import com.analysis.manager.XmlCreator;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
@@ -134,9 +134,9 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public NeuronsBean neuronsBean()
+    public ExperimentDataBean neuronsBean()
     {
-        return new NeuronsBean();
+        return new ExperimentDataBean();
     }
 
     // ------------------------

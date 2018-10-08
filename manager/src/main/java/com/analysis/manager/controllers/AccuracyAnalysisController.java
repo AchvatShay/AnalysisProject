@@ -2,15 +2,14 @@ package com.analysis.manager.controllers;
 
 import AnalysisManager.RunAnalysis;
 import com.analysis.manager.Dao.AnalysisTypeDao;
-import com.analysis.manager.NeuronsBean;
+import com.analysis.manager.Dao.ExperimentEventsDao;
+import com.analysis.manager.ExperimentDataBean;
 import com.analysis.manager.Service.AnalysisService;
 import com.analysis.manager.Service.ExperimentService;
 import com.analysis.manager.Service.ProjectService;
 import com.analysis.manager.Service.UserService;
 import com.analysis.manager.XmlCreator;
 import com.analysis.manager.modle.*;
-import com.mathworks.toolbox.javabuilder.MWCharArray;
-import com.mathworks.toolbox.javabuilder.MWStructArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
 import java.util.*;
 
 @Controller
@@ -36,16 +34,13 @@ public class AccuracyAnalysisController {
     private ProjectService projectDao;
 
     @Autowired
-    private AnalysisService analysisService;
-
-    @Autowired
     private AnalysisService analysisDao;
 
     @Autowired
     private XmlCreator xmlCreator;
 
     @Autowired
-    private NeuronsBean neuronsBean;
+    private ExperimentDataBean experimentDataBean;
 
     @Autowired
     private AnalysisTypeDao analysisTypeDao;
@@ -56,13 +51,13 @@ public class AccuracyAnalysisController {
     @Autowired
     private ExperimentService experimentDao;
 
+    @Autowired
+    private ExperimentEventsDao experimentEventsDao;
+
     private static final Logger logger = LoggerFactory.getLogger(AccuracyAnalysisController.class);
 
     @Value("${analysis.results.location}")
     private String pathAnalysis;
-
-    @Value("${accuracy.analysis.name}")
-    private String accuracyName;
 
     @RequestMapping(value = "projects/{id}/analysis/accuracy/phaseA")
     public ModelAndView createAccuracyAnalysis(@PathVariable long id, Model model) {
@@ -74,22 +69,6 @@ public class AccuracyAnalysisController {
         model.addAttribute("current_user", user.getName() + " " + user.getLastName());
 
         return new ModelAndView("createAnalysisAccuracy");
-    }
-
-    @GetMapping(value = "projects/{id}/analysis/labels")
-    public ResponseEntity getLabels(@PathVariable long id, @RequestParam("trialsSelected") List<Long> trialsSelected) {
-        // Check conditions of trials equals
-
-        // get for all trails only labels common
-
-        // TODO
-        // get labels
-
-        LinkedList<String> test = new LinkedList<>();
-        test.add("success");
-        test.add("fail");
-
-        return ResponseEntity.ok(test);
     }
 
     @PostMapping(value = "projects/{id}/analysis/accuracy/checkExperiments")
@@ -111,7 +90,8 @@ public class AccuracyAnalysisController {
                 if (!experiment.equals(prev)) {
                     ExperimentCondition experimentCondition = experiment.getExperimentCondition();
 
-                    if (prevCondition.getExperimentType().getId() != experimentCondition.getExperimentType().getId() ||
+                    if (experiment.getProject().getId() != prev.getProject().getId() ||
+                            prevCondition.getExperimentType().getId() != experimentCondition.getExperimentType().getId() ||
                             prevCondition.getBehavioral_delay() != experimentCondition.getBehavioral_delay() ||
                             prevCondition.getBehavioral_sampling_rate() != experimentCondition.getBehavioral_sampling_rate() ||
                             prevCondition.getDepth() != experimentCondition.getDepth() ||
@@ -137,12 +117,32 @@ public class AccuracyAnalysisController {
                                @RequestParam("startTime2plot") double startTime2plot,
                                @RequestParam("font_size") double font_size,
                                @RequestParam(value = "trialsSelected") LinkedList<String> trials,
-                               @RequestParam("labels") List<String> labels,  RedirectAttributes model)
+                               @RequestParam(value = "types") LinkedList<Long> types,
+                               @RequestParam(value = "labels", required = false) List<String> labels,
+                               @RequestParam("foldsNum") double foldsNum,
+                               @RequestParam(value = "events", required = false) LinkedList<Long> events,
+                               @RequestParam("linearSVN") String linearSVN,
+                               @RequestParam("slidingWinLen") double slidingWinLen,
+                               @RequestParam("slidingWinHop") double slidingWinHop,
+                               @RequestParam("conf_percent4acc") double conf_percent4acc,
+                               @RequestParam("time4confplot") double time4confplot,
+                               @RequestParam("includeO") String includeO,
+                               @RequestParam("DetermineSucFailBy") String DetermineSucFailBy,
+                               @RequestParam("time4confplotNext") double time4confplotNext,
+                               @RequestParam("bestpcatrajectories2plot") double bestpcatrajectories2plot,
+                               RedirectAttributes model)
     {
 
         if (trials == null || trials.isEmpty())
         {
             model.addFlashAttribute("error_message", "failed to create analysis, empty trials");
+            model.addAttribute("tif", new LinkedList<String>());
+            return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
+        }
+
+        if (labels == null || labels.isEmpty() || labels.size() != 2)
+        {
+            model.addFlashAttribute("error_message", "failed to create analysis, must has 2 labels");
             model.addAttribute("tif", new LinkedList<String>());
             return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
         }
@@ -162,17 +162,21 @@ public class AccuracyAnalysisController {
                 return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
             }
 
-            AnalysisType analysisType = analysisTypeDao.findByName(accuracyName);
-
-            if (analysisType == null) {
-                model.addFlashAttribute("error_message", "failed to create analysis, this analysis type - accuracy does not exists");
-                return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
+            for (long id_type : types) {
+                AnalysisType analysisType = analysisTypeDao.findById(id_type);
+                analysisTypes.add(analysisType);
             }
-
-            analysisTypes.add(analysisType);
 
             LinkedList<Trial> allTrials = new LinkedList<>();
             HashMap<Long, Experiment> experiments = new HashMap<>();
+
+            if (events != null) {
+                for (long id_event : events) {
+                    ExperimentEvents eventsDaoById = experimentEventsDao.findById(id_event);
+                    experimentEvents.add(eventsDaoById);
+                }
+
+            }
 
             long experimentId = 0;
             for (String str : trials)
@@ -200,7 +204,7 @@ public class AccuracyAnalysisController {
             project.AddAnalysis(analysis);
             projectDao.saveProject(project);
 
-            if (!xmlCreator.createXml(analysis, font_size, Arrays.asList(neuronsBean.getNeurons(experiments.get(experimentId)).split(",")), new LinkedList<>(), experimentEvents, startTime2plot, 0, 0, 0, 0, 0)) {
+            if (!xmlCreator.createXml(analysis, font_size, Arrays.asList(experimentDataBean.getNeurons(experiments.get(experimentId)).split(",")), new LinkedList<>(), experimentEvents, startTime2plot, 0, 0, 0, 0, foldsNum, linearSVN, slidingWinLen, slidingWinHop, conf_percent4acc, time4confplot, time4confplotNext, includeO, DetermineSucFailBy, labels, bestpcatrajectories2plot)) {
                 model.addFlashAttribute("error_message", "Error while creating Analysis Xml");
                 return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
             }
@@ -211,7 +215,7 @@ public class AccuracyAnalysisController {
                 return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
             }
 
-            String errors = sendToMatlab(analysis, labels);
+            String errors = experimentDataBean.sendToMatlab(analysis);
 
             if (!errors.isEmpty()) {
                 model.addFlashAttribute("error_message", errors);
@@ -228,100 +232,47 @@ public class AccuracyAnalysisController {
         }
     }
 
-    private String  sendToMatlab(Analysis analysis, List<String> labels) {
-        StringBuilder errors = new StringBuilder();
-//        analysis.getTrials().sort(Comparator.comparing(Trial::getName));
-//
-//        for (AnalysisType type : analysis.getAnalysisType())
-//        {
-//            Project project = analysis.getExperiment().getProject();
-//            String path = pathAnalysis + File.separator + project.getUser().getName() + "_" + project.getUser().getLastName() + File.separator + project.getName() + File.separator + analysis.getName();
-//            path = path.toLowerCase();
-//
-//            try {
-//                MWCharArray xmlLocation = new MWCharArray(path + File.separator + "XmlAnalysis.xml");
-//
-//                MWCharArray analysisOutputFolder = new MWCharArray(path + File.separator + type.getName().toLowerCase());
-//                MWStructArray BDA_TPA = new MWStructArray(1, analysis.getTrials().size(), new String[] {"BDA", "TPA"});
-//
-//                int count = 1;
-//                for (Trial trial : analysis.getTrials())
-//                {
-//                    BDA_TPA.set("BDA", new int[] {1, count}, trial.getBda());
-//                    BDA_TPA.set("TPA", new int[] {1, count}, trial.getTpa());
-//                    count++;
-//                }
-//
-//                MWCharArray analysisName = new MWCharArray(type.getName());
-//
-//                runAnalysis.runAnalysis(analysisOutputFolder, xmlLocation, BDA_TPA, analysisName);
-//                runAnalysis.CloseAllFigures();
-//            } catch (Exception e) {
-//                logger.error(e.getMessage());
-//                errors.append("Error matlab analysis failed for analysis type :").append(type.getName()).append("\n")
-//                        .append(e.getMessage());
-//                errors.append("\n");
-//            }
-//        }
-
-        return errors.toString();
-    }
-
     @GetMapping(value = "projects/{id}/analysis/accuracy/phaseB")
     public ModelAndView create_view(@PathVariable("id") long id,
-                               @RequestParam(value = "trialsSelected") LinkedList<Long> trials,
-                               @RequestParam(value = "labels") LinkedList<String> labels, RedirectAttributes m, Model model)
-    {
+                               @RequestParam(value = "trialsSelected") LinkedList<Long> trials, RedirectAttributes m, Model model) {
         if (trials.isEmpty()) {
             logger.error("experiments is empty");
             m.addFlashAttribute("error_message", "failed to create analysis type in DB");
             return new ModelAndView("redirect:/projects/" + id);
         }
 
-        try
-        {
+        try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.findUserByEmail(auth.getName());
             Project project = projectDao.findByIdAndUser(id, user);
 
             List<Experiment> experiments = new LinkedList<>();
+            List<String> labels = new LinkedList<>();
+
             for (Long ex_id : trials) {
-                experiments.add(experimentDao.findByIdAndProject(ex_id, project));
+                Experiment experiment = experimentDao.findByIdAndProject(ex_id, project);
+                List<String> split = Arrays.asList(experiment.getLabelsName().split(","));
+
+                if (labels.isEmpty()) {
+                    labels.addAll(split);
+                } else {
+                    labels.retainAll(split);
+                }
+
+                experiments.add(experiment);
             }
 
             model.addAttribute("labels", labels);
             model.addAttribute("project", project);
             model.addAttribute("experiments", experiments);
+            model.addAttribute("analysisTypes", analysisTypeDao.findAll());
+            model.addAttribute("experimentEvents", experimentEventsDao.findAll());
             model.addAttribute("current_user", user.getName() + " " + user.getLastName());
             return new ModelAndView("createAnalysis_accuracy_phaseB");
-        }
-        catch(Exception e)
-        {
-
+        } catch (Exception e) {
             m.addFlashAttribute("error_message", e.getMessage());
             logger.error(e.getMessage());
             return new ModelAndView("redirect:/projects/" + id + "/analysis/accuracy/phaseA");
         }
-
-}
-
-    @RequestMapping(value = "projects/{id}/allAnalysis")
-    public ModelAndView createAllAnalysis(@PathVariable long id, Model model)
-    {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        Project project = projectDao.findByIdAndUser(id, user);
-
-        List<Analysis> analysisList = new LinkedList<>();
-        for (Experiment experiment : project.getExperiments()) {
-
-            analysisList.addAll(analysisService.findAllByExperiment(experiment));
-        }
-
-        model.addAttribute("analysis", analysisList);
-//        TODO
-//        model.addAttribute("labels", );
-
-        return new ModelAndView("create_all_analysis");
     }
 }
