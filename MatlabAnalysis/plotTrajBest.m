@@ -4,7 +4,7 @@ classes = unique(labels);
 for ci = 1:length(classes)
     inds{ci} = find(labels==classes(ci));
     closest{ci} = getClosestTrajectories(trajData, inds{ci}, countTraj);
-for k=1:countTraj
+for k=1:length(closest{ci})
     plot3(squeeze(trajData(1,:,closest{ci}(k))), squeeze(trajData(2,:,closest{ci}(k))), squeeze(trajData(3,:,closest{ci}(k))),  'Color', clrs(ci, :));
     hold on;
 end
