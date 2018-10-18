@@ -1,6 +1,6 @@
-function BdaTpaList = main(pth, outputPath)
+function BdaTpaList = main(pth, outputPath, Trials2keep)
 
-xmlfile = 'XmlM26.xml';
+xmlfile = 'XmlD10.xml';
 % xmlfile = 'XmlBoth.xml';
 % xmlfile = 'XmlPT3_1nrn.xml';
 % xmlfile = 'XmlPT3_nonrns.xml';
@@ -12,21 +12,28 @@ mkNewFolder(outputPath);
 
 filesTPA = dir([pth, '\TPA*.mat']);
 filesBDA = dir([pth, '\BDA*.mat']);
-
-for k=1:length(filesTPA)
-BdaTpaList(k).TPA = fullfile(filesTPA(1).folder, filesTPA(k).name);
-BdaTpaList(k).BDA = fullfile(filesBDA(1).folder, filesBDA(k).name);
+if nargin == 2
+    Trials2keep = 1:length(filesTPA);
+end
+l = 1;
+for k=Trials2keep
+BdaTpaList(l).TPA = fullfile(filesTPA(1).folder, filesTPA(k).name);
+BdaTpaList(l).BDA = fullfile(filesBDA(1).folder, filesBDA(k).name);
+l = l + 1;
 end
 
 
 
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
+
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'tiling');
+
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
-close all;
+% close all;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 return;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');

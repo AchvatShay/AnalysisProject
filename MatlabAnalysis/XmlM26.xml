@@ -65,8 +65,8 @@
         </labels2cluster>   
         <includeOmissions is_active='False'></includeOmissions>
         <DetermineSucFailBy>
-			<BySuc is_active='False'></BySuc>
-			<ByFail is_active='True'></ByFail>
+			<BySuc is_active='True'></BySuc>
+			<ByFail is_active='False'></ByFail>
 			<Both is_active='False'></Both>
 		</DetermineSucFailBy>
         <slidingWinLen>1</slidingWinLen>

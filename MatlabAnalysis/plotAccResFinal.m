@@ -17,7 +17,9 @@ if plotHist~=0
 else
     atop=[];
 end
-shadedErrorBar(tmid,accSVM.raw.mean,accSVM.raw.std,'lineprops',{'-k'});
+stdplusmean = accSVM.raw.mean+accSVM.raw.std;
+stdplusmean=min(stdplusmean,1);
+shadedErrorBar(tmid,accSVM.raw.mean,stdplusmean-accSVM.raw.mean,'lineprops',{'-k'});
 
 ylabel('Accuracy', 'FontSize',labelsFontSz);axis tight;
 hold all;

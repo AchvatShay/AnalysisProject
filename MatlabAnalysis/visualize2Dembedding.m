@@ -1,10 +1,11 @@
 function visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, embedding, outputPath, Method)
 
-
+if ~isempty(ACC2D)
 fid = fopen(fullfile(outputPath, [Method 'accuracy2D.txt']), 'w');
 fprintf(fid, 'Accuracy of %s :\t\tmean = %f std = %f\n', Method, ACC2D.mean, ACC2D.std);
 fprintf(fid, 'Accuracy of %s :\t\tmean = %f std = %f\n', Method, ACC2D.mean, ACC2D.std);
 fclose(fid);
+end
 [clrs, clrsprevCurr] = cellClr2matClrs(generalProperty.labels2clusterClrs, generalProperty.prevcurrlabels2clusterClrs);
 
 % for clr_i = 1:length(generalProperty.labels2clusterClrs)
@@ -24,35 +25,6 @@ if length(unique(labels)) == 2
 end
 end
 
-function plot2Dembedding(examinedInds, outputPath, eventsStr, labelsLUT, labels,embedding, clrs, Method, legendLoc, labelsFontSz)
-
-
-classes = unique(labels);
-figure;
-for ci = 1:length(classes)
-    scatter(embedding(labels==classes(ci),1)  ,embedding(labels==classes(ci),2),...
-        'o', 'MarkerFaceColor', clrs(ci, :), 'MarkerEdgeColor', clrs(ci, :));
-    hold all;
-end
-xlabel('\psi_1', 'FontSize', labelsFontSz), ylabel('\psi_2', 'FontSize', labelsFontSz);
-l=legend(labelsLUT, 'Location',legendLoc);
-
-set(gca, 'Box','off');
-set(l, 'FontSize',labelsFontSz);
-a=get(gcf,'Children');
-for ai=1:length(a)
-    if strcmp(a(ai).Type, 'Axes')
-        setAxisFontSz(a(ai), labelsFontSz);
-    end
-end
-mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr]));
-
-
-strs = cellstr(num2str(examinedInds));
-text(embedding(:,1),embedding(:,2),strs,'VerticalAlignment','bottom',...
-    'HorizontalAlignment','right');
-mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr 'withNumbers']));
-end
 
 %
 %

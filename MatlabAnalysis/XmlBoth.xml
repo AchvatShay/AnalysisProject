@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GeneralProperty>
   <Experiment>
-	<name>shay</name>
+	<name>shay</name> 
 	<Condition>
 		<Type>
 			<lick is_active='False'></lick>
@@ -36,6 +36,11 @@
 		</Trial>
     </TrialsToPut>
     <analysisParams>  
+        <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
+        <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
+        <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
+        <successLabel>success</successLabel> 
+        <failureLabel>failure</failureLabel>
         <prevcurrlabels2cluster>
             <cluster>			
                 <name>success</name>
