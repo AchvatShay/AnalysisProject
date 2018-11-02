@@ -15,11 +15,16 @@ xlimmin = generalProperty.visualization_startTime2plot-toneTime;
 
 % 1. all trials averaged
 allTimemean = mean(trajSmooth,3).';
-plotTimeEmbedding(allTimemean, t(6:end), 0, labelsFontSz);
+norm_sum_value = plotTimeEmbedding(allTimemean, t(6:end), 0, labelsFontSz);
+
 mysave(gcf, fullfile(outputPath, ['traj' Method 'time']));
 plotTimeEmbedding(allTimemean, t(6:end), [], labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['traj' Method 'timeNoMarkers']));
 
+fileID = fopen(strcat(outputPath, '\distanceTraj.txt'),'w');
+formatSpec = strcat('The total traj distance is %f');
+fprintf(fileID, formatSpec,norm_sum_value);
+fclose(fileID);
 
 f = plotTemporalTraject(countbesttrajs, labelsLUT, clrs, trajSmooth, labels, t(6:end), 0, labelsFontSz, viewparams);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStr]));

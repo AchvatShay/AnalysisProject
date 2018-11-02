@@ -1,4 +1,4 @@
-function plotEmbeddingWithColors(embedding, colorparam_c, title_str, sz, labelsFontSz)
+function [norm_sum_value] = plotEmbeddingWithColors(embedding, colorparam_c, title_str, sz, labelsFontSz)
 
 if ~exist('sz','var')
     sz = 30;
@@ -33,6 +33,16 @@ switch size(embedding, 2)
         ylabel('\psi_2', 'FontSize',labelsFontSz); zlabel('\psi_3', 'FontSize',labelsFontSz);
         
 end
+
+% calc norm for fadi
+% shay achvat code added
+norm_sum_value = 0;
+for index_norm = 1 : (size(embedding, 1) - 1)
+     vector_norm_A = [embedding(index_norm, 1), embedding(index_norm, 2), embedding(index_norm, 3)];
+     vector_norm_B = [embedding(index_norm + 1, 1), embedding(index_norm + 1, 2), embedding(index_norm + 1, 3)];
+     norm_sum_value = norm_sum_value + norm(vector_norm_B - vector_norm_A);
+end
+
 if length(unique(unique(colorparam_c))) < 15
     set(c, 'Ticks', linspace(0,1,length(unique(unique(colorparam_c)))))
     set(c, 'TickLabels', unique(colorparam_c))
