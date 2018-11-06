@@ -1,7 +1,7 @@
-function [norm_sum_value] = plotTimeEmbedding(embedding, t, toneTime,labelsFontSz)
+function plotTimeEmbedding(embedding, t, toneTime,labelsFontSz)
 
 figure;
-norm_sum_value = plotEmbeddingWithColors(embedding(11:end,:), t(11:end), '', 30, labelsFontSz);
+plotEmbeddingWithColors(embedding(11:end,:), t(11:end), '', 30, labelsFontSz);
 view( 15, 43);
 a=get(gcf,'Children');
 set(a(end),'Position',[0.1121    0.2243    0.6143    0.6483]);
