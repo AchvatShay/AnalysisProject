@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GeneralProperty>
+  <Experiment>
+	<name>shay</name>
+	<Condition>
+        <!-- 
+        task type (lick, hand reach or pedal)
+        -->
+		<Type> 
+			<lick is_active='False'></lick>
+			<hand_reach is_active='True'></hand_reach>
+			<pedal is_active='False'></pedal>
+		</Type>
+		<Depth>100</Depth>
+        
+        <!-- 
+         Sampling rate of 2-photon
+        -->
+		<ImagingSamplingRate>30</ImagingSamplingRate>
+		
+        <!-- 
+        video sampling rate
+        -->
+        <BehavioralSamplingRate>200</BehavioralSamplingRate>
+        
+        <!-- 
+        frames to drop from the behavioral data – since it starts filming before the 2-photon is recording
+        -->
+        <BehavioralDelay>20</BehavioralDelay>
+		
+        <!-- 
+        seconds from the beginning of the trial till the tone
+        -->
+        <ToneTime>4</ToneTime>
+		
+        <!-- 
+        duration of each trial
+        -->
+        <Duration>12</Duration>
+		
+        <!-- 
+        injected material – none, cno or saline
+        -->
+        <Injection>
+			<None is_active='True'></None>
+			<Saline is_active='False'></Saline>
+			<CNO is_active='False'></CNO>
+		</Injection>
+        
+        <!-- 
+        pellet perturbation – none, omissions (trials with no pellets) or different flavors
+        -->
+        <PelletPertubation>
+			<None is_active='True'></None>
+			<Ommisions is_active='False'></Ommisions>
+			<Taste is_active='False'></Taste>
+		</PelletPertubation>
+	</Condition>
+    
+    <!-- 
+    specific neurons for analysis,
+    At the moment empty = all neurons
+    -->
+	<NeuronesToPut>
+	</NeuronesToPut>
+    
+    <analysisParams> 
+        
+        <!-- 
+        how many bins to consider when counting the averaged percentage of indicative neurons 
+        (results appear for each experiment in text file, Hadas copied them to xls).
+        If marked by 3, then all following options will be considered: 1 bin, 2 bins and 3 bins. 
+        -->
+        <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
+        
+        <!-- 
+        when to start counting the averaged percentage of indicative neurons
+       (results appear for each experiment in text file, Hadas copied them to xls). 0 is the tone. 
+        -->
+        <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
+        
+        <!-- 
+        when to end counting the averaged percentage of indicative neurons (results appear for each experiment in text file, 
+        Hadas copied them to xls). Time is relative to tone (for example, 8 is end of trial for 12 seconds trials with tone after 4)
+        -->
+        <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
+        
+        <!-- 
+        label type considered as success (important for all analysis types!)
+        Can be “success” for regular analysis but can also be quinine (and then “failure” would be sucrose for example..)
+        -->
+        <successLabel>success</successLabel> 
+        
+        <!-- 
+       label type considered as “failure” (important for all analysis types!)
+        -->
+        <failureLabel>failure</failureLabel>
+        
+        <!-- 
+        colors for prev-curr trajectories and 2D scatter plots
+        -->
+        <prevcurrlabels2cluster>
+            <cluster>			
+                <name>success</name>
+                <color>blue</color> <!-- for S-S -->
+                <color>cyan</color> <!-- for F-S -->
+            </cluster>
+            <cluster>			
+                <name>failure</name> 
+                <color>purpule</color> <!-- for S-F -->
+                <color>red</color> <!-- for F-F -->
+            </cluster>
+        </prevcurrlabels2cluster>
+        
+        <!-- 
+        colors for S-F trajectories and 2D scatter plots
+        -->
+        <labels2cluster>
+            <cluster>	
+                <!-- (the label considered as success!) -->
+				<name>success</name>
+                <color>blue</color>                
+            </cluster>
+            <cluster>
+                <!-- red (the label considered as failure!) -->
+                <name>failure</name>  
+                <color>red</color>                
+            </cluster>
+        </labels2cluster> 
+        
+        <!-- 
+        if we want to include omissions in the analysis. Need to check this option for true.
+        -->
+        <includeOmissions is_active='False'></includeOmissions>
+        
+        <!-- 
+        How to determine analysis
+        suc = suc is suc and fail is all the rest,
+        fail = fail is fail and suc is all the rest,
+        Both = by the exact labels
+        -->
+        <DetermineSucFailBy>
+			<BySuc is_active='False'></BySuc>
+			<ByFail is_active='True'></ByFail>
+			<Both is_active='False'></Both>
+		</DetermineSucFailBy>
+        
+        <!-- 
+        analysis window length for svm accuracy
+        -->
+        <slidingWinLen>1</slidingWinLen>
+        
+        <!-- 
+        analysis window hop for svm accuracy
+        -->
+        <slidingWinHop>0.5</slidingWinHop>
+        
+        <!-- 
+        svm linear or not. Linear works well. Non-linear takes longer time 
+        -->
+        <linearSVN is_active='True'></linearSVN>
+        
+        <!-- 
+        cross-validation folds
+        -->
+        <foldsNum>10</foldsNum>
+        
+        <!-- 
+        time to start counting grab attempts
+        -->
+        <time2startCountGrabs>4</time2startCountGrabs>
+        
+        <!-- 
+        time to stop counting grab attempts
+        -->
+        <time2endCountGrabs>6</time2endCountGrabs> 
+        
+        <!-- 
+        # seconds from the trial to start counting the first/last behavioral events. Currently not used.
+        -->
+        <startBehaveTime4trajectory>4</startBehaveTime4trajectory>
+        
+        <!-- 
+        # seconds from the trial to end counting the first/last behavioral events. Currently not used.
+        -->
+        <endBehaveTime4trajectory>6</endBehaveTime4trajectory>
+        
+        <!-- 
+        for plotting specific neurons
+        -->
+        <NeuronesToPlot>
+            <Neuron>
+                <name>1</name>
+            </Neuron> 
+            <Neuron>
+                <name>2</name>
+            </Neuron>
+            <Neuron>
+                <name>3</name>
+            </Neuron>
+        </NeuronesToPlot>
+    </analysisParams>
+    
+    <visualization> 
+        
+        <!-- 
+        how many single trajectories to plot along with the averaged trajectory 
+        -->
+        <bestpcatrajectories2plot>5</bestpcatrajectories2plot>
+        
+        <!-- 
+        time stamps for which we want to plot the confusion matrix of accuracy, 0 is for the tone
+        -->
+        <visualization_time4confplot>
+            <time_stamp>-2</time_stamp>
+            <time_stamp>0</time_stamp>
+            <time_stamp>2</time_stamp>
+            <time_stamp>6</time_stamp>
+        </visualization_time4confplot>
+        
+        <!-- 
+        time stamps for which we want to plot the confusion matrix of accuracy on the next trial
+        -->
+        <visualization_time4confplotNext>
+            <time_stamp>-2</time_stamp>
+        </visualization_time4confplotNext>
+        
+        <!-- 
+        confidence interval used for svm accuracy with STE
+        -->
+        <visualization_conf_percent4acc>0.05</visualization_conf_percent4acc>
+        
+        <!-- 
+       view of trajectories – first element
+        -->
+        <viewparams1>0</viewparams1>
+        
+        <!-- 
+        view of trajectories – second element
+        -->
+        <viewparams2>0</viewparams2>
+        
+        <!-- 
+        where to place legend
+        -->
+        <legend Location='Best'></legend>
+        
+        <!-- 
+        font size of labels
+        -->
+        <labelsFontSize>14</labelsFontSize>
+        
+        <!-- 
+        start plotting all images after 1.5 seconds
+        -->
+        <startTime2plot>1.5</startTime2plot>
+        
+        <!-- 
+        behavioral events to plot as histograms (for neurons, trials, accuracy..) for example – grab, lift, at mouth, lick            
+        -->
+        <Events2plot>
+			<grab is_active='True'></grab>
+			<lift is_active='True'></lift>
+			<atmouth is_active='True'></atmouth>
+            <lick is_active='True'></lick>
+		</Events2plot>
+    </visualization>
+  </Experiment>    
+</GeneralProperty>
