@@ -3,7 +3,7 @@ addpath('../');
 
 xmlfile = 'XmlFail.xml';
 
-folderAnimal_experiment_BDA = 'E:\Data\Shahar\M27\';
+folderAnimal_experiment_BDA = 'E:\Data\Shahar\M27\11_11_18';
 
 outputPath = 'E:\Data\Shahar\J\Den6\PostAnalysisNewBy-Suc-Cat23';
 mkdir(outputPath);
