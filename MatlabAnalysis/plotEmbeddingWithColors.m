@@ -33,6 +33,7 @@ switch size(embedding, 2)
         ylabel('\psi_2', 'FontSize',labelsFontSz); zlabel('\psi_3', 'FontSize',labelsFontSz);
         
 end
+
 if length(unique(unique(colorparam_c))) < 15
     set(c, 'Ticks', linspace(0,1,length(unique(unique(colorparam_c)))))
     set(c, 'TickLabels', unique(colorparam_c))

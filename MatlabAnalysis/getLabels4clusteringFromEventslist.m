@@ -22,12 +22,12 @@ end
 examinedInds = sort(examinedInds);
 
 if includeOmissions
-    if ~isfield(BehaveData, 'nopellet') || all(BehaveData.noPellet == 0)
+    if ~isfield(BehaveData, 'nopellet') || all(BehaveData.noPellet.indicatorPerTrial == 0)
         error('Cannot include omissions because there are no trials marked with "nopellet"');
     end
 else
     if isfield(BehaveData, 'nopellet')
-        examinedInds = setdiff(examinedInds, find(BehaveData.nopellet));
+        examinedInds = setdiff(examinedInds, find(BehaveData.nopellet.indicatorPerTrial));
     end
 end
 labels = zeros(length(examinedInds), 1);
