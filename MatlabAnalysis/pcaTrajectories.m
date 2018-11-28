@@ -34,7 +34,31 @@ tindicator(startBehaveTime:endBehaveTime) = 1;
 
 
 %% visualize
-visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, pcaTrajres.projeff, X, 'PCA');
+switch lower(generalProperty.PelletPertubation)
+    case 'none'
+        visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, pcaTrajres.projeff, X, 'PCA');
+    case 'taste'
+         [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
+            generalProperty.tastesLabels, generalProperty.includeOmissions);
+        % mark failures - because then we do not know the tastes
+        labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+        labelsLUTTaste{end+1} = 'failure';
+        labelsFontSz = generalProperty.visualization_labelsFontSize;
+        legendLoc = generalProperty.visualization_legendLocation;        
+        clrs = getColors(generalProperty.tastesColors);
+        clrs(end+1, :) = [1 0 0];
+      
+        visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, ...
+            generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, ...
+            eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, ...
+            generalProperty, pcaTrajres.projeff, X, 'PCA', labelsTaste, labelsLUTTaste, clrs, eventsStrTaste);
+ 
+        
+    case 'ommisions'
+        error('under constraction');
+    otherwise
+        error('Unfamiliar pellet pertrubation');
+end
 % 
 % 
 % b = fir1(10,.3);

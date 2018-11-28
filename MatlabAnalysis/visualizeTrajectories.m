@@ -1,4 +1,6 @@
-function visualizeTrajectories(countbesttrajs, clrscurrprev, clrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, projeff, X, Method)
+function visualizeTrajectories(countbesttrajs, clrscurrprev, clrs, eventsStr, prevCurrLUT, labelsLUT, ...
+    tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, projeff, ...
+    X, Method, labelsTaste, labelsLUTTaste, clrsTaste, eventsStrTaste)
 
 b = fir1(10,.3);
 trajSmooth = filter(b,1, projeff, [], 2);
@@ -37,6 +39,13 @@ f=plotTrajectoryUsingTube(xlimmin, t, projeff, labels, clrs, 0, labelsFontSz);
 mysave(f(2), fullfile(outputPath, ['dprime' Method eventsStr] ));
 mysave(f(3), fullfile(outputPath, ['dprimePrevCurr' Method eventsStr]));
 mysave(f(4), fullfile(outputPath, ['dprimeNext' Method eventsStr]));
+end
+
+if exist('clrsTaste','var')
+f = plotTemporalTraject(countbesttrajs, labelsLUTTaste, clrsTaste, trajSmooth, labelsTaste, t(6:end), 0, labelsFontSz, viewparams);
+mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste]));
+mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste]));
+
 end
 % % 2. s/f trajectories
 % switch generalProperty.PelletPertubation

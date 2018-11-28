@@ -26,8 +26,27 @@ else
 end
   
 % visualize
-visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, pcares.embedding(:, 1:2), outputPath, 'pca')
-
+switch lower(generalProperty.PelletPertubation)
+    case 'none'
+        visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, pcares.embedding(:, 1:2), outputPath, 'pca')
+    case 'taste'
+        [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
+            generalProperty.tastesLabels, generalProperty.includeOmissions);
+        % mark failures - because then we do not know the tastes
+        labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+        labelsLUTTaste{end+1} = 'failure';
+        labelsFontSz = generalProperty.visualization_labelsFontSize;
+        legendLoc = generalProperty.visualization_legendLocation;        
+        clrs = getColors(generalProperty.tastesColors);
+        clrs(end+1, :) = [1 0 0];
+        plot2Dembedding(examinedIndsTaste, outputPath, eventsStrTaste, labelsLUTTaste, labelsTaste,pcares.embedding(:, 1:2), clrs, 'pca', legendLoc, labelsFontSz)
+        
+        
+    case 'ommisions'
+        error('under constraction');
+    otherwise
+        error('Unfamiliar pellet pertrubation');
+end
 
 % %% 2D Projections Using PCA Colored by # grabs - all time span (0-12 seconds)
 % grabCount = getGrabCounts(eventTimeGrab{l}, findClosestDouble(t, toneTime), findClosestDouble(t, toneTime+2), frameRateRatio{1});

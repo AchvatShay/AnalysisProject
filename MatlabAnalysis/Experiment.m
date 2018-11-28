@@ -32,6 +32,8 @@ classdef Experiment %< handle
         endBehaveTime4trajectory = 4 + 2;
         visualization_startTime2plot = 1.5;
         Events2plot = {'lift' 'grab' 'atmouth'};
+        tastesLabels = {};%{'sucrose','quinine','regular'};% to be populized by the xml
+        tastesColors = {};%{'cyan', 'purpile', 'blue'};  % to be populized by the xml      
         foldsNum = 10;
         linearSVN = true;
         slidingWinLen = 1;
@@ -138,7 +140,14 @@ classdef Experiment %< handle
             else
                 error('All experiments Injection are false! Please set hand None/Saline/CNO as true');
             end
-            
+            if strcmp(obj.PelletPertubation, 'Taste')
+               for k = 1:length(xmlstrct.GeneralProperty.Experiment.visualization.TastesLabels.Taste)
+                   if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.TastesLabels.Taste{k}.is_active.Text)
+                      obj.tastesLabels{end+1} = {xmlstrct.GeneralProperty.Experiment.visualization.TastesLabels.Taste{k}.name.Text};
+                      obj.tastesColors{end+1} = xmlstrct.GeneralProperty.Experiment.visualization.TastesLabels.Taste{k}.color.Text;
+                   end
+               end
+            end
             % nerons for analyis
             
             if isfield(xmlstrct.GeneralProperty.Experiment.NeuronesToPut, 'Text')
