@@ -255,6 +255,24 @@
         -->
         <startTime2plot>1.5</startTime2plot>
         
+        <TastesLabels>
+            <Taste>			
+				<name>sucrose</name>
+                <color>cyan</color>  
+                <is_active>true</is_active>  
+            </Taste>
+            <Taste>			
+				<name>quinine</name>
+                <color>purple</color>  
+                <is_active>true</is_active>  
+            </Taste>
+            <Taste>			
+				<name>regular</name>
+                <color>blue</color>  
+                <is_active>true</is_active>  
+            </Taste>
+        </TastesLabels>
+        
         <!-- 
         behavioral events to plot as histograms (for neurons, trials, accuracy..) for example – grab, lift, at mouth, lick            
         -->
