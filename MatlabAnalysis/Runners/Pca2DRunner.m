@@ -3,8 +3,8 @@ function Pca2DRunner
  
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'F:\Data\M26\';
-folderAnimalOutputPath = 'F:\Data\Test\M26';
+folderAnimal = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\M27';
+folderAnimalOutputPath = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\M27\ResultsTaste';
 
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
