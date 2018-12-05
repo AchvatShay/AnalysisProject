@@ -1,7 +1,7 @@
 function BdaTpaList = main(pth, outputPath, Trials2keep)
 
-xmlfile = 'XmlD10.xml';
-% xmlfile = 'XmlBoth.xml';
+xmlfile = 'XmlBoth.xml';
+% xmlfile = 'XmlD54.xml';
 % xmlfile = 'XmlPT3_1nrn.xml';
 % xmlfile = 'XmlPT3_nonrns.xml';
 
@@ -24,12 +24,13 @@ end
 
 
 
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
-
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'tiling');
-
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
+% 
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'tiling');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'tilingNrnsTrials');
+% 
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
