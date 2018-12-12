@@ -63,7 +63,48 @@ for nrind=1:length(nerons2plot)
     end
     
 end
+if strcmp(generalProperty.PelletPertubation, 'Taste')
+    tasteLabels = zeros(size(labels));
+    for k = 1:length(generalProperty.tastesLabels)
+        if ~isfield(BehaveData, generalProperty.tastesLabels{1}{1})
+            error([generalProperty.tastesLabels{k}{1} ' is not in BDA file']);
+        end
+        tasteLabels(BehaveData.(generalProperty.tastesLabels{k}{1}).indicatorPerTrial == 1) = k;
+    end
+    if any(tasteLabels == 0)
+        error('Some trials has no taste!');
+    end
+    for nrind=1:length(nerons2plot)
+    curr_nrn2plot = nerons2plot(nrind);
+    currnrnind = find(imagingData.roiNames(:,1)-curr_nrn2plot==0);
+    
+    if isempty(currnrnind)
+        error('the neuron selected for ploting is not exists in the neurons selected for analysis');
+    end
+    
+    x = squeeze(X(currnrnind,:,:))';
+    mA = inf;
+    for ci = 1:length(classes)
+        mA = min(mA, min(mean(X(currnrnind,:,labels==classes(ci)),3)));
+    end
+    MA = -inf;
+    for ci = 1:length(classes)
+        MA = max(MA, max(mean(X(currnrnind,:,labels==classes(ci)),3)));
+    end
+    DN = MA-mA;
+    mA=mA-DN*.1;
+    MA=MA+DN*.1;
+      classes = unique(tasteLabels);
 
+    for ci = 1:length(classes)
+        plotsinglNrnPerTrials(generalProperty.tastesLabels{ci}{1}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, '', labels, classes(ci), xlimmin, t,...
+            m, M, X, [], generalProperty);        
+        mysave(gcf, fullfile(outputPath, [generalProperty.tastesLabels{ci}{1} 'Nr' num2str(imagingData.roiNames(currnrnind))]));
+    end
+    
+end
+end
+ 
 % %% all trials
 % mA1 = min(mean(mean(X(:,:,labels==0),3),1));
 % MA1 = max(mean(mean(X(:,:,labels==0),3),1));

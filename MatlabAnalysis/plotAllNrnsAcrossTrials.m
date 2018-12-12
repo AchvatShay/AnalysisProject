@@ -132,5 +132,68 @@ xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
 mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'trialsActivity']));
 end
+if strcmp(generalProperty.PelletPertubation, 'Taste')
+    tasteLabels = zeros(size(labels));
+    for k = 1:length(generalProperty.tastesLabels)
+        if ~isfield(BehaveData, generalProperty.tastesLabels{1}{1})
+            error([generalProperty.tastesLabels{k}{1} ' is not in BDA file']);
+        end
+        tasteLabels(BehaveData.(generalProperty.tastesLabels{k}{1}).indicatorPerTrial == 1) = k;
+    end
+    if any(tasteLabels == 0)
+        error('Some trials has no taste!');
+    end
+  classes = unique(tasteLabels);
+    for ci = 1:length(classes)
+figure;
+% 1
+htop = subplot(2,1,1);
+imagesc(t, 1:size(X,1),mean(X(:,:,tasteLabels==classes(ci)),3),[-.15 2]);
+colormap jet;ylabel('Neurons','FontSize',10);
+placeToneTime(0, 3);xlim([xlimmin,t(end)])
 
+c=colorbar;
+set(c,'Position',[0.9196    0.5810    0.0402    0.3452]);
+% set(htop,'Position',[0.1300    0.5071    0.7750    0.4179]);
+set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
+% 2
+hmid=subplot(2,1,2);
+plot(t,mean(mean(X(:,:,tasteLabels==classes(ci)),3),1), 'LineWidth',3, 'Color','k');
+ylabel('Average','FontSize',10);
+set(gca, 'YLim', [mA MA]);
+placeToneTime(0, 2);
+set(gca, 'Box','off');
+set(gca, 'XTick',[]);
+% set(hmid, 'Position', [0.1300    0.3291    0.7750    0.1066]);
+xlim([xlimmin,t(end)])
+xa=get(gca, 'XAxis');
+set(xa,'Visible', 'off')
 
+mysave(gcf, fullfile(outputPath, [generalProperty.tastesLabels{ci}{1} 'trialsActivity' ]));
+end
+
+    
+end
+% if isfield(allLabels, 'sucrose') && any(allLabels.sucrose)
+%     grabCountSucrose = grabCount(allLabels.sucrose(expinds{l})==1);
+%     [~, igrabsS] = sort(grabCountSucrose, 'ascend');
+%     fail = allLabels.failure(expindsNoOmAll{l});
+%     plotIndicativeNrAndBehave(toneTime, fullfile(currfolder{l}, 'indicativeNrnsSucrose')...
+%         , dataAlltimes{l}(:, :, allLabels.sucrose(expinds{l})==1), t, ...
+%         fail(allLabels.sucrose(expinds{l})==1), Sbehave{l}, Fbehave{l}, ...
+%         {NeuronsLabels{l}},'Sucrose', newNreINds, igrabsS, xlimmin);
+%     %% INdicative Neurons By Taste - Quinine
+%     grabCountQuinine = grabCount(allLabels.quinine(expinds{l})==1);
+%     [~, igrabsQ] = sort(grabCountQuinine, 'ascend');
+%     plotIndicativeNrAndBehave(toneTime, fullfile(currfolder{l}, 'indicativeNrnsQuinine'), ...
+%         dataAlltimes{l}(:, :, allLabels.quinine(expinds{l})==1), t, ...
+%         fail(allLabels.quinine(expinds{l})==1), Sbehave{l}, Fbehave{l}, ...
+%         {NeuronsLabels{l}},'Quinine', newNreINds, igrabsQ, xlimmin);
+%     %% INdicative Neurons By Taste - Regular
+%     grabCountRegular = grabCount(allLabels.regular(expinds{l})==1);
+%     [~, igrabsR] = sort(grabCountRegular, 'ascend');
+%     plotIndicativeNrAndBehave(toneTime, fullfile(currfolder{l}, 'indicativeNrnsReg'), ...
+%         dataAlltimes{l}(:, :, allLabels.regular(expinds{l})==1), t, ...
+%         fail(allLabels.regular(expinds{l})==1), Sbehave{l}, Fbehave{l}, ...
+%         {NeuronsLabels{l}},'Regular', newNreINds, igrabsR, xlimmin);
+% end
