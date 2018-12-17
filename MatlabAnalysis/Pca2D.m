@@ -33,13 +33,17 @@ switch lower(generalProperty.PelletPertubation)
         [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
         % mark failures - because then we do not know the tastes
-        labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+        labelsTasteIncludingFails = zeros(length(BehaveData.failure.indicatorPerTrial), 1);
+        labelsTasteIncludingFails(examinedIndsTaste) = labelsTaste;
+        labelsTasteIncludingFails(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+        
         labelsLUTTaste{end+1} = 'failure';
         labelsFontSz = generalProperty.visualization_labelsFontSize;
         legendLoc = generalProperty.visualization_legendLocation;        
         clrs = getColors(generalProperty.tastesColors);
         clrs(end+1, :) = [1 0 0];
-        plot2Dembedding(examinedIndsTaste, outputPath, eventsStrTaste, labelsLUTTaste, labelsTaste,pcares.embedding(:, 1:2), clrs, 'pca', legendLoc, labelsFontSz)
+        examinedIndsTaste = find(labelsTasteIncludingFails~=0);
+        plot2Dembedding(examinedIndsTaste, outputPath, eventsStrTaste, labelsLUTTaste, labelsTasteIncludingFails,pcares.embedding(:, 1:2), clrs, 'pca', legendLoc, labelsFontSz)
         
         
     case 'ommisions'

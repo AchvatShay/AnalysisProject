@@ -2,6 +2,7 @@ function plot2Dembedding(examinedInds, outputPath, eventsStr, labelsLUT, labels,
 
 
 classes = unique(labels);
+classes = setdiff(classes, 0);
 figure;
 for ci = 1:length(classes)
     scatter(embedding(labels==classes(ci),1)  ,embedding(labels==classes(ci),2),...
@@ -23,7 +24,7 @@ mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr]));
 
 
 strs = cellstr(num2str(examinedInds(:)));
-text(embedding(:,1),embedding(:,2),strs,'VerticalAlignment','bottom',...
+text(embedding(examinedInds,1),embedding(examinedInds,2),strs,'VerticalAlignment','bottom',...
     'HorizontalAlignment','right');
 mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr 'withNumbers']));
 end
