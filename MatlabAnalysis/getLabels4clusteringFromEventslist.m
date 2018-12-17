@@ -4,15 +4,17 @@ function [labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFrom
 
 examinedInds = [];
 for event_i = 1:length(eventsList)    
-    if ~isfield(BehaveData, eventsList{event_i}{1})
+    currLabel = lower(eventsList{event_i}{1});
+    if ~isfield(BehaveData, currLabel)
         error([eventsList{event_i}{1} ' is not labeled as a behavioral label on the BDA files']);
     end
-    currExaminedInds = find(BehaveData.(eventsList{event_i}{1}).indicatorPerTrial);
+    currExaminedInds = find(BehaveData.(currLabel).indicatorPerTrial);
     for name_i = 2:length(eventsList{event_i})
-        if ~isfield(BehaveData, eventsList{event_i}{name_i})
+        currLabel = lower(eventsList{event_i}{name_i});
+        if ~isfield(BehaveData, currLabel)
             error([eventsList{event_i}{name_i} ' is not labeled as a behavioral label on the BDA files']);
         end
-        currExaminedInds = intersect(currExaminedInds, find(BehaveData.(eventsList{event_i}{name_i}).indicatorPerTrial));
+        currExaminedInds = intersect(currExaminedInds, find(BehaveData.(currLabel).indicatorPerTrial));
     end
     examinedInds = cat(1, examinedInds, currExaminedInds);
 end
@@ -32,9 +34,10 @@ else
 end
 labels = zeros(length(examinedInds), 1);
 for event_i = 1:length(eventsList)
-    currlabelsval = BehaveData.(eventsList{event_i}{1}).indicatorPerTrial(examinedInds);
+    currLabel = lower(eventsList{event_i}{1});
+    currlabelsval = BehaveData.(currLabel).indicatorPerTrial(examinedInds);
     for name_i = 2:length(eventsList{event_i})
-        currlabelsval = currlabelsval &  BehaveData.(eventsList{event_i}{name_i});
+        currlabelsval = currlabelsval &  BehaveData.(lower(eventsList{event_i}{name_i}));
     end
     labels = labels + currlabelsval*2^(event_i-1);
 end

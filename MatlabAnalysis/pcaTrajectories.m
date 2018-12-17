@@ -40,8 +40,10 @@ switch lower(generalProperty.PelletPertubation)
     case 'taste'
          [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
+        labelsTasteWithFails = zeros(length(BehaveData.failure.indicatorPerTrial), 1);
+        labelsTasteWithFails(examinedIndsTaste) = labelsTaste;
         % mark failures - because then we do not know the tastes
-        labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+        labelsTasteWithFails(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
         labelsLUTTaste{end+1} = 'failure';
         labelsFontSz = generalProperty.visualization_labelsFontSize;
         legendLoc = generalProperty.visualization_legendLocation;        
