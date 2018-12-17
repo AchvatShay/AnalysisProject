@@ -5,6 +5,7 @@ map=colormap('jet');
 
 labelsR=round(size(map,1)*(labels)/(max(labels)));
 classes = unique(labels);
+classes = setdiff(classes, 0);
 for k=1:length(classes)
     for d = 1:3
     meanVals(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);

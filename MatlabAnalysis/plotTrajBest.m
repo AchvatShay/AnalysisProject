@@ -1,6 +1,7 @@
 function plotTrajBest(clrs, trajData, labels, countTraj)
 
 classes = unique(labels);
+classes = setdiff(classes, 0);
 for ci = 1:length(classes)
     inds{ci} = find(labels==classes(ci));
     closest{ci} = getClosestTrajectories(trajData, inds{ci}, countTraj);

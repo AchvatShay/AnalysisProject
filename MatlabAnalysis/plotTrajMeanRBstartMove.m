@@ -2,6 +2,7 @@ function plotTrajMeanRBstartMove(labelsLUT, clrs, trajData, labels, ...
     mvStartInd, toneTime, afterToneInd, viewparams, labelsFontSz)
 
 classes = unique(labels);
+classes = setdiff(classes, 0);
 for ci = 1:length(classes)
     meansTrajs(:, :, ci) = mean(trajData(:,:,labels==classes(ci)),3);
     plot3(meansTrajs(1,:, ci), meansTrajs(2,:, ci), meansTrajs(3,:, ci),'Color', clrs(ci, :), 'LineWidth',5);
