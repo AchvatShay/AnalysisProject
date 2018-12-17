@@ -19,17 +19,19 @@ end
 % [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
 X = imagingData.samples;
 X=X(:,:,examinedInds);
+labelsNoDrops = labels(examinedInds);
 
 if (~isnan(grabCount))
     [~, igrabs] = sort(grabCount);
     X=X(:,:,igrabs);
+    labelsNoDrops = labelsNoDrops(igrabs);
 end
 
 
-if (~isnan(grabCount))
-    labels = labels(igrabs);
-end
-classes = unique(labels);
+
+classes = unique(labelsNoDrops);
+classes=setdiff(classes, 0);
+
 t = linspace(0, generalProperty.Duration, size(X,2)) - generalProperty.ToneTime;
 nerons2plot = generalProperty.Neurons2plot;
 % visualize
@@ -47,17 +49,17 @@ for nrind=1:length(nerons2plot)
     x = squeeze(X(currnrnind,:,:))';
     mA = inf;
     for ci = 1:length(classes)
-        mA = min(mA, min(mean(X(currnrnind,:,labels==classes(ci)),3)));
+        mA = min(mA, min(mean(X(currnrnind,:,labelsNoDrops==classes(ci)),3)));
     end
     MA = -inf;
     for ci = 1:length(classes)
-        MA = max(MA, max(mean(X(currnrnind,:,labels==classes(ci)),3)));
+        MA = max(MA, max(mean(X(currnrnind,:,labelsNoDrops==classes(ci)),3)));
     end
     DN = MA-mA;
     mA=mA-DN*.1;
     MA=MA+DN*.1;
     for ci = 1:length(classes)
-        plotsinglNrnPerTrials(labelsLUT{ci}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, '', labels, classes(ci), xlimmin, t,...
+        plotsinglNrnPerTrials(labelsLUT{ci}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, '', labelsNoDrops, classes(ci), xlimmin, t,...
             m, M, X, behaveHist{ci}, generalProperty);        
         mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'Nr' num2str(imagingData.roiNames(currnrnind))]));
     end
@@ -84,18 +86,9 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
     end
     
     x = squeeze(X(currnrnind,:,:))';
-    mA = inf;classes = unique(tasteLabels);
+    classes = unique(tasteLabels);
     classes = setdiff(classes, 0);
-    for ci = 1:length(classes)
-        mA = min(mA, min(mean(X(currnrnind,:,labels==classes(ci)),3)));
-    end
-    MA = -inf;
-    for ci = 1:length(classes)
-        MA = max(MA, max(mean(X(currnrnind,:,labels==classes(ci)),3)));
-    end
-    DN = MA-mA;
-    mA=mA-DN*.1;
-    MA=MA+DN*.1;
+ tasteLabels=tasteLabels(examinedInds);
       
 
     for ci = 1:length(classes)

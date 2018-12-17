@@ -19,18 +19,19 @@ if exist(resfileTot, 'file')
 else
     resfile_curr = fullfile(outputPath, ['acc_res_curr_' foldstr linstr eventsStr '.mat']);
     data4Svm = imagingData.samples(:, :, examinedInds);
+    labels4Svm = labels(examinedInds);
     [chanceLevel, tmid, accSVM, accRandSVM, confMats, trialsNum] = slidingWinAcc(data4Svm, resfile_curr, ...
-        labels, winstSec, winendSec, foldsnum, islin, duration);
+        labels4Svm, winstSec, winendSec, foldsnum, islin, duration);
     if doprevcurr
     resfile_seq = fullfile(outputPath, ['acc_res_seq_' foldstr linstr eventsStr '.mat']);
-    data4Svm = imagingData.samples(:, :, examinedInds(1:end-1));
-    [chanceLevelseq, ~, accSVMlinseq, accRandSVMlinseq, confMatsseq, trialsNumseq] = slidingWinAcc(data4Svm, resfile_seq, ...
-        labels(2:end), winstSec, winendSec, foldsnum, islin, duration);
+    data4Svmseq = labels4Svm(:, :, 1:end-1);
+    [chanceLevelseq, ~, accSVMlinseq, accRandSVMlinseq, confMatsseq, trialsNumseq] = slidingWinAcc(data4Svmseq, resfile_seq, ...
+        labels4Svm(2:end), winstSec, winendSec, foldsnum, islin, duration);
     
     resfile_prev = fullfile(outputPath, ['acc_res_prev_' foldstr linstr eventsStr '.mat']);
-    data4Svm = imagingData.samples(:, :, examinedInds(2:end));
-    [chanceLevelPrev, ~, accSVMlinPrev, ~, confMatsPrev, trialsNumPrev] = slidingWinAcc(data4Svm, resfile_prev, ...
-        labels(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
+    data4Svmprev = data4Svm(:, :, (2:end));
+    [chanceLevelPrev, ~, accSVMlinPrev, ~, confMatsPrev, trialsNumPrev] = slidingWinAcc(data4Svmprev, resfile_prev, ...
+        labels4Svm(1:end-1), winstSec, winendSec, foldsnum, islin, duration);
     
         
     save(resfileTot, 'chanceLevel', 'tmid', 'accSVM', 'accRandSVM', 'confMats', 'trialsNum', ...

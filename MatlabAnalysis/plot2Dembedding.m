@@ -24,7 +24,9 @@ mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr]));
 
 
 strs = cellstr(num2str(examinedInds(:)));
-text(embedding(examinedInds,1),embedding(examinedInds,2),strs,'VerticalAlignment','bottom',...
+if length(examinedInds) == size( embedding, 1)
+    
+text(embedding(:,1),embedding(:,2),strs,'VerticalAlignment','bottom',...
     'HorizontalAlignment','right');
 mysave(gcf, fullfile(outputPath, [ Method '2D' eventsStr 'withNumbers']));
 end

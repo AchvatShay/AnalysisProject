@@ -24,12 +24,12 @@ if (~isnan(grabCount))
     X=X(:,:,igrabs);
 end
 classes = unique(labels);
+classes=setdiff(classes, 0);
 
-
-if (~isnan(grabCount))
+if (~isnan(grabCount)) && length(igrabs) == length(labels)
     labels = labels(igrabs);
 end
-
+labels = labels(examinedInds);
 toneTime = generalProperty.ToneTime;
 t = linspace(0, generalProperty.Duration, size(X,2)) - toneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;
