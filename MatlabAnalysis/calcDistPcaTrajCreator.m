@@ -1,5 +1,5 @@
 function [current_embedding] = calcDistPcaTrajCreator(examinedInds, imagingData, generalProperty)
-    X = imagingData.samples(:, :, examinedInds);
+    X = imagingData.samples(:, :, :);
 
     for k=1:size(X,1)
         alldataNT(:, k) = reshape(X(k,:,:), size(X,3)*size(X,2),1);
@@ -16,5 +16,5 @@ function [current_embedding] = calcDistPcaTrajCreator(examinedInds, imagingData,
     trajSmooth = filter(b,1, pcaTrajres.projeff, [], 2);
     trajSmooth=trajSmooth(:,6:end,:);
     
-    current_embedding = mean(trajSmooth,3).';
+    current_embedding = mean(trajSmooth(:,:,examinedInds),3).';
 end
