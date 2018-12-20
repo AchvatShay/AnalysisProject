@@ -21,8 +21,6 @@ else
     save(fullfile(outputPath, ['pca_traj_res' eventsStr '.mat']), 'pcaTrajres');
 end
 
-
-
 startBehaveTime = generalProperty.startBehaveTime4trajectory*generalProperty.ImagingSamplingRate;
 endBehaveTime = generalProperty.endBehaveTime4trajectory*generalProperty.ImagingSamplingRate;
 
@@ -41,17 +39,35 @@ switch lower(generalProperty.PelletPertubation)
          [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
         % mark failures - because then we do not know the tastes
-        labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+%         labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+
         labelsLUTTaste{end+1} = 'failure';
         labelsFontSz = generalProperty.visualization_labelsFontSize;
         legendLoc = generalProperty.visualization_legendLocation;        
         clrs = getColors(generalProperty.tastesColors);
         clrs(end+1, :) = [1 0 0];
       
+        XTaste = imagingData.samples(:, :, examinedIndsTaste);
+        if exist(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']), 'file')
+            load(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']));
+        else
+            for k=1:size(XTaste,1)
+                alldataNTTaste(:, k) = reshape(XTaste(k,:,:), size(XTaste,3)*size(XTaste,2),1);
+            end
+            [pcaTrajresTaste.kernel, pcaTrajresTaste.mu, pcaTrajresTaste.eigs] = mypca(alldataNTTaste);
+            pcaTrajresTaste.effectiveDim = max(getEffectiveDim(pcaTrajresTaste.eigs, generalProperty.analysis_pca_thEffDim), 3);
+
+            [~, projeffTaste] = linrecon(alldataNTTaste, pcaTrajresTaste.mu, pcaTrajresTaste.kernel, 1:pcaTrajresTaste.effectiveDim);
+            for l=1:size(projeffTaste,2)
+                pcaTrajresTaste.projeffTaste(l,:,:) = reshape(projeffTaste(:,l),size(XTaste,2),size(XTaste,3));
+            end
+            save(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']), 'pcaTrajresTaste');
+        end      
+        
         visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, ...
             generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, ...
             eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, ...
-            generalProperty, pcaTrajres.projeff, X, 'PCA', labelsTaste, labelsLUTTaste, clrs, eventsStrTaste);
+            generalProperty, pcaTrajres.projeff, X, 'PCA', labelsTaste, labelsLUTTaste, clrs, eventsStrTaste, pcaTrajresTaste.projeffTaste);
  
         
     case 'ommisions'

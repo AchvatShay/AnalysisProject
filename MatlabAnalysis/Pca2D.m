@@ -1,44 +1,63 @@
 function pcares = Pca2D(outputPath, generalProperty, imagingData, BehaveData)
-
-% requested labels
-[labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
-generalProperty.labels2cluster, generalProperty.includeOmissions);
-[prevcurlabs, prevCurrLUT] = getPrevCurrLabels(labels, labelsLUT);
-
-% analysis
-X = imagingData.samples(:, :, examinedInds);
-
-if exist(fullfile(outputPath, ['pca_res' eventsStr '.mat']), 'file')
-    load(fullfile(outputPath,  ['pca_res' eventsStr '.mat']));
-else
-    for k=1:size(X,3)
-        alldata(:, k) = reshape(X(:,:,k), size(X,1)*size(X,2),1);
-    end
-    
-    [pcares.embedding, ~, vals] = pca(alldata);
-    pcares.effectiveDim = max(getEffectiveDim(vals, generalProperty.analysis_pca_thEffDim), 3);
-    pcares.eigs = vals;
-    embedding = pcares.embedding(:,1:2);
-    foldsNum = generalProperty.foldsNum;
-    ACC2D = svmClassifyAndRand(embedding, labels, labels, foldsNum, '', 1, 0);
-    ACC2Dprevcur = svmClassifyAndRand(embedding(2:end, :), prevcurlabs, prevcurlabs, foldsNum, '', 1, 0);
-    save(fullfile(outputPath,  ['pca_res' eventsStr '.mat']), 'pcares', 'ACC2D', 'ACC2Dprevcur');
-end
   
 % visualize
 switch lower(generalProperty.PelletPertubation)
-    case 'none'
+    case 'none'        
+        % requested labels
+        [labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
+        generalProperty.labels2cluster, generalProperty.includeOmissions);
+        [prevcurlabs, prevCurrLUT] = getPrevCurrLabels(labels, labelsLUT);
+
+        % analysis
+        X = imagingData.samples(:, :, examinedInds);
+
+        if exist(fullfile(outputPath, ['pca_res' eventsStr '.mat']), 'file')
+            load(fullfile(outputPath,  ['pca_res' eventsStr '.mat']));
+        else
+            for k=1:size(X,3)
+                alldata(:, k) = reshape(X(:,:,k), size(X,1)*size(X,2),1);
+            end
+
+            [pcares.embedding, ~, vals] = pca(alldata);
+            pcares.effectiveDim = max(getEffectiveDim(vals, generalProperty.analysis_pca_thEffDim), 3);
+            pcares.eigs = vals;
+            embedding = pcares.embedding(:,1:2);
+            foldsNum = generalProperty.foldsNum;
+            ACC2D = svmClassifyAndRand(embedding, labels, labels, foldsNum, '', 1, 0);
+            ACC2Dprevcur = svmClassifyAndRand(embedding(2:end, :), prevcurlabs, prevcurlabs, foldsNum, '', 1, 0);
+            save(fullfile(outputPath,  ['pca_res' eventsStr '.mat']), 'pcares', 'ACC2D', 'ACC2Dprevcur');
+        end
+        
         visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, pcares.embedding(:, 1:2), outputPath, 'pca')
     case 'taste'
         [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
         % mark failures - because then we do not know the tastes
-        labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+%         labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
+        
         labelsLUTTaste{end+1} = 'failure';
         labelsFontSz = generalProperty.visualization_labelsFontSize;
         legendLoc = generalProperty.visualization_legendLocation;        
         clrs = getColors(generalProperty.tastesColors);
         clrs(end+1, :) = [1 0 0];
+        
+          % analysis
+        X = imagingData.samples(:, :, examinedIndsTaste);
+
+        if exist(fullfile(outputPath, ['pca_res' eventsStrTaste '.mat']), 'file')
+            load(fullfile(outputPath,  ['pca_res' eventsStrTaste '.mat']));
+        else
+            for k=1:size(X,3)
+                alldata(:, k) = reshape(X(:,:,k), size(X,1)*size(X,2),1);
+            end
+
+            [pcares.embedding, ~, vals] = pca(alldata);
+            pcares.effectiveDim = max(getEffectiveDim(vals, generalProperty.analysis_pca_thEffDim), 3);
+            pcares.eigs = vals;
+           
+            save(fullfile(outputPath,  ['pca_res' eventsStrTaste '.mat']), 'pcares');
+        end    
+        
         plot2Dembedding(examinedIndsTaste, outputPath, eventsStrTaste, labelsLUTTaste, labelsTaste,pcares.embedding(:, 1:2), clrs, 'pca', legendLoc, labelsFontSz)
         
         

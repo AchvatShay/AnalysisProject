@@ -1,6 +1,6 @@
 function visualizeTrajectories(countbesttrajs, clrscurrprev, clrs, eventsStr, prevCurrLUT, labelsLUT, ...
     tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, projeff, ...
-    X, Method, labelsTaste, labelsLUTTaste, clrsTaste, eventsStrTaste)
+    X, Method, labelsTaste, labelsLUTTaste, clrsTaste, eventsStrTaste, projeffTaste)
 
 b = fir1(10,.3);
 trajSmooth = filter(b,1, projeff, [], 2);
@@ -42,7 +42,10 @@ mysave(f(4), fullfile(outputPath, ['dprimeNext' Method eventsStr]));
 end
 
 if exist('clrsTaste','var')
-f = plotTemporalTraject(countbesttrajs, labelsLUTTaste, clrsTaste, trajSmooth, labelsTaste, t(6:end), 0, labelsFontSz, viewparams);
+trajSmoothTaste = filter(b,1, projeffTaste, [], 2);
+trajSmoothTaste=trajSmoothTaste(:,6:end,:);    
+    
+f = plotTemporalTraject(countbesttrajs, labelsLUTTaste, clrsTaste, trajSmoothTaste, labelsTaste, t(6:end), 0, labelsFontSz, viewparams);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste]));
 mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste]));
 

@@ -133,46 +133,64 @@ xlim([xlimmin,t(end)])
 mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'trialsActivity']));
 end
 if strcmp(generalProperty.PelletPertubation, 'Taste')
-    tasteLabels = zeros(size(labels));
-    for k = 1:length(generalProperty.tastesLabels)
-        if ~isfield(BehaveData, generalProperty.tastesLabels{1}{1})
-            error([generalProperty.tastesLabels{k}{1} ' is not in BDA file']);
-        end
-        tasteLabels(BehaveData.(generalProperty.tastesLabels{k}{1}).indicatorPerTrial == 1) = k;
-    end
-    if any(tasteLabels == 0)
-        error('Some trials has no taste!');
-    end
-  classes = unique(tasteLabels);
-    for ci = 1:length(classes)
-figure;
-% 1
-htop = subplot(2,1,1);
-imagesc(t, 1:size(X,1),mean(X(:,:,tasteLabels==classes(ci)),3),[-.15 2]);
-colormap jet;ylabel('Neurons','FontSize',10);
-placeToneTime(0, 3);xlim([xlimmin,t(end)])
-
-c=colorbar;
-set(c,'Position',[0.9196    0.5810    0.0402    0.3452]);
-% set(htop,'Position',[0.1300    0.5071    0.7750    0.4179]);
-set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
-% 2
-hmid=subplot(2,1,2);
-plot(t,mean(mean(X(:,:,tasteLabels==classes(ci)),3),1), 'LineWidth',3, 'Color','k');
-ylabel('Average','FontSize',10);
-set(gca, 'YLim', [mA MA]);
-placeToneTime(0, 2);
-set(gca, 'Box','off');
-set(gca, 'XTick',[]);
-% set(hmid, 'Position', [0.1300    0.3291    0.7750    0.1066]);
-xlim([xlimmin,t(end)])
-xa=get(gca, 'XAxis');
-set(xa,'Visible', 'off')
-
-mysave(gcf, fullfile(outputPath, [generalProperty.tastesLabels{ci}{1} 'trialsActivity' ]));
-end
-
     
+    [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
+            generalProperty.tastesLabels, generalProperty.includeOmissions);
+    X = imagingData.samples;
+    X=X(:,:,examinedIndsTaste);
+
+
+    if (~isnan(grabCount))
+        [~, igrabs] = sort(grabCount);        
+        X=X(:,:,igrabs);
+    end
+    classes = unique(labelsTaste);
+
+
+    if (~isnan(grabCount))
+        labelsTaste = labelsTaste(igrabs);
+    end
+    
+    mA = inf;
+    for ci = 1:length(classes)
+        mA = min(mA, min(mean(mean(X(:,:,labelsTaste==classes(ci)),3),1)));
+    end
+    MA = -inf;
+    for ci = 1:length(classes)
+        MA = max(MA, max(mean(mean(X(:,:,labelsTaste==classes(ci)),3),1)));
+    end
+    DN = MA-mA;
+    mA=mA-DN*.1;
+    MA=MA+DN*.1;
+ 
+    
+    for ci = 1:length(classes)
+        figure;
+        % 1
+        htop = subplot(2,1,1);
+        imagesc(t, 1:size(X,1),mean(X(:,:,labelsTaste==classes(ci)),3),[-.15 2]);
+        colormap jet;ylabel('Neurons','FontSize',10);
+        placeToneTime(0, 3);xlim([xlimmin,t(end)])
+
+        c=colorbar;
+        set(c,'Position',[0.9196    0.5810    0.0402    0.3452]);
+        % set(htop,'Position',[0.1300    0.5071    0.7750    0.4179]);
+        set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
+        % 2
+        hmid=subplot(2,1,2);
+        plot(t,mean(mean(X(:,:,labelsTaste==classes(ci)),3),1), 'LineWidth',3, 'Color','k');
+        ylabel('Average','FontSize',10);
+        set(gca, 'YLim', [mA MA]);
+        placeToneTime(0, 2);
+        set(gca, 'Box','off');
+        set(gca, 'XTick',[]);
+        % set(hmid, 'Position', [0.1300    0.3291    0.7750    0.1066]);
+        xlim([xlimmin,t(end)])
+        xa=get(gca, 'XAxis');
+        set(xa,'Visible', 'off')
+
+        mysave(gcf, fullfile(outputPath, [labelsLUTTaste{ci} 'trialsActivity' ]));
+    end 
 end
 % if isfield(allLabels, 'sucrose') && any(allLabels.sucrose)
 %     grabCountSucrose = grabCount(allLabels.sucrose(expinds{l})==1);
