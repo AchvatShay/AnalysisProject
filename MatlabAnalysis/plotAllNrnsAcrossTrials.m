@@ -132,19 +132,20 @@ xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
 mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'trialsActivity']));
 end
+
 if strcmp(generalProperty.PelletPertubation, 'Taste')
     
     [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
-    X = imagingData.samples;
-    X=X(:,:,examinedIndsTaste);
+    X_Taste = imagingData.samples;
+    X_Taste=X_Taste(:,:,examinedIndsTaste);
 
 
     if (~isnan(grabCount))
         [~, igrabs] = sort(grabCount);        
-        X=X(:,:,igrabs);
+        X_Taste=X_Taste(:,:,igrabs);
     end
-    classes = unique(labelsTaste);
+    classes_Taste = unique(labelsTaste);
 
 
     if (~isnan(grabCount))
@@ -152,23 +153,41 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
     end
     
     mA = inf;
-    for ci = 1:length(classes)
-        mA = min(mA, min(mean(mean(X(:,:,labelsTaste==classes(ci)),3),1)));
+    for ci = 1:length(classes_Taste)
+        mA = min(mA, min(mean(mean(X_Taste(:,:,labelsTaste==classes_Taste(ci)),3),1)));
     end
     MA = -inf;
-    for ci = 1:length(classes)
-        MA = max(MA, max(mean(mean(X(:,:,labelsTaste==classes(ci)),3),1)));
+    for ci = 1:length(classes_Taste)
+        MA = max(MA, max(mean(mean(X_Taste(:,:,labelsTaste==classes_Taste(ci)),3),1)));
     end
     DN = MA-mA;
     mA=mA-DN*.1;
     MA=MA+DN*.1;
  
+    figure;
+    for ci = 1:length(classes_Taste)
+        plot(t, mean(mean(X_Taste(:, :, labelsTaste==classes_Taste(ci)),1),3), 'Color',generalProperty.tastesColors{:,ci});
+        hold all;
+    end
     
-    for ci = 1:length(classes)
+    xlabel('Time [secs]','FontSize', labelsFontSz);
+    placeToneTime(0, 2);
+    axis tight;
+    set(gca,'XLim', [xlimmin, t(end)]);
+
+    ylabel('Average Activity','FontSize', labelsFontSz);
+    leg = legend(labelsLUTTaste);
+    set(leg, 'FontSize', labelsFontSz);
+    set(leg, 'Location','northeast');
+
+    mysave(gcf, fullfile(outputPath, ['averagedActivity' eventsStrTaste]));
+
+    
+    for ci = 1:length(classes_Taste)
         figure;
         % 1
         htop = subplot(2,1,1);
-        imagesc(t, 1:size(X,1),mean(X(:,:,labelsTaste==classes(ci)),3),[-.15 2]);
+        imagesc(t, 1:size(X_Taste,1),mean(X_Taste(:,:,labelsTaste==classes_Taste(ci)),3),[-.15 2]);
         colormap jet;ylabel('Neurons','FontSize',10);
         placeToneTime(0, 3);xlim([xlimmin,t(end)])
 
@@ -178,7 +197,7 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
         set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
         % 2
         hmid=subplot(2,1,2);
-        plot(t,mean(mean(X(:,:,labelsTaste==classes(ci)),3),1), 'LineWidth',3, 'Color','k');
+        plot(t,mean(mean(X_Taste(:,:,labelsTaste==classes_Taste(ci)),3),1), 'LineWidth',3, 'Color','k');
         ylabel('Average','FontSize',10);
         set(gca, 'YLim', [mA MA]);
         placeToneTime(0, 2);

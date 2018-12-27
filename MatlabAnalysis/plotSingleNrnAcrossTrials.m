@@ -68,19 +68,19 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
     [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
         
-    X = imagingData.samples;
-    X=X(:,:,examinedIndsTaste);
+    X_Taste = imagingData.samples;
+    X_Taste=X_Taste(:,:,examinedIndsTaste);
 
     if (~isnan(grabCount))
         [~, igrabs] = sort(grabCount);
-        X=X(:,:,igrabs);
+        X_Taste=X_Taste(:,:,igrabs);
     end
 
 
     if (~isnan(grabCount))
         labelsTaste = labelsTaste(igrabs);
     end
-    classes = unique(labelsTaste);
+    classes_Taste = unique(labelsTaste);
 
     for nrind=1:length(nerons2plot)
         curr_nrn2plot = nerons2plot(nrind);
@@ -90,22 +90,22 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
             error('the neuron selected for ploting is not exists in the neurons selected for analysis');
         end
 
-        x = squeeze(X(currnrnind,:,:))';
+        x_taste = squeeze(X_Taste(currnrnind,:,:))';
         mA = inf;
-        for ci = 1:length(classes)
-            mA = min(mA, min(mean(X(currnrnind,:,labelsTaste==classes(ci)),3)));
+        for ci = 1:length(classes_Taste)
+            mA = min(mA, min(mean(X_Taste(currnrnind,:,labelsTaste==classes_Taste(ci)),3)));
         end
         MA = -inf;
-        for ci = 1:length(classes)
-            MA = max(MA, max(mean(X(currnrnind,:,labelsTaste==classes(ci)),3)));
+        for ci = 1:length(classes_Taste)
+            MA = max(MA, max(mean(X_Taste(currnrnind,:,labelsTaste==classes_Taste(ci)),3)));
         end
         DN = MA-mA;
         mA=mA-DN*.1;
         MA=MA+DN*.1;
 
-        for ci = 1:length(classes)
-            plotsinglNrnPerTrials(labelsLUTTaste{ci}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, '', labelsTaste, classes(ci), xlimmin, t,...
-                m, M, X, [], generalProperty);        
+        for ci = 1:length(classes_Taste)
+            plotsinglNrnPerTrials(labelsLUTTaste{ci}, mA, MA,imagingData.roiNames, currnrnind, x_taste, outputPath, '', labelsTaste, classes_Taste(ci), xlimmin, t,...
+                m, M, X_Taste, [], generalProperty);        
             mysave(gcf, fullfile(outputPath, [labelsLUTTaste{ci} 'Nr' num2str(imagingData.roiNames(currnrnind))]));
         end
     end
