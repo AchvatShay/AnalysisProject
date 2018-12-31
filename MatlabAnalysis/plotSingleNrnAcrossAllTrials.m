@@ -1,35 +1,25 @@
 function plotSingleNrnAcrossAllTrials(outputPath, generalProperty, imagingData, BehaveData)
 
-% extract behavioral data stats
-[labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
-    generalProperty.labels2cluster, generalProperty.includeOmissions);
-
 % 1. grab counts per trial
 % grabCount = getGrabCounts(eventTimeGrab{end}, findClosestDouble(t, toneTime), findClosestDouble(t, toneTime+2), frameRateRatio{1});
 grabCount = getGrabCounts(BehaveData, generalProperty.time2startCountGrabs, generalProperty.time2endCountGrabs, generalProperty.ImagingSamplingRate);
 % 2. discard trials with no suc or fail
 
-if (~isnan(grabCount))
-    grabCount = grabCount(examinedInds);
-end
-
 % 3. obtain histograms of behave events
-[behaveHist, allbehave] = getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
+[behaveHist] = getHistEventsAllTrails(BehaveData, generalProperty.Events2plot);
+
+if (~isnan(grabCount))
+    grabCount = grabCount(:);
+end
 
 % [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
 X = imagingData.samples;
-X=X(:,:,examinedInds);
 
 if (~isnan(grabCount))
     [~, igrabs] = sort(grabCount);
     X=X(:,:,igrabs);
 end
 
-
-if (~isnan(grabCount))
-    labels = labels(igrabs);
-end
-classes = unique(labels);
 t = linspace(0, generalProperty.Duration, size(X,2)) - generalProperty.ToneTime;
 nerons2plot = generalProperty.Neurons2plot;
 % visualize
@@ -46,20 +36,16 @@ for nrind=1:length(nerons2plot)
     
     x = squeeze(X(currnrnind,:,:))';
     mA = inf;
-    for ci = 1:length(classes)
-        mA = min(mA, min(mean(X(currnrnind,:,labels==classes(ci)),3)));
-    end
+    mA = min(mA, min(mean(X(currnrnind,:,:),3)));
     MA = -inf;
-    for ci = 1:length(classes)
-        MA = max(MA, max(mean(X(currnrnind,:,labels==classes(ci)),3)));
-    end
+    MA = max(MA, max(mean(X(currnrnind,:,:),3)));
+
     DN = MA-mA;
     mA=mA-DN*.1;
     MA=MA+DN*.1;
-    for ci = 1:length(classes)
-        plotsinglNrnPerAllTrials(labelsLUT{ci}, mA, MA,imagingData.roiNames, currnrnind, x, outputPath, '', labels, classes(ci), xlimmin, t,...
-            m, M, X, behaveHist{ci}, generalProperty);        
-        mysave(gcf, fullfile(outputPath, [labelsLUT{ci} 'Nr' num2str(imagingData.roiNames(currnrnind))]));
-    end
+
+     plotsinglNrnPerAllTrials('All Trails', mA, MA,imagingData.roiNames, currnrnind, x, xlimmin, t,...
+            m, M, X, behaveHist, generalProperty);        
+     mysave(gcf, fullfile(outputPath, ['All Trails' 'Nr' num2str(imagingData.roiNames(currnrnind))]));
     
 end

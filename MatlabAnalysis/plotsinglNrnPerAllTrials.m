@@ -1,4 +1,4 @@
-function plotsinglNrnPerAllTrials(titlestr, mA, MA, roiNames, currnrnind, x, outputPath, outputstr, faillabels, chosenLabelval, xlimmin, t, m, M, X, histbehave, generalProperty)
+function plotsinglNrnPerAllTrials(titlestr, mA, MA, roiNames, currnrnind, x, xlimmin, t, m, M, X, histbehave, generalProperty)
 figure;htop = subplot(2,1,1);
 x_size = size(x);
 imagesc(t, 1:x_size(1), x(:,:));
@@ -13,7 +13,7 @@ set(htop,'Position',[0.1300    0.5071    0.7750    0.4179]);
 set(gca, 'YTick', unique([1 get(gca, 'YTick')]))
 
 hmid=subplot(4,1,3);
-plot(t,mean(X(currnrnind,:,faillabels==chosenLabelval),3), 'LineWidth',3, 'Color','k');
+plot(t,mean(X(currnrnind,:,:),3), 'LineWidth',3, 'Color','k');
 ylabel('Average','FontSize',10)
 set(gca, 'YLim', [mA MA]);
 ticks=get(gca,'YTick');
@@ -32,6 +32,4 @@ lh=plotBehaveHist(t, histbehave, 0, generalProperty.Events2plot);
 set(lh, 'Visible','off');
 xlabel('Time [sec]','FontSize',10);
 xlim([xlimmin,t(end)])
-
-
 % mysave(gcf, fullfile(outputPath, [outputstr num2str(roiNames(currnrnind))]));
