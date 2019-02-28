@@ -20,16 +20,20 @@ allTimemean = mean(trajSmooth,3).';
 plotTimeEmbedding(allTimemean, t(6:end), 0, labelsFontSz);
 
 mysave(gcf, fullfile(outputPath, ['traj' Method 'time']));
+
 plotTimeEmbedding(allTimemean, t(6:end), [], labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['traj' Method 'timeNoMarkers']));
 
 f = plotTemporalTraject(countbesttrajs, labelsLUT, clrs, trajSmooth, labels, t(6:end), 0, labelsFontSz, viewparams);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStr]));
+createPushButtunTime(f(1), t(6:end));
 mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStr]));
+createPushButtunTime(f(2), t(6:end));
 fprevcurr = plotTemporalTraject(0, {prevCurrLUT.name}, clrscurrprev, trajSmooth1, prevcurlabs, t(6:end), 0, labelsFontSz, viewparams);
 % f1=            plotCurrPrevTraj(trajSmooth1(:,11:end, :), prevcurlabs, t(16:end), 0, tstampFirst.grab.start(2:end), tstampLast.grab.start(2:end), labelsFontSz, viewparams);
-close(fprevcurr(2));
+createPushButtunTime(fprevcurr(2), t(6:end));
 mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr']));
+createPushButtunTime(fprevcurr(1), t(6:end));
 % mysave(fprevcurr(2), fullfile(outputPath, ['traj' Method 'selected' 'PrevCurr' eventsStr]));
 
 if length(unique(labels)) == 2
@@ -45,10 +49,11 @@ if exist('clrsTaste','var')
 trajSmoothTaste = filter(b,1, projeffTaste, [], 2);
 trajSmoothTaste=trajSmoothTaste(:,6:end,:);    
     
-f = plotTemporalTraject(countbesttrajs, labelsLUTTaste, clrsTaste, trajSmoothTaste, labelsTaste, t(6:end), 0, labelsFontSz, viewparams);
+[f, meansTrajs] = plotTemporalTraject(countbesttrajs, labelsLUTTaste, clrsTaste, trajSmoothTaste, labelsTaste, t(6:end), 0, labelsFontSz, viewparams);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste]));
 mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste]));
-
+createPushButtunTime(f(1), t(6:end));
+createPushButtunTime(f(2), t(6:end));
 end
 % % 2. s/f trajectories
 % switch generalProperty.PelletPertubation

@@ -1,7 +1,7 @@
-function f = plotTemporalTraject(countbesttrajs, labelsLUT, clrs, pcaTrajSmooth, labels, t, toneTime, labelsFontSz, viewparams)
+function [f, meansTrajs] = plotTemporalTraject(countbesttrajs, labelsLUT, clrs, pcaTrajSmooth, labels, t, toneTime, labelsFontSz, viewparams)
 
 f(1) = figure;
-plotTrajMeanRBstartMove(labelsLUT, clrs, pcaTrajSmooth, labels,1, ...
+meansTrajs = plotTrajMeanRBstartMove(labelsLUT, clrs, pcaTrajSmooth, labels,1, ...
     findClosestDouble(t, toneTime), false, viewparams, labelsFontSz);
 
 f(2) = figure;

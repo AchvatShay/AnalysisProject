@@ -4,10 +4,10 @@ function [labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFrom
 
 examinedInds = [];
 for event_i = 1:length(eventsList)    
-    if ~isfield(BehaveData, eventsList{event_i}{1})
+    if ~isfield(BehaveData, lower(eventsList{event_i}{1}))
         error([eventsList{event_i}{1} ' is not labeled as a behavioral label on the BDA files']);
     end
-    currExaminedInds = find(BehaveData.(eventsList{event_i}{1}).indicatorPerTrial);
+    currExaminedInds = find(BehaveData.(lower(eventsList{event_i}{1})).indicatorPerTrial);
     for name_i = 2:length(eventsList{event_i})
         if ~isfield(BehaveData, eventsList{event_i}{name_i})
             error([eventsList{event_i}{name_i} ' is not labeled as a behavioral label on the BDA files']);
@@ -32,7 +32,7 @@ else
 end
 labels = zeros(length(examinedInds), 1);
 for event_i = 1:length(eventsList)
-    currlabelsval = BehaveData.(eventsList{event_i}{1}).indicatorPerTrial(examinedInds);
+    currlabelsval = BehaveData.(lower(eventsList{event_i}{1})).indicatorPerTrial(examinedInds);
     for name_i = 2:length(eventsList{event_i})
         currlabelsval = currlabelsval &  BehaveData.(eventsList{event_i}{name_i});
     end
@@ -45,8 +45,8 @@ for name_i = 2:length(eventsList{1})
     labelsLUT{1} = [labelsLUT{1} 'And' eventsList{1}{name_i}];
 end
 for event_i = 2:length(eventsList)
-    eventsStr = [eventsStr '_' eventsList{event_i}{1}]; %#ok<*AGROW>
-    labelsLUT{event_i} = eventsList{event_i}{1};
+    eventsStr = [eventsStr '_' lower(eventsList{event_i}{1})]; %#ok<*AGROW>
+    labelsLUT{event_i} = lower(eventsList{event_i}{1});
     for name_i = 2:length(eventsList{1})
         eventsStr = [eventsStr 'And' eventsList{event_i}{name_i}];
         labelsLUT{event_i} = [labelsLUT{event_i} 'And' eventsList{event_i}{name_i}];

@@ -1,4 +1,4 @@
-function plotTrajMeanRBstartMove(labelsLUT, clrs, trajData, labels, ...
+function meansTrajs = plotTrajMeanRBstartMove(labelsLUT, clrs, trajData, labels, ...
     mvStartInd, toneTime, afterToneInd, viewparams, labelsFontSz)
 
 classes = unique(labels);
@@ -22,8 +22,12 @@ zlabel('\psi_3', 'FontSize',labelsFontSz);
 
 axis tight
 grid on;
-
-l=legend(cat(2, labelsLUT ,{'Start','Tone'}),'Location','northeastoutside');
+if length(classes) == length(labelsLUT)
+    labels = labelsLUT;
+else
+labels = labelsLUT(classes);
+end
+l=legend(cat(2,labels ,{'Start','Tone'}),'Location','northeastoutside');
 set(l, 'FontSize',labelsFontSz);
 end
 

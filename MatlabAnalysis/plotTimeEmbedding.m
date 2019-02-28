@@ -27,3 +27,4 @@ a=get(gcf,'Children');
 setAxisFontSz(a(end), labelsFontSz);
 set(a(end-1), 'FontSize', labelsFontSz);
 legend(leg,'Location','Best','FontSize', labelsFontSz);
+
