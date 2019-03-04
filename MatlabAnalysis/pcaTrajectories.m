@@ -40,12 +40,10 @@ switch lower(generalProperty.PelletPertubation)
             generalProperty.tastesLabels, generalProperty.includeOmissions);
         % mark failures - because then we do not know the tastes
 %         labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
-
-        labelsLUTTaste{end+1} = 'failure';
         labelsFontSz = generalProperty.visualization_labelsFontSize;
         legendLoc = generalProperty.visualization_legendLocation;        
         clrs = getColors(generalProperty.tastesColors);
-        clrs(end+1, :) = [1 0 0];
+        
       
         XTaste = imagingData.samples(:, :, examinedIndsTaste);
         if exist(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']), 'file')

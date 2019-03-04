@@ -22,11 +22,11 @@ zlabel('\psi_3', 'FontSize',labelsFontSz);
 
 axis tight
 grid on;
-if length(classes) == length(labelsLUT)
+% if length(classes) == length(labelsLUT)
     labels = labelsLUT;
-else
-labels = labelsLUT(classes);
-end
+% else
+% labels = labelsLUT(classes);
+% end
 l=legend(cat(2,labels ,{'Start','Tone'}),'Location','northeastoutside');
 set(l, 'FontSize',labelsFontSz);
 end
