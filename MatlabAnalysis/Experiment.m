@@ -32,6 +32,7 @@ classdef Experiment %< handle
         endBehaveTime4trajectory = 4 + 2;
         visualization_startTime2plot = 1.5;
         Events2plot = {'lift' 'grab' 'atmouth'};
+        Events2plotDelay = {'tone' 'lift' 'grab' 'atmouth'};
         tastesLabels = {};%{'sucrose','quinine','regular'};% to be populized by the xml
         tastesColors = {};%{'cyan', 'purpile', 'blue'};  % to be populized by the xml      
         foldsNum = 10;
@@ -130,6 +131,23 @@ classdef Experiment %< handle
             if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.atmouth.Attributes.is_active)
                 obj.Events2plot{end+1} = 'atmouth';
             end
+            % visualization of delay to events
+            obj.Events2plot={};
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'tone';
+            end
+            if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.lift.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'lift';
+            end
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.grab.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'grab';
+            end
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'atmouth';
+            end
+            
+            
+            
             
             if  str2bool(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.None.Attributes.is_active)
                 obj.PelletPertubation = 'None';

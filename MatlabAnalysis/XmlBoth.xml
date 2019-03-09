@@ -115,6 +115,12 @@
 			<atmouth is_active='True'></atmouth>
             <lick is_active='True'></lick>
 		</Events2plot>
+        <Events2plotDelay>
+			<grab is_active='True'></grab>
+			<lift is_active='True'></lift>
+			<atmouth is_active='True'></atmouth>
+            <tone is_active='True'></tone>
+		</Events2plotDelay>      
     </visualization>
   </Experiment>    
 </GeneralProperty>
