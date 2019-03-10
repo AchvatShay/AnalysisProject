@@ -13,7 +13,7 @@ tstim = -t(1);
     trialinds{1} = ones(size(imagingData.samples,3),1);
     trialinds{2} = sum(BehaveData.(generalProperty.successLabel).indicator,2)>0;
     trialinds{3} = sum(BehaveData.(generalProperty.failureLabel).indicator,2)>0;
-    strTrials = {'All','Success','Failure'};
+    strTrials = {'All',generalProperty.successLabel,generalProperty.failureLabel};
 for ei = 1:length(Events2plotDelay)
     if strcmpi(Events2plotDelay{ei}, 'tone')
         
@@ -24,7 +24,7 @@ for ei = 1:length(Events2plotDelay)
         
         
         for ti = 1:length(strTrials)
-    plotAlignedDataHist(outputPath, '', strTrials{ti}, Events2plotDelay{ei}, ...
+        plotAlignedDataHist(outputPath, '', strTrials{ti}, Events2plotDelay{ei}, ...
         delays.start(trialinds{ti}), behaveindicators(:, trialinds{ti}), ...
         t+tstim, imagingData.samples(:,:,trialinds{ti}), tstim, labelsFontSz);
     

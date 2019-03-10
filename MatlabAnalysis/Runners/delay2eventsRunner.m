@@ -1,11 +1,11 @@
-function AllAnalysisRunner
+function delay2eventsRunner
 
 addpath('../');
-
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'F:\Data\M26\';
-folderAnimalOutputPath = 'F:\Data\Test\M26\';
+folderAnimal = 'E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\M27';
+folderAnimalOutputPath = 'E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\ShatTest\M27';
+
 
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
@@ -18,7 +18,6 @@ for index = 1: length(listExperiments)
     if ~strcmp(listExperiments(index).name, '..') && ~strcmp(listExperiments(index).name, '.')
         
         if strcmp(specific_experiment, '') || (~strcmp(specific_experiment, '') && strcmp(listExperiments(index).name, specific_experiment))
-
             bda_tpa_folder = strcat(listExperiments(index).folder, '\',listExperiments(index).name);
             listFiles = dir(bda_tpa_folder);
 
@@ -41,38 +40,9 @@ for index = 1: length(listExperiments)
                     end
                 end
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotSingleNrnAcrossTrials');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotAllNrnsAcrossTrials');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
-                
                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\delay2events');
                 mkdir(outputPath);
                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\diffMap2D');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 
                 close all;
                 BdaTpaList = [];

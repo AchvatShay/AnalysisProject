@@ -132,7 +132,7 @@ classdef Experiment %< handle
                 obj.Events2plot{end+1} = 'atmouth';
             end
             % visualization of delay to events
-            obj.Events2plot={};
+            obj.Events2plotDelay={};
             if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.is_active)
                 obj.Events2plotDelay{end+1} = 'tone';
             end
