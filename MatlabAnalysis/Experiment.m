@@ -33,6 +33,11 @@ classdef Experiment %< handle
         visualization_startTime2plot = 1.5;
         Events2plot = {'lift' 'grab' 'atmouth'};
         Events2plotDelay = {'tone' 'lift' 'grab' 'atmouth'};
+        Events2plotDelayNumber = {1 1 1 1}
+        
+        delay2events_start_time = 0;
+        delay2events_end_time = 2;
+        
         tastesLabels = {};%{'sucrose','quinine','regular'};% to be populized by the xml
         tastesColors = {};%{'cyan', 'purpile', 'blue'};  % to be populized by the xml      
         foldsNum = 10;
@@ -133,21 +138,30 @@ classdef Experiment %< handle
             end
             % visualization of delay to events
             obj.Events2plotDelay={};
+            obj.Events2plotDelayNumber={};
             if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.is_active)
                 obj.Events2plotDelay{end+1} = 'tone';
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.number);
             end
             if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.lift.Attributes.is_active)
                 obj.Events2plotDelay{end+1} = 'lift';
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.lift.Attributes.number);
             end
             if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.grab.Attributes.is_active)
                 obj.Events2plotDelay{end+1} = 'grab';
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.grab.Attributes.number);
             end
             if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.is_active)
                 obj.Events2plotDelay{end+1} = 'atmouth';
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.number);
             end
             
+            obj.delay2events_start_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_start_time.Text);
+            obj.delay2events_end_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_end_time.Text);
             
-            
+            if (obj.delay2events_start_time >=  obj.delay2events_end_time)
+                error('Please select delay2events_start_time that is lower and not equals to delay2events_end_time');
+            end
             
             if  str2bool(xmlstrct.GeneralProperty.Experiment.Condition.PelletPertubation.None.Attributes.is_active)
                 obj.PelletPertubation = 'None';

@@ -33,13 +33,14 @@ for ei = 1:length(Events2plotDelay)
     end
     ind = find(strcmpi(Events2plotDelay{ei}, fields), 1);
     if isempty(ind)
-        ind = find(strcmp([lower(Events2plotDelay{ei}) '01'], fields), 1);
+        eventnumber = num2str(generalProperty.Events2plotDelayNumber{ei}, '%02d');
+        ind = find(strcmp([lower(Events2plotDelay{ei}) eventnumber], fields), 1);
     end
     if isempty(ind)
         error('Unrecognized event to plot');
     end
     
-    [tstampFirst, tstampLast] = getEventTimeStampFirstLast(BehaveData.(fields{ind}).indicator.', t>0& t<2);
+    [tstampFirst, tstampLast] = getEventTimeStampFirstLast(BehaveData.(fields{ind}).indicator.', t>generalProperty.delay2events_start_time & t<generalProperty.delay2events_end_time);
     
     for ti = 1:length(strTrials)
     % first

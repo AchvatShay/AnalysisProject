@@ -283,11 +283,19 @@
             <lick is_active='True'></lick>
 		</Events2plot>
         <Events2plotDelay>
-			<grab is_active='True'></grab>
-			<lift is_active='True'></lift>
-			<atmouth is_active='True'></atmouth>
-            <tone is_active='True'></tone>
-		</Events2plotDelay>    
+			<grab is_active='True' number='1'></grab>
+			<lift is_active='True' number='1'></lift>
+			<atmouth is_active='True' number='1'></atmouth>
+            <tone is_active='True' number='1'></tone>
+		</Events2plotDelay>
+        <!-- 
+        delay2events start time in sec            
+        -->
+        <delay2events_start_time>0</delay2events_start_time>
+        <!-- 
+        delay2events end time in sec            
+        -->
+        <delay2events_end_time>2</delay2events_end_time>
     </visualization>
   </Experiment>    
 </GeneralProperty>
