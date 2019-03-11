@@ -27,13 +27,18 @@ mysave(gcf, fullfile(outputPath, ['traj' Method 'timeNoMarkers']));
 f = plotTemporalTraject(countbesttrajs, labelsLUT, clrs, trajSmooth, labels, t(6:end), 0, labelsFontSz, viewparams);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStr]));
 createPushButtunTime(f(1), t(6:end));
+mysave(f(1), fullfile(outputPath, ['traj' Method eventsStr 'ButtunTime']));
+
 mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStr]));
 createPushButtunTime(f(2), t(6:end));
+mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStr 'ButtunTime']));
+
 fprevcurr = plotTemporalTraject(0, {prevCurrLUT.name}, clrscurrprev, trajSmooth1, prevcurlabs, t(6:end), 0, labelsFontSz, viewparams);
 % f1=            plotCurrPrevTraj(trajSmooth1(:,11:end, :), prevcurlabs, t(16:end), 0, tstampFirst.grab.start(2:end), tstampLast.grab.start(2:end), labelsFontSz, viewparams);
 createPushButtunTime(fprevcurr(2), t(6:end));
 mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr']));
 createPushButtunTime(fprevcurr(1), t(6:end));
+mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr_ButtunTime']));
 % mysave(fprevcurr(2), fullfile(outputPath, ['traj' Method 'selected' 'PrevCurr' eventsStr]));
 
 if length(unique(labels)) == 2
