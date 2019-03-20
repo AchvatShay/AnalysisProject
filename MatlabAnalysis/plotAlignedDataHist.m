@@ -69,7 +69,9 @@ for nr=1:size(dataAlltimesAlcrop,1)
 end
 [hist2onset,bins] = hist(onsetdelays2event(keepNrs),100);
 f(1)=figure;
-bar(bins, hist2onset/size(imagingData,1)*100, 'FaceColor',[192,192,192]/255);
+
+bins_values_percentage = hist2onset/size(imagingData,1)*100;
+bar(bins, bins_values_percentage, 'FaceColor',[192,192,192]/255);
 
 xlabel('Delay Time [sec]', 'FontSize',labelsFontSz);
 ylabel('Neurons [%]', 'FontSize',labelsFontSz);
@@ -81,6 +83,20 @@ placeToneTime(0,2);
 c=get(gca,'Children');
 set(c(1),'Color','r')
 mysave(f(1), fullfile(currfigs, ['histOnsetDelay' eventName sfstr '_allnrns']));
+
+
+sum_percentage_before_event = sum(bins_values_percentage(bins < 0 & bins >= -0.2));
+sum_percentage_after_event_halfsec = sum(bins_values_percentage(bins > 0 & bins <= 0.5));
+sum_percentage_after_event_sec = sum(bins_values_percentage(bins > 0 & bins <= 1));
+
+fid=fopen(fullfile(currfigs, ['histOnsetDelay' eventName sfstr '_allnrns_sum_percentage.txt']),'w');
+fprintf(fid, '%% of neurons -0.2-0.5 sec %.4f \r\n', sum_percentage_before_event + sum_percentage_after_event_halfsec);
+fprintf(fid, '%% of neurons -0.2-1 sec %.4f \r\n', sum_percentage_before_event + sum_percentage_after_event_sec);
+fprintf(fid, '%% of neurons -0.2-0 sec %.4f \r\n', sum_percentage_before_event);
+fprintf(fid, '%% of neurons 0-0.5 sec %.4f \r\n', sum_percentage_after_event_halfsec);
+fprintf(fid, '%% of neurons 0-1 sec %.4f \r\n', sum_percentage_after_event_sec);
+fclose(fid);
+
 % set(c(1),'Visible','off');
 % xlim([.12, max(get(gca,'XLim'))])
 % mysave(f(1), fullfile(currfigs, ['histOnsetDelay' eventName sfstr '_allnrnsStartingFromZero']));
