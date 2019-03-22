@@ -12,7 +12,7 @@ mkNewFolder(outputPath);
 
 filesTPA = dir([pth, '\TPA*.mat']);
 filesBDA = dir([pth, '\BDA*.mat']);
-filesTRK = dir([pth, '\*.trk']);
+% filesTRK = dir([pth, '\*.trk']);
 filesEPC = dir([pth, '\Traj\']);
 
 if nargin == 2 || isempty(Trials2keep)
