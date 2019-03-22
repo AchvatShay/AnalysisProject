@@ -43,15 +43,15 @@ varValsAll = cat(2,varVals, varValsNext);
 dprime = (meanVals(:,:,1)-meanVals(:,:,2))./sqrt(0.5*(varVals(:,:,1)+varVals(:,:,2)));
 dprimeNext = (meanValsNext(:,:,1)-meanValsNext(:,:,2))./sqrt(0.5*(varValsNext(:,:,1)+varValsNext(:,:,2)));
 
-m = floor(min(0.9*min(sum(dprime.^2)), 0.9*min(sum(dprimeNext.^2))));
-M = ceil(max(1.1*max(sum(dprime.^2)), 1.1*max(sum(dprimeNext.^2))));
+m = (min(0.9*min(mean(dprime.^2)), 0.9*min(mean(dprimeNext.^2))));
+M = (max(1.1*max(mean(dprime.^2)), 1.1*max(mean(dprimeNext.^2))));
 if length(classes) == 1
     f(2) = [];
     f(3) = [];
     return;
 end
 
-f(2)=figure;plot(t, sum(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);
+f(2)=figure;plot(t, mean(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);
 ylabel('Sensitivity Index', 'FontSize', labelsFontSz);
 axis tight;
 set(gca, 'Box','off');
@@ -62,14 +62,15 @@ setAxisFontSz(a(end), labelsFontSz);
 yticks = get(a, 'YTick');
 M = yticks(end)+yticks(2)-yticks(1);
 yticks=[yticks M];
-ylim([m M]);set(a, 'YTick', yticks);
+ylim([m M]);
+% set(a, 'YTick', yticks);
 set(gca,'XLim',[xlimmin t(end)]);
 
 placeToneTime(toneTime, 2);
 
 f(3)=figure;
 a1=subplot(1,2,1);
-plot(t, sum(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);ylabel('Sensitivity Index', 'FontSize', labelsFontSz);
+plot(t, mean(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);ylabel('Sensitivity Index', 'FontSize', labelsFontSz);
 axis tight;
 set(gca, 'Box','off');%grid on;
 set(gca,'XLim',[xlimmin t(end)]);
@@ -77,15 +78,17 @@ fh=get(gca,'Children');
 % set(fh(1),'YData', [m M])
 a=get(f(3),'Children');
 setAxisFontSz(a(end), labelsFontSz);
-ylim([m M]);set(a, 'YTick', yticks);
+ylim([m M]);
+% set(a, 'YTick', yticks);
 placeToneTime(toneTime, 2);
 
 
 a2=subplot(1,2,2);
-plot(t, sum(dprimeNext.^2), 'k');
+plot(t, mean(dprimeNext.^2), 'k');
 ax = get(gca,'YAxis');
 set(ax,'Visible','off')
-ylim([m M]);set(a, 'YTick', yticks);
+ylim([m M]);
+% set(a, 'YTick', yticks);
 
 % grid on;
 set(gca,'XLim', [t(1) t(end)])
@@ -121,9 +124,10 @@ set(d1,'Visible','off');
 
 
 f(4) = figure;
-plot(t, sum(dprimeNext.^2), 'k');
+plot(t, mean(dprimeNext.^2), 'k');
 ax = get(gca,'YAxis');
-ylim([m M]);set(a, 'YTick', yticks);
+ylim([m M]);
+% set(a, 'YTick', yticks);
 
 % grid on;
 set(gca,'XLim', [t(1) t(end)])
