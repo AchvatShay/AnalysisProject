@@ -17,7 +17,7 @@ n_eigs = min(n_eigs, size(A,1));
 % [vecs, vals] = eigs(stoch_A, eigs_n); 
 % [vecs, vals, ~] = svds(stoch_A, n_eigs);
 
-vD = sum(A,2);
+vD = sum(A,2)+eps;
 one_over_D_sqrt = spdiags(sqrt(1./vD),0,size(A,1),size(A,2));
 % using symmetric matrix for calculation
 A_sym = one_over_D_sqrt * A * one_over_D_sqrt;

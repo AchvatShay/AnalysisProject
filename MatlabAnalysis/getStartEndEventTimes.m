@@ -1,6 +1,8 @@
 function [tstampFirst, tstampLast] = getStartEndEventTimes(tryinginds, BehaveData, eventName, tindicator)
-
+try
 Names = fieldnames(BehaveData);
+ind = strcmp(Names, 'trk');
+Names = Names(~ind);
 BehaveDatagrab = zeros(length(tryinginds), length(tindicator));
 for event_i = 1:length(Names)
     if contains(lower(Names{event_i}), eventName)  
@@ -10,7 +12,10 @@ end
 [tstampFirstgrab, tstampLastgrab] = getEventTimeStampFirstLast(BehaveDatagrab.', tindicator);
 tstampLast.start = tstampLastgrab.start;
 tstampFirst.start = tstampFirstgrab.start;
-
+catch
+    tstampFirst=[];
+    tstampLast=[];
+end
 % Names = fieldnames(BehaveData);
 % 
 % tstampFirst = zeros(length(tryinginds),1);

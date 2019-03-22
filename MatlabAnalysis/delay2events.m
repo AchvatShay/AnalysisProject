@@ -26,7 +26,7 @@ for ei = 1:length(Events2plotDelay)
         for ti = 1:length(strTrials)
         plotAlignedDataHist(outputPath, '', strTrials{ti}, Events2plotDelay{ei}, ...
         delays.start(trialinds{ti}), behaveindicators(:, trialinds{ti}), ...
-        t+tstim, imagingData.samples(:,:,trialinds{ti}), tstim, labelsFontSz);
+        t+tstim, imagingData.samples(:,:,trialinds{ti}), tstim, labelsFontSz, true, []);
     
         end
         continue;
@@ -35,24 +35,36 @@ for ei = 1:length(Events2plotDelay)
     if isempty(ind)
         eventnumber = num2str(generalProperty.Events2plotDelayNumber{ei}, '%02d');
         ind = find(strcmp([lower(Events2plotDelay{ei}) eventnumber], fields), 1);
-    end
-    if isempty(ind)
-        error('Unrecognized event to plot');
+        if isempty(ind)
+            error('Unrecognized event to plot');
+        end
+        
+        indicators = contains(fields, Events2plotDelay{ei});
+        behaveUnifiedIndicatormatrix = zeros(size(BehaveData.tone.indicator));
+        for ini = 1:length(indicators)
+            if indicators(ini) == 1
+            behaveUnifiedIndicatormatrix = behaveUnifiedIndicatormatrix | BehaveData.(fields{ini}).indicator;
+            end
+        end
+        
+        [tstampFirst, tstampLast] = getEventTimeStampFirstLast(behaveUnifiedIndicatormatrix.', t>generalProperty.delay2events_start_time & t<generalProperty.delay2events_end_time);
+      
+    else
+        [tstampFirst, tstampLast] = getEventTimeStampFirstLast(BehaveData.(fields{ind}).indicator.', t>generalProperty.delay2events_start_time & t<generalProperty.delay2events_end_time);
     end
     
-    [tstampFirst, tstampLast] = getEventTimeStampFirstLast(BehaveData.(fields{ind}).indicator.', t>generalProperty.delay2events_start_time & t<generalProperty.delay2events_end_time);
+    
     
     for ti = 1:length(strTrials)
     % first
     plotAlignedDataHist(outputPath, 'First', strTrials{ti}, Events2plotDelay{ei}, ...
-        tstampFirst.start(trialinds{ti}), BehaveData.(fields{ind}).indicator(trialinds{ti},:).', ...
-        t+tstim, imagingData.samples(:,:,trialinds{ti}), tstim, labelsFontSz);
+        tstampFirst.start(trialinds{ti}), behaveUnifiedIndicatormatrix(trialinds{ti},:).', ...
+        t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot);
     % last
     plotAlignedDataHist(outputPath, 'Last', strTrials{ti}, Events2plotDelay{ei}, ...
-        tstampLast.start(trialinds{ti}), BehaveData.(fields{ind}).indicator(trialinds{ti},:).', ...
-        t+tstim, imagingData.samples(:,:,trialinds{ti}), tstim, labelsFontSz);
+        tstampLast.start(trialinds{ti}), behaveUnifiedIndicatormatrix(trialinds{ti},:).', ...
+        t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot);
     end
    
-
     
 end

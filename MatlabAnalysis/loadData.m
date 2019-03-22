@@ -160,9 +160,16 @@ switch generalProperty.DetermineSucFailBy
 end
 
 
-
-
-
+if isfield(BdaTpaList, 'trk')
+for k = 1:length(BdaTpaList)
+    load(BdaTpaList(k).trk, '-mat');
+    BehaveData.trk.data(1,:,k) = pTrk(1,1,:);
+    BehaveData.trk.data(2,:,k) = pTrk(1,2,:);
+    BehaveData.trk.data(3,:,k) = pTrk(1,1,:);
+    BehaveData.trk.data(4,:,k) = pTrk(2,2,:);
+    clear pTrk;
+end
+end
 
 
 

@@ -19,13 +19,29 @@ end
 data   = permute(data, [setdiff(1:dimLen, dim), dim]);
 slices = reshape(data, [], size(data, dimLen));
 
-if dimLen >= 3
+if dimLen >= 3 || 1
     %     slices = zeros(size(data, 1)* size(data, 3), size(data, 2));
     %     for r=1:size(data, 2)
     %         currslice = data(:, r, :);
     %         slices(:, r) = currslice(:);
     %     end
     switch params.metric
+        case 'maxWindowedCorr'
+            winLen = params.winLen;
+            win_st = 1:winLen:size(slices, 1);
+            stdth = std(slices);
+            mask = stdth>mean(stdth)&stdth(:)>mean(stdth);
+            for win_i = 1:length(win_st)
+               windata =  slices(win_st(win_i):win_st(win_i)+winLen-1,:);
+               inner_products     = windata.' * windata;
+            [ij_norm, ji_norm] = meshgrid( diag(inner_products) );
+            corrmat(:,:,win_i)            = inner_products ./ (sqrt(ij_norm .* ji_norm)+eps);
+%             stdth = std(windata);
+%             mask = stdth>mean(stdth)&stdth(:)>mean(stdth);
+            corrmat(:,:,win_i) = corrmat(:,:,win_i).*mask;
+            end
+            corrmat(corrmat < params.thresh) = 0;
+            aff_mat = median(corrmat, 3);
         case 'removeSideInfo'
              euc_dist = squareform(pdist(slices.'));
              euc_distSideInfo = squareform(pdist(params.sideinfo));

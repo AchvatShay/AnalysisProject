@@ -1,5 +1,5 @@
 
-function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz)
+function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList)
 validinds=~isnan(delays) ;
 if all(validinds==0)
     f=[];
@@ -82,7 +82,7 @@ suptitle(['Delay to Onset, ' firstlaststr ' ' eventName ' ' sfstr]);
 placeToneTime(0,2);
 c=get(gca,'Children');
 set(c(1),'Color','r')
-mysave(f(1), fullfile(currfigs, ['histOnsetDelay' eventName sfstr '_allnrns']));
+mysave(f(1), fullfile(currfigs, ['histOnsetDelay' firstlaststr eventName sfstr '_allnrns']));
 
 
 sum_percentage_before_event = sum(bins_values_percentage(bins < 0 & bins >= -0.2));
@@ -135,14 +135,14 @@ imagesc(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, 1:size(dataAlltimesAlc
 xlabel('Time [sec]', 'FontSize', 12);
 ylabel('Neurons', 'FontSize', 12);
 set(gca,'XTick', -2:2:7)
-xticklabels=get(gca,'XTickLabel');
-for h=1:length(xticklabels)
-    if str2double(xticklabels{h}) > 0
-        xticklabels{h} = [eventName '+' xticklabels{h} ];
-    elseif str2double(xticklabels{h}) == 0
+xticks=get(gca,'XTick');
+for h=1:length(xticks)
+    if xticks(h) > 0
+        xticklabels{h} = [eventName '+' num2str(xticks(h)) ];
+    elseif xticks(h) == 0
         xticklabels{h} = eventName;
     else
-        xticklabels{h} = [eventName xticklabels{h} ];
+        xticklabels{h} = [eventName num2str(xticks(h)) ];
     end
 end
    
@@ -160,8 +160,35 @@ axis tight;
 ylabel('Average', 'FontSize', 12);
 xlabel('Time [sec]', 'FontSize', 12);
 
-mysave(f(3), fullfile(currfigs, ['alignedData' eventName sfstr '_allnrns']));
+mysave(f(3), fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_allnrns']));
 
+
+for nrni = neurons2plotList
+    ff = figure;
+    imagesc(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, 1:size(dataAlltimesAlcrop,3),squeeze((dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:)))', [-.15 2]);
+xlabel('Time [sec]', 'FontSize', 12);
+ylabel('Trials', 'FontSize', 12);
+set(gca,'XTick', -2:2:7)
+  
+set(gca,'XTickLabel',xticklabels);
+placeToneTime(0,3);
+colormap jet;
+set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
+title(['aligned Neuron #' num2str(nrni) ' ' firstlaststr ' ' eventName ' ' sfstr]);
+
+subplot(4,1,4);
+plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:),3),'k','LineWidth',2);
+set(gca,'XTick', -2:2:7)
+set(gca,'XTickLabel',xticklabels);
+placeToneTime(0,3);
+axis tight;
+ylabel('Average', 'FontSize', 12);
+xlabel('Time [sec]', 'FontSize', 12);
+mysave(ff, fullfile(currfigs, ['alignedNeuron' num2str(nrni) firstlaststr eventName sfstr '_allnrns']));
+
+end
+
+if plotUnalignedData
 f(4) = figure;
 subplot(2,1,1);
 imagesc(t(findClosestDouble(t,1.5):end)-toneTime, 1:size(imagingData,1),mean(imagingData(i,findClosestDouble(t,1.5):end,validinds),3), [-.15 2]);
@@ -183,37 +210,7 @@ ylabel('Average', 'FontSize', 12);
 placeToneTime(0,3);
 
 mysave(f(4), fullfile(currfigs, ['unalignedData' eventName sfstr '_allnrns']));
+end
 
-% figure;subplot(2,2,1)
-% imagesc(tglobalcrop, 1:size(meanDat,1), meanDat);
-% subplot(2,2,3);
-% plot(tglobalcrop,  histbehaveAl(findClosestDouble(t, 1.5) + max(onsetdiffvalid):end,:));
-%
-% indbehave=zeros(size(currBehave));
-% indbehave(currBehave==1) = 1;
-% histbehave(:,1) = mean(indbehave);
-% indbehave=zeros(size(currBehave));
-% indbehave(currBehave==2) = 1;
-% histbehave(:,2) = mean(indbehave);
-% indbehave=zeros(size(currBehave));
-% indbehave(currBehave==4) = 1;
-% histbehave(:,3) = mean(indbehave);
-%
-% subplot(2,2,2)
-% imagesc(t, 1:size(validinds,1), mean(imagingData(:,:,validinds),3));
-% subplot(2,2,4);
-% plot(t,  histbehave);
-%
-%
-%
-%
-% figure;subplot(2,2,1)
-% imagesc(tAl{10}, 1:sum(validinds), squeeze(dataAlltimesAl(10,2:end,:))');
-% subplot(2,2,3);
-% imagesc(tAl{10}, 1:sum(validinds), currBehaveAl(:,4:end));
-% subplot(2,2,2)
-% imagesc(t, 1:sum(validinds), squeeze(imagingData(10,:,validinds))');
-% subplot(2,2,4);
-% imagesc(t, 1:sum(validinds),currBehave);
-%
-%
+
+

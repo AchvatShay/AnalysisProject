@@ -66,8 +66,8 @@
         <includeOmissions is_active='False'></includeOmissions>
         <DetermineSucFailBy>
 			<BySuc is_active='False'></BySuc>
-			<ByFail is_active='True'></ByFail>
-			<Both is_active='False'></Both>
+			<ByFail is_active='False'></ByFail>
+			<Both is_active='True'></Both>
 		</DetermineSucFailBy>
         <slidingWinLen>1</slidingWinLen>
         <slidingWinHop>0.5</slidingWinHop>
@@ -111,17 +111,17 @@
         <startTime2plot>1.5</startTime2plot>
         <TastesLabels>
             <Taste>			
-				<name>sucrose</name>
+				<name>SucroseS</name>
                 <color>cyan</color>  
                 <is_active>true</is_active>  
             </Taste>
             <Taste>			
-				<name>quinine</name>
+				<name>QuinineS</name>
                 <color>purple</color>  
                 <is_active>true</is_active>  
             </Taste>
             <Taste>			
-				<name>regular</name>
+				<name>RegularS</name>
                 <color>blue</color>  
                 <is_active>true</is_active>  
             </Taste>
