@@ -41,6 +41,8 @@ if length(filesEPC) > 2 && length(filesEPC) == length(filesTPA) + 2
         l = l + 1;
     end
 end
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
+
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events');
@@ -56,7 +58,6 @@ runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 %
 % close all;
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 return;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
 runAverageAnalysis(outputPath, xmlfile, BdaTpaList(1:10), MatList, 'accuracy');

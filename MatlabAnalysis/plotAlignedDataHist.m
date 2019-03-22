@@ -38,7 +38,9 @@ stdbase = std(meanDat(:, 1:findClosestDouble(tglobalcrop, toneTime-.1)),[],2);
 
 [peakVal, peakTime] = max(meanDat.');
 keepNrs = peakVal(:) > meanbase+3*stdbase & peakTime(:) +findClosestDouble(tglobalcrop, 1.5)< length(tglobalcrop);
-
+if all(keepNrs==0)
+    return;
+end
 for nr=1:size(dataAlltimesAlcrop,1)
     if keepNrs(nr)
         
@@ -66,6 +68,9 @@ for nr=1:size(dataAlltimesAlcrop,1)
         
         %             delays2event(nr) = round(eventTime-peakIndd(nr)+findClosestDouble(tglobalcrop, 1.5) );
     end
+end
+if all(keepNrs==0)
+    return;
 end
 [hist2onset,bins] = hist(onsetdelays2event(keepNrs),100);
 f(1)=figure;

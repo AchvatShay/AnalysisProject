@@ -129,4 +129,12 @@ a=get(gcf,'Children');
 setAxisFontSz(a(end), labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['significantNrs5percent' foldstr linstr eventsStr]));
 
+
+
+disp('delay2events');
+generalProperty4indicative = generalProperty;
+generalProperty4indicative.Neurons2plot = [];
+dataIndicative.samples = imagingData.samples(sum(isindicative5, 2) > 1, :, :);
+dataIndicative.roiNames = imagingData.roiNames;
+delay2events([outputPath 'Indicative5'], generalProperty4indicative, dataIndicative, BehaveData)
 end
