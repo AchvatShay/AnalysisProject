@@ -6,17 +6,17 @@ map=colormap('jet');
 labelsR=round(size(map,1)*(labels)/(max(labels)));
 classes = unique(labels);
 for k=1:length(classes)
-    for d = 1:3
-    meanVals(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);
-    eVals(d, :, k) = mean(std(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
-varVals(d, :, k) = mean(var(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
+    for d = 1:size(trajData,1)
+        meanVals(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);
+        eVals(d, :, k) = mean(std(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
+        varVals(d, :, k) = mean(var(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
     end
-%     shadedTraj(meanVals(1:2, :, k),eVals(1:2, :, k),'lineprops',{'-b'});
-    tubeplot(meanVals(:, :, k), mean(mean(eVals(:, :, k))));hold all;
+    %     shadedTraj(meanVals(1:2, :, k),eVals(1:2, :, k),'lineprops',{'-b'});
+    tubeplot(meanVals(1:3, :, k), mean(mean(eVals(:, :, k))));hold all;
 end
 c=get(gca, 'Children');
 for c_i = 1:length(c)
-   set(c(c_i), 'FaceColor', clrs(c_i,:)); 
+    set(c(c_i), 'FaceColor', clrs(c_i,:));
 end
 
 xlabel('\psi_1', 'FontSize', labelsFontSz);
@@ -31,9 +31,9 @@ end
 trajData=trajData(:,:,2:end);
 labels=labels(1:end-1);
 for k=1:length(classes)
-    for d = 1:3
-    meanValsNext(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);
-varValsNext(d, :, k) = mean(var(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
+    for d = 1:size(trajData,1)
+        meanValsNext(d, :, k) = mean(permute(trajData(d,:,labels==classes(k)),[2 3 1]),2);
+        varValsNext(d, :, k) = mean(var(permute(trajData(d,:,labels==classes(k)),[2 3 1]),0,2),3);
     end
 end
 
@@ -109,9 +109,9 @@ d=get(a1,'XAxis');
 d1=get(d,'Label');
 loc = get(d1,'Position');
 if loc(2) < -.5
-  set(d1,'Position',[12.1604   -0.5133   -1.0000]);
+    set(d1,'Position',[12.1604   -0.5133   -1.0000]);
 else
-set(d1,'Position',[12.1604   -0.15   -1.0000]);
+    set(d1,'Position',[12.1604   -0.15   -1.0000]);
 end
 %  [left bottom width height]
 % title(['S/F Sensitivity of ' method ' Trajectories']);

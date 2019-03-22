@@ -21,7 +21,7 @@ classdef Experiment %< handle
         Neurons2keep = 0;
         Neurons2plot = 0;
         %         Trials2keep = 0;
-        analysis_pca_thEffDim=0.01;
+        analysis_pca_thEffDim=0.95;
         visualization_legendLocation = 'Best';
         visualization_labelsFontSize = 14;
         visualization_viewparams1 = 0;
@@ -63,6 +63,8 @@ classdef Experiment %< handle
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
+            obj.analysis_pca_thEffDim = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.pca_thEffDim.Text);
+            
             obj.indicativeNrns_maxbinnum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrns_maxbinnum.Text);
             obj.indicativeNrnsMeanStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanStartTime.Text);
             obj.indicativeNrnsMeanEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanEndTime.Text);

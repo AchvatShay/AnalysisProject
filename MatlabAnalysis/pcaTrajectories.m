@@ -5,8 +5,8 @@ generalProperty.labels2cluster, generalProperty.includeOmissions);
 [prevcurlabs, prevCurrLUT] = getPrevCurrLabels(labels, labelsLUT);
 
 X = imagingData.samples(:, :, examinedInds);
-if exist(fullfile(outputPath, ['pca_traj_res' eventsStr '.mat']), 'file')
-    load(fullfile(outputPath, ['pca_traj_res' eventsStr '.mat']));
+if exist(fullfile(outputPath, ['pca_traj_res' eventsStr 'energy' num2str(generalProperty.analysis_pca_thEffDim*100) '.mat']), 'file')
+    load(fullfile(outputPath, ['pca_traj_res' eventsStr 'energy' num2str(generalProperty.analysis_pca_thEffDim*100) '.mat']));
 else
     for k=1:size(X,1)
         alldataNT(:, k) = reshape(X(k,:,:), size(X,3)*size(X,2),1);
@@ -18,7 +18,7 @@ else
     for l=1:size(projeff,2)
         pcaTrajres.projeff(l,:,:) = reshape(projeff(:,l),size(X,2),size(X,3));
     end
-    save(fullfile(outputPath, ['pca_traj_res' eventsStr '.mat']), 'pcaTrajres');
+    save(fullfile(outputPath, ['pca_traj_res' eventsStr 'energy' num2str(generalProperty.analysis_pca_thEffDim*100)  '.mat']), 'pcaTrajres');
 end
 
 startBehaveTime = generalProperty.startBehaveTime4trajectory*generalProperty.ImagingSamplingRate;

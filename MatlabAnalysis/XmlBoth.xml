@@ -36,6 +36,7 @@
 		</Trial>
     </TrialsToPut>
     <analysisParams>  
+        <pca_thEffDim>0.95</pca_thEffDim>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
         <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
         <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
