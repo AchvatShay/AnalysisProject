@@ -159,17 +159,28 @@ switch generalProperty.DetermineSucFailBy
         % do nothing
 end
 
-
-if isfield(BdaTpaList, 'trk')
+if isfield(BdaTpaList, 'traj')
 for k = 1:length(BdaTpaList)
-    load(BdaTpaList(k).trk, '-mat');
-    BehaveData.trk.data(1,:,k) = pTrk(1,1,:);
-    BehaveData.trk.data(2,:,k) = pTrk(1,2,:);
-    BehaveData.trk.data(3,:,k) = pTrk(1,1,:);
-    BehaveData.trk.data(4,:,k) = pTrk(2,2,:);
-    clear pTrk;
+    C = xlsread(BdaTpaList(k).traj);
+    BehaveData.traj.data(1,:,k) = C(:,2);
+    BehaveData.traj.data(2,:,k) = C(:,3);
+    BehaveData.traj.data(3,:,k) = C(:,5);
+    BehaveData.traj.data(4,:,k) = C(:,6);
+    clear C;
 end
 end
+
+
+% if isfield(BdaTpaList, 'trk')
+% for k = 1:length(BdaTpaList)
+%     load(BdaTpaList(k).trk, '-mat');
+%     BehaveData.trk.data(1,:,k) = pTrk(1,1,:);
+%     BehaveData.trk.data(2,:,k) = pTrk(1,2,:);
+%     BehaveData.trk.data(3,:,k) = pTrk(1,1,:);
+%     BehaveData.trk.data(4,:,k) = pTrk(2,2,:);
+%     clear pTrk;
+% end
+% end
 
 
 
