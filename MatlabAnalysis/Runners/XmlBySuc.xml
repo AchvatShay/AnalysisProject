@@ -65,7 +65,7 @@
 	</NeuronesToPut>
     
     <analysisParams> 
-        
+        <pca_thEffDim>0.95</pca_thEffDim>
         <!-- 
         how many bins to consider when counting the averaged percentage of indicative neurons 
         (results appear for each experiment in text file, Hadas copied them to xls).

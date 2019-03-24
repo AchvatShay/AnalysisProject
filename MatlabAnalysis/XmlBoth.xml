@@ -122,8 +122,8 @@
 			<atmouth is_active='True' number='1'></atmouth>
             <tone is_active='True' number='1'></tone>
 		</Events2plotDelay>
-        <delay2events_start_time>-4</delay2events_start_time>
-        <delay2events_end_time>4</delay2events_end_time>
+        <delay2events_start_time>0</delay2events_start_time>
+        <delay2events_end_time>2</delay2events_end_time>
     </visualization>
   </Experiment>    
 </GeneralProperty>
