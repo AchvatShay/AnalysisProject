@@ -41,6 +41,13 @@ if length(filesEPC) > 2 && length(filesEPC) == length(filesTPA) + 2
         l = l + 1;
     end
 end
+ MatList = {'C:\Users\Hadas\Documents\work\resultsSummaries\Norms1\M26_grab_no_om_12_9_28_17\svmdprimeResSC10folds.mat',...
+     'C:\Users\Hadas\Documents\work\resultsSummaries\Norms1\M26_grab_no_om_12_9_24_17\svmdprimeResSC10folds.mat'};
+     
+ runAverageAnalysis(outputPath, xmlfile, BdaTpaList, MatList, 'delay2event')
+ 
+
+ 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
@@ -62,6 +69,7 @@ return;
 % runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
 runAverageAnalysis(outputPath, xmlfile, BdaTpaList(1:10), MatList, 'accuracy');
 
+ 
 
 
 
