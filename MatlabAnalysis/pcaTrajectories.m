@@ -12,11 +12,17 @@ else
         alldataNT(:, k) = reshape(X(k,:,:), size(X,3)*size(X,2),1);
     end
     [pcaTrajres.kernel, pcaTrajres.mu, pcaTrajres.eigs] = mypca(alldataNT);
-    pcaTrajres.effectiveDim = max(getEffectiveDim(pcaTrajres.eigs, generalProperty.analysis_pca_thEffDim), 3);
-    
-    [~, projeff] = linrecon(alldataNT, pcaTrajres.mu, pcaTrajres.kernel, 1:pcaTrajres.effectiveDim);
+    pcaTrajres.effectiveDim = getEffectiveDim(pcaTrajres.eigs, generalProperty.analysis_pca_thEffDim);
+    [recon_m, projeff] = linrecon(alldataNT, pcaTrajres.mu, pcaTrajres.kernel, 1:pcaTrajres.effectiveDim);
+    if pcaTrajres.effectiveDim < 3
+        [~, projeff] = linrecon(alldataNT, pcaTrajres.mu, pcaTrajres.kernel, 1:3);
+    end
+    for l=1:size(recon_m,2)
+    pcaTrajres.recon(l,:,:) = reshape(recon_m(:,l),size(X,2),size(X,3));
+    end
     for l=1:size(projeff,2)
         pcaTrajres.projeff(l,:,:) = reshape(projeff(:,l),size(X,2),size(X,3));
+        
     end
     save(fullfile(outputPath, ['pca_traj_res' eventsStr 'energy' num2str(generalProperty.analysis_pca_thEffDim*100)  '.mat']), 'pcaTrajres');
 end
@@ -34,7 +40,7 @@ tindicator(startBehaveTime:endBehaveTime) = 1;
 %% visualize
 switch lower(generalProperty.PelletPertubation)
     case 'none'
-        visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, pcaTrajres.projeff, X, 'PCA');
+        visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, pcaTrajres.projeff, pcaTrajres.recon, pcaTrajres.eigs, pcaTrajres.effectiveDim, X, 'PCA');
     case 'taste'
          [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);

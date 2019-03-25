@@ -1,10 +1,10 @@
-% a single event is considered both first and last
+% not taking a single event as both first and last
 function [tstampFirst, tstampLast] = getEventTimeStampFirstLast(labelsBehave, timeinds2consider)
 
 
 labelsBehave(~timeinds2consider,:) = 0;
 tstampFirst.start = nan(size(labelsBehave,2),1);
-% tstampFirst.end = nan(size(labelsBehave,2),1);
+tstampFirst.end = nan(size(labelsBehave,2),1);
 for triali = 1:size(labelsBehave, 2)
     ind=find(labelsBehave(:, triali), 1, 'first');
     if ~isempty(ind)
@@ -12,16 +12,16 @@ for triali = 1:size(labelsBehave, 2)
     else
         continue;
     end
-%     inds=find(labelsBehave(:, triali));
-%     ind=find(diff(inds)>1,1,'first');
-%     if ~isempty(ind)
-%         tstampFirst.end(triali) =  inds(ind);
-%     end
+    inds=find(labelsBehave(:, triali));
+    ind=find(diff(inds)>1,1,'first');
+    if ~isempty(ind)
+        tstampFirst.end(triali) =  inds(ind);
+    end
 end
 
 
 tstampLast.start = nan(size(labelsBehave,2),1);
-% tstampLast.end = nan(size(labelsBehave,2),1);
+tstampLast.first = nan(size(labelsBehave,2),1);
 for triali = 1:size(labelsBehave, 2)
     ind=find(labelsBehave(:, triali), 1, 'last');
     if ~isempty(ind)
@@ -33,8 +33,5 @@ for triali = 1:size(labelsBehave, 2)
     ind=find(diff(inds)>1,1,'last');
     if ~isempty(ind)
         tstampLast.start(triali) =  inds(ind+1);
-    else
-         tstampLast.start(triali) = tstampFirst.start(triali);
-%          tstampLast.end(triali) = tstampFirst.end(triali);
     end
 end

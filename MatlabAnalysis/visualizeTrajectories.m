@@ -1,6 +1,6 @@
 function visualizeTrajectories(countbesttrajs, clrscurrprev, clrs, eventsStr, prevCurrLUT, labelsLUT, ...
-    tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, projeff, ...
-    X, Method, labelsTaste, labelsLUTTaste, clrsTaste, eventsStrTaste, projeffTaste)
+    tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, projeff, recon,...
+    eigs, effDim, X, Method, labelsTaste, labelsLUTTaste, clrsTaste, eventsStrTaste, projeffTaste)
 
 b = fir1(10,.3);
 trajSmooth = filter(b,1, projeff, [], 2);
@@ -14,8 +14,23 @@ viewparams = [generalProperty.visualization_viewparams1 generalProperty.visualiz
 t = linspace(0, generalProperty.Duration, size(X,2)) - toneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;
 [clrs, clrscurrprev] = cellClr2matClrs(clrs, clrscurrprev);
+% 1. plot eig values
+figure;plot(100*cumsum(eigs.^2)/sum(eigs.^2));
+xlabel(['# Eigen Value of ' Method]);
+ylabel('% Energy');
+title([num2str(effDim) ' Componenets Are Taken For Smoothed Dprime']);
+mysave(gcf, fullfile(outputPath, ['eigenValuesTraj' Method eventsStr] ));
 
-% 1. all trials averaged
+% 2. eval dprime for smoothed data
+[dprimeSmoothed, dprimeNextSmoothed] = evalDprime(recon, labels);
+f = plotDprime(t, dprimeSmoothed, dprimeNextSmoothed, ...
+generalProperty.visualization_labelsFontSize, generalProperty.visualization_startTime2plot-generalProperty.ToneTime, ...
+0);
+mysave(f(1), fullfile(outputPath, ['smoothed_dprime' Method eventsStr] ));
+mysave(f(2), fullfile(outputPath, ['smoothed_dprimePrevCurr' Method eventsStr]));
+mysave(f(3), fullfile(outputPath, ['smoothed_dprimeNext' Method eventsStr]));
+
+% 3. all trials averaged
 allTimemean = mean(trajSmooth,3).';
 plotTimeEmbedding(allTimemean, t(6:end), 0, labelsFontSz);
 
