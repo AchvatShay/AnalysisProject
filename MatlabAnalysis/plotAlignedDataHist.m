@@ -93,13 +93,40 @@ sum_percentage_before_event = sum(bins_values_percentage(bins < 0 & bins >= -0.2
 sum_percentage_after_event_halfsec = sum(bins_values_percentage(bins > 0 & bins <= 0.5));
 sum_percentage_after_event_sec = sum(bins_values_percentage(bins > 0 & bins <= 1));
 
-fid=fopen(fullfile(currfigs, ['histOnsetDelay' eventName sfstr '_allnrns_sum_percentage.txt']),'w');
-fprintf(fid, '%% of neurons -0.2-0.5 sec %.4f \r\n', sum_percentage_before_event + sum_percentage_after_event_halfsec);
-fprintf(fid, '%% of neurons -0.2-1 sec %.4f \r\n', sum_percentage_before_event + sum_percentage_after_event_sec);
-fprintf(fid, '%% of neurons -0.2-0 sec %.4f \r\n', sum_percentage_before_event);
-fprintf(fid, '%% of neurons 0-0.5 sec %.4f \r\n', sum_percentage_after_event_halfsec);
-fprintf(fid, '%% of neurons 0-1 sec %.4f \r\n', sum_percentage_after_event_sec);
-fclose(fid);
+filenameExcel = fullfile(currfigs, 'histOnsetDelay_sum_percentage.xlsx');
+
+if isfile(filenameExcel)
+    [~, ~, excelDataRaw] = xlsread(filenameExcel);
+else
+    [~, ~, excelDataRaw] = xlsread('tamplateDelay2EventsHis.xlsx');
+end
+lastrow = size(excelDataRaw,1);
+
+[~, currentCol] = find(strcmp(excelDataRaw, 'event'));
+excelDataRaw{lastrow+1, currentCol} = eventName;
+
+[~, currentCol] = find(strcmp(excelDataRaw, 'trails'));
+excelDataRaw{lastrow+1, currentCol} = sfstr;
+
+[~, currentCol] = find(strcmp(excelDataRaw, 'First\Last'));
+excelDataRaw{lastrow+1, currentCol} = firstlaststr;
+
+[~, currentCol] = find(strcmp(excelDataRaw, '% of neurons -0.2-0.5 sec'));
+excelDataRaw{lastrow+1, currentCol} = sum_percentage_before_event + sum_percentage_after_event_halfsec;
+
+[~, currentCol] = find(strcmp(excelDataRaw, '% of neurons -0.2-1 sec'));
+excelDataRaw{lastrow+1, currentCol} = sum_percentage_before_event + sum_percentage_after_event_sec;
+
+[~, currentCol] = find(strcmp(excelDataRaw, '% of neurons -0.2-0 sec'));
+excelDataRaw{lastrow+1, currentCol} = sum_percentage_before_event;
+
+[~, currentCol] = find(strcmp(excelDataRaw, '% of neurons 0-1 sec'));
+excelDataRaw{lastrow+1, currentCol} = sum_percentage_after_event_sec;
+
+[~, currentCol] = find(strcmp(excelDataRaw, '% of neurons 0-0.5 sec'));
+excelDataRaw{lastrow+1, currentCol} = sum_percentage_after_event_halfsec;
+
+xlswrite(filenameExcel,excelDataRaw);
 
 % set(c(1),'Visible','off');
 % xlim([.12, max(get(gca,'XLim'))])
