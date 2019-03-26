@@ -1,5 +1,10 @@
-tpalist{1}= main('C:\Users\Hadas\Dropbox\biomedData\PT3\3_13_18\3_13_18_1', ...
-     'restilingPT3_3_13_18');
+% tpalist{1}= main('C:\Users\Hadas\Dropbox\biomedData\PT3\3_13_18\3_13_18_1', ...
+%      'restilingPT3_3_13_18');
+ 
+
+ 
+ 
+ 
 tpalist{1}= main('C:\Users\Hadas\Dropbox\biomedData\M26\9_28_17', ...
     'resssM26_92817', []);
 

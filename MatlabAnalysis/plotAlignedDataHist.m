@@ -1,5 +1,4 @@
-
-function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList)
+function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList, labelsList)
 validinds=~isnan(delays) ;
 if all(validinds==0)
     f=[];
