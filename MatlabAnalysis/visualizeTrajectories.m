@@ -73,7 +73,9 @@ trajSmoothTaste=trajSmoothTaste(:,6:end,:);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste]));
 mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste]));
 createPushButtunTime(f(1), t(6:end));
+mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste 'ButtunTime']));
 createPushButtunTime(f(2), t(6:end));
+mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste 'ButtunTime']));
 end
 % % 2. s/f trajectories
 % switch generalProperty.PelletPertubation
