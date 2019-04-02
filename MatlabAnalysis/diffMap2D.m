@@ -34,7 +34,11 @@ switch lower(generalProperty.PelletPertubation)
         labelsLUTTaste{end+1} = 'failure';
         labelsFontSz = generalProperty.visualization_labelsFontSize;
         legendLoc = generalProperty.visualization_legendLocation;        
-        clrs = getColors(generalProperty.tastesColors);
+        
+        for clr_i = 1:length(generalProperty.tastesColors)
+         clrs(clr_i, :) =  reshape(cell2mat(generalProperty.tastesColors{clr_i}), 3 ,[])';
+        end
+        
         clrs(end+1, :) = [1 0 0];
         
          % analysis

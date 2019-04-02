@@ -1,6 +1,6 @@
 function visualizeTrajectories(countbesttrajs, clrscurrprev, clrs, eventsStr, prevCurrLUT, labelsLUT, ...
     tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, projeff, recon,...
-    eigs, effDim, X, Method, labelsTaste, labelsLUTTaste, clrsTaste, eventsStrTaste, projeffTaste)
+    eigs, effDim, X, Method, isTaste)
 
 b = fir1(10,.3);
 trajSmooth = filter(b,1, projeff, [], 2);
@@ -34,10 +34,10 @@ mysave(f(3), fullfile(outputPath, ['smoothed_dprimeNext' Method eventsStr]));
 allTimemean = mean(trajSmooth,3).';
 plotTimeEmbedding(allTimemean, t(6:end), 0, labelsFontSz);
 
-mysave(gcf, fullfile(outputPath, ['traj' Method 'time']));
+mysave(gcf, fullfile(outputPath, ['traj' Method eventsStr 'time']));
 
 plotTimeEmbedding(allTimemean, t(6:end), [], labelsFontSz);
-mysave(gcf, fullfile(outputPath, ['traj' Method 'timeNoMarkers']));
+mysave(gcf, fullfile(outputPath, ['traj' Method eventsStr 'timeNoMarkers']));
 
 f = plotTemporalTraject(countbesttrajs, labelsLUT, clrs, trajSmooth, labels, t(6:end), 0, labelsFontSz, viewparams);
 mysave(f(1), fullfile(outputPath, ['traj' Method eventsStr]));
@@ -48,13 +48,15 @@ mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStr]));
 createPushButtunTime(f(2), t(6:end));
 mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStr 'ButtunTime']));
 
-fprevcurr = plotTemporalTraject(0, {prevCurrLUT.name}, clrscurrprev, trajSmooth1, prevcurlabs, t(6:end), 0, labelsFontSz, viewparams);
-% f1=            plotCurrPrevTraj(trajSmooth1(:,11:end, :), prevcurlabs, t(16:end), 0, tstampFirst.grab.start(2:end), tstampLast.grab.start(2:end), labelsFontSz, viewparams);
-createPushButtunTime(fprevcurr(2), t(6:end));
-mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr']));
-createPushButtunTime(fprevcurr(1), t(6:end));
-mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr_ButtunTime']));
+if ~isTaste
+    fprevcurr = plotTemporalTraject(0, {prevCurrLUT.name}, clrscurrprev, trajSmooth1, prevcurlabs, t(6:end), 0, labelsFontSz, viewparams);
+    % f1=            plotCurrPrevTraj(trajSmooth1(:,11:end, :), prevcurlabs, t(16:end), 0, tstampFirst.grab.start(2:end), tstampLast.grab.start(2:end), labelsFontSz, viewparams);
+    createPushButtunTime(fprevcurr(2), t(6:end));
+    mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr']));
+    createPushButtunTime(fprevcurr(1), t(6:end));
+    mysave(fprevcurr(1), fullfile(outputPath, ['traj' Method eventsStr 'PrevCurr_ButtunTime']));
 % mysave(fprevcurr(2), fullfile(outputPath, ['traj' Method 'selected' 'PrevCurr' eventsStr]));
+end
 
 if length(unique(labels)) == 2
 % Tube Plot & Dprime - ' Method ' Trajectories
@@ -65,17 +67,6 @@ mysave(f(3), fullfile(outputPath, ['dprimePrevCurr' Method eventsStr]));
 mysave(f(4), fullfile(outputPath, ['dprimeNext' Method eventsStr]));
 end
 
-if exist('clrsTaste','var')
-trajSmoothTaste = filter(b,1, projeffTaste, [], 2);
-trajSmoothTaste=trajSmoothTaste(:,6:end,:);    
-    
-[f, meansTrajs] = plotTemporalTraject(countbesttrajs, labelsLUTTaste, clrsTaste, trajSmoothTaste, labelsTaste, t(6:end), 0, labelsFontSz, viewparams);
-mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste]));
-mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste]));
-createPushButtunTime(f(1), t(6:end));
-mysave(f(1), fullfile(outputPath, ['traj' Method eventsStrTaste 'ButtunTime']));
-createPushButtunTime(f(2), t(6:end));
-mysave(f(2), fullfile(outputPath, ['traj' Method 'selected' eventsStrTaste 'ButtunTime']));
 end
 % % 2. s/f trajectories
 % switch generalProperty.PelletPertubation

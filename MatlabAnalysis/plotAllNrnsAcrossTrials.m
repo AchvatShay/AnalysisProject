@@ -166,8 +166,10 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
  
     figure;
     
-    clsColorTaste = getColors(generalProperty.tastesColors);
-    
+    for clr_i = 1:length(generalProperty.tastesColors)
+        clsColorTaste(clr_i, :) =  reshape(cell2mat(generalProperty.tastesColors{clr_i}), 3 ,[])';
+    end
+
     for ci = 1:length(classes_Taste)
         plot(t, mean(mean(X_Taste(:, :, labelsTaste==classes_Taste(ci)),1),3), 'Color',clsColorTaste(ci,:));
         hold all;

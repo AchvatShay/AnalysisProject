@@ -38,41 +38,48 @@ tindicator(startBehaveTime:endBehaveTime) = 1;
 
 
 %% visualize
+visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, pcaTrajres.projeff, pcaTrajres.recon, pcaTrajres.eigs, pcaTrajres.effectiveDim, X, 'PCA', 0);
+
 switch lower(generalProperty.PelletPertubation)
     case 'none'
-        visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, generalProperty, pcaTrajres.projeff, pcaTrajres.recon, pcaTrajres.eigs, pcaTrajres.effectiveDim, X, 'PCA');
     case 'taste'
+        
          [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...
             generalProperty.tastesLabels, generalProperty.includeOmissions);
-        % mark failures - because then we do not know the tastes
-%         labelsTaste(labels == find(strcmp(labelsLUT, 'failure'))) = max(labelsTaste)+1;
-        labelsFontSz = generalProperty.visualization_labelsFontSize;
-        legendLoc = generalProperty.visualization_legendLocation;        
-        clrs = getColors(generalProperty.tastesColors);
         
+        % mark failures - because then we do not know the tastes     
       
         XTaste = imagingData.samples(:, :, examinedIndsTaste);
-        if exist(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']), 'file')
-            load(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']));
+        if exist(fullfile(outputPath, ['pca_traj_res' eventsStrTaste 'energy' num2str(generalProperty.analysis_pca_thEffDim*100) '.mat']), 'file')
+            load(fullfile(outputPath, ['pca_traj_res' eventsStrTaste 'energy' num2str(generalProperty.analysis_pca_thEffDim*100) '.mat']));
         else
             for k=1:size(XTaste,1)
                 alldataNTTaste(:, k) = reshape(XTaste(k,:,:), size(XTaste,3)*size(XTaste,2),1);
             end
             [pcaTrajresTaste.kernel, pcaTrajresTaste.mu, pcaTrajresTaste.eigs] = mypca(alldataNTTaste);
-            pcaTrajresTaste.effectiveDim = max(getEffectiveDim(pcaTrajresTaste.eigs, generalProperty.analysis_pca_thEffDim), 3);
-
-            [~, projeffTaste] = linrecon(alldataNTTaste, pcaTrajresTaste.mu, pcaTrajresTaste.kernel, 1:pcaTrajresTaste.effectiveDim);
-            for l=1:size(projeffTaste,2)
-                pcaTrajresTaste.projeffTaste(l,:,:) = reshape(projeffTaste(:,l),size(XTaste,2),size(XTaste,3));
+            
+             pcaTrajresTaste.effectiveDim = getEffectiveDim(pcaTrajresTaste.eigs, generalProperty.analysis_pca_thEffDim);
+            [recon_m_taste, projeffTaste] = linrecon(alldataNTTaste, pcaTrajresTaste.mu, pcaTrajresTaste.kernel, 1:pcaTrajresTaste.effectiveDim);
+            if pcaTrajresTaste.effectiveDim < 3
+                [~, projeffTaste] = linrecon(alldataNTTaste, pcaTrajresTaste.mu, pcaTrajresTaste.kernel, 1:3);
             end
-            save(fullfile(outputPath, ['pca_traj_res' eventsStrTaste '.mat']), 'pcaTrajresTaste');
-        end      
+            for l=1:size(recon_m_taste,2)
+            pcaTrajresTaste.recon(l,:,:) = reshape(recon_m_taste(:,l),size(XTaste,2),size(XTaste,3));
+            end
+            for l=1:size(projeffTaste,2)
+                pcaTrajresTaste.projeff(l,:,:) = reshape(projeffTaste(:,l),size(XTaste,2),size(XTaste,3));
+
+            end
+            save(fullfile(outputPath, ['pca_traj_res' eventsStrTaste 'energy' num2str(generalProperty.analysis_pca_thEffDim*100)  '.mat']), 'pcaTrajresTaste');
+        end
         
-        visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, ...
-            generalProperty.prevcurrlabels2clusterClrs, generalProperty.labels2clusterClrs, ...
-            eventsStr, prevCurrLUT, labelsLUT, tstampFirst, tstampLast, labels, prevcurlabs, outputPath, ...
-            generalProperty, pcaTrajres.projeff, X, 'PCA', labelsTaste, labelsLUTTaste, clrs, eventsStrTaste, pcaTrajresTaste.projeffTaste);
- 
+        % BehaveDatagrab
+        tindicatorTaset = zeros(size(XTaste, 2), 1);
+        tindicatorTaset(startBehaveTime:endBehaveTime) = 1;
+        [tstampFirstTaste.grab, tstampLastTaste.grab] = getStartEndEventTimes(examinedIndsTaste, BehaveData, 'grab', tindicatorTaset);
+        [tstampFirstTaste.atmouth, tstampLastTaste.atmouth] = getStartEndEventTimes(examinedIndsTaste, BehaveData, 'atmouth', tindicatorTaset);
+
+         visualizeTrajectories(generalProperty.visualization_bestpcatrajectories2plot, generalProperty.prevcurrlabels2clusterClrs, generalProperty.tastesColors, eventsStrTaste, nan, labelsLUTTaste, tstampFirstTaste, tstampLastTaste, labelsTaste, nan, outputPath, generalProperty, pcaTrajresTaste.projeff, pcaTrajresTaste.recon, pcaTrajresTaste.eigs, pcaTrajresTaste.effectiveDim, XTaste, 'PCA', 1);
         
     case 'ommisions'
         error('under constraction');
