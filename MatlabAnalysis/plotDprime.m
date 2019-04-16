@@ -2,11 +2,11 @@ function f = plotDprime(t, dprime, dprimeNext, labelsFontSz, xlimmin, toneTime)
 
 
 
-m = (min(0.9*min(mean(dprime.^2)), 0.9*min(mean(dprimeNext.^2))));
-M = (max(1.1*max(mean(dprime.^2)), 1.1*max(mean(dprimeNext.^2))));
+m = (min(0.9*min(sum(dprime.^2)), 0.9*min(sum(dprimeNext.^2))));
+M = (max(1.1*max(sum(dprime.^2)), 1.1*max(sum(dprimeNext.^2))));
 
 
-f(1)=figure;plot(t, mean(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);
+f(1)=figure;plot(t, sum(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);
 ylabel('Sensitivity Index', 'FontSize', labelsFontSz);
 axis tight;
 set(gca, 'Box','off');
@@ -25,7 +25,7 @@ placeToneTime(toneTime, 2);
 
 f(2)=figure;
 a1=subplot(1,2,1);
-plot(t, mean(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);ylabel('Sensitivity Index', 'FontSize', labelsFontSz);
+plot(t, sum(dprime.^2), 'k');xlabel('Time [sec]', 'FontSize', labelsFontSz);ylabel('Sensitivity Index', 'FontSize', labelsFontSz);
 axis tight;
 set(gca, 'Box','off');%grid on;
 set(gca,'XLim',[xlimmin t(end)]);
@@ -39,7 +39,7 @@ placeToneTime(toneTime, 2);
 
 
 a2=subplot(1,2,2);
-plot(t, mean(dprimeNext.^2), 'k');
+plot(t, sum(dprimeNext.^2), 'k');
 ax = get(gca,'YAxis');
 set(ax,'Visible','off')
 ylim([m M]);
@@ -79,7 +79,7 @@ set(d1,'Visible','off');
 
 
 f(3) = figure;
-plot(t, mean(dprimeNext.^2), 'k');
+plot(t, sum(dprimeNext.^2), 'k');
 ax = get(gca,'YAxis');
 ylim([m M]);
 % set(a, 'YTick', yticks);

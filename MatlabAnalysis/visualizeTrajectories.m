@@ -18,7 +18,7 @@ xlimmin = generalProperty.visualization_startTime2plot-toneTime;
 figure;plot(100*cumsum(eigs.^2)/sum(eigs.^2));
 xlabel(['# Eigen Value of ' Method]);
 ylabel('% Energy');
-title([num2str(effDim) ' Componenets Are Taken For Smoothed Dprime']);
+title([num2str(effDim) ' PCs - 95% energy; 3 PCs - ' num2str(100*sum(eigs(1:3).^2)/sum(eigs.^2)) '%']);
 mysave(gcf, fullfile(outputPath, ['eigenValuesTraj' Method eventsStr] ));
 
 % 2. eval dprime for smoothed data
