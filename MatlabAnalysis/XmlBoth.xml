@@ -36,6 +36,32 @@
 		</Trial>
     </TrialsToPut>
     <analysisParams>  
+        <glmBehaveEvents>
+            <event>
+                <name>tone</name>
+                <type>tone</type>
+            </event>    
+            <event>
+                <name>lift</name>
+                <type>movement</type>
+            </event> 
+            <event>
+                <name>grab</name>
+                <type>movement</type>
+            </event>
+            <event>
+                <name>atmouthnopellet</name>
+                <type>movement</type>
+            </event>           
+            <event>
+                <name>traj</name>
+                <type>kinematics</type>
+            </event>            
+            <event>
+                <name>atmouth</name>
+                <type>atmouth</type>
+            </event>
+        </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
         <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>

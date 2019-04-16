@@ -1,4 +1,4 @@
-function BdaTpaList = main(pth, outputPath, Trials2keep)
+function BdaTpaList = main(pth, outputPath, Trials2keep, pthTraj)
 
 xmlfile = 'XmlBoth.xml';
 % xmlfile = 'XmlD54.xml';
@@ -13,7 +13,6 @@ mkNewFolder(outputPath);
 filesTPA = dir([pth, '\TPA*.mat']);
 filesBDA = dir([pth, '\BDA*.mat']);
 % filesTRK = dir([pth, '\*.trk']);
-filesEPC = dir([pth, '\Traj\']);
 
 if nargin == 2 || isempty(Trials2keep)
     Trials2keep = 1:length(filesTPA);
@@ -33,21 +32,20 @@ end
 %         l = l + 1;
 %     end
 % end
+if exist('pthTraj', 'var') && ~isempty(pthTraj)
+filesEPC = dir([pthTraj]);
 if length(filesEPC) > 2 && length(filesEPC) == length(filesTPA) + 2
     l = 1;
     for k=Trials2keep
-        filecsv = dir([pth, '\Traj\', filesEPC(k+2).name '\*.csv']);
+        filecsv = dir(fullfile(pthTraj,  filesEPC(k+2).name, '*.csv'));
         BdaTpaList(l).traj = fullfile(filecsv.folder, filecsv.name);
         l = l + 1;
     end
 end
- MatList = {'C:\Users\Hadas\Documents\work\resultsSummaries\Norms1\M26_grab_no_om_12_9_28_17\svmdprimeResSC10folds.mat',...
-     'C:\Users\Hadas\Documents\work\resultsSummaries\Norms1\M26_grab_no_om_12_9_24_17\svmdprimeResSC10folds.mat'};
-     
- runAverageAnalysis(outputPath, xmlfile, BdaTpaList, MatList, 'delay2event')
  
+end
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis');
 
- 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');

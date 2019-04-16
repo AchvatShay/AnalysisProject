@@ -59,12 +59,17 @@ classdef Experiment %< handle
         indicativeNrnsMeanStartTime = 0;
         indicativeNrnsMeanEndTime = 8;
         indicativeNrns_maxbinnum = 2;
+        glm_events_names= {};
+        glm_events_types= {};
     end
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
             obj.analysis_pca_thEffDim = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.pca_thEffDim.Text);
-            
+            for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event)
+               obj.glm_events_names{k} = xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event{k}.name.Text; 
+               obj.glm_events_types{k} = xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event{k}.type.Text; 
+            end
             obj.indicativeNrns_maxbinnum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrns_maxbinnum.Text);
             obj.indicativeNrnsMeanStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanStartTime.Text);
             obj.indicativeNrnsMeanEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanEndTime.Text);

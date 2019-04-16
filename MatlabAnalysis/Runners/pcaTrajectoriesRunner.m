@@ -3,14 +3,14 @@ function pcaTrajectoriesRunner
 addpath('../');
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'F:\Data\M26\';
-folderAnimalOutputPath = 'F:\Data\Test\M26\';
-
+folderAnimal = '\\192.114.20.50\f\Zohar\Analysis\4575';
+folderAnimalOutputPath = 'D:\zohar_A\Output\4575';
+trajpth = '';
 
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
-specific_experiment = '';
+specific_experiment = '03_19_19';
 
 listExperiments = dir (folderAnimal);
 
@@ -39,10 +39,11 @@ for index = 1: length(listExperiments)
                         end
                     end
                 end
+                BdaTpaList = getTrajFiles(BdaTpaList, trajpth, listExperiments(index).name);
 
                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
+                mkNewFolder(outputPath);
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'both');
 
                 close all;
                 BdaTpaList = [];

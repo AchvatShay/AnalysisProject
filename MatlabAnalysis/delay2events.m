@@ -39,7 +39,8 @@ for ei = 1:length(Events2plotDelay)
         eventnumber = num2str(generalProperty.Events2plotDelayNumber{ei}, '%02d');
         ind = find(strcmp([lower(Events2plotDelay{ei}) eventnumber], fields), 1);
         if isempty(ind)
-            error('Unrecognized event to plot');
+            continue;
+%             error('Unrecognized event to plot');
         end
         
         indicators = contains(fields, Events2plotDelay{ei});

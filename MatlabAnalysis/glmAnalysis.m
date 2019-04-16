@@ -28,125 +28,39 @@ end
 xlabel('Time [seconds]');
 gamma_c = logspace(-4, -2, 9);
 
-eventsMovements = generalProperty.glm_events;
+eventsNames = generalProperty.glm_events_names;
+eventsTypes = generalProperty.glm_events_types;
+
 % timesegments = [0:12:generalProperty.Duration] - generalProperty.ToneTime;
-timesegments = [0:4:generalProperty.Duration] - generalProperty.ToneTime;
+% timesegments = [0:2:generalProperty.Duration] - generalProperty.ToneTime;
+timesegments = [-2 0 2 4 -2;0 2 4 8 8];
 foldsNum = 5;
 t = linspace(0, generalProperty.Duration, size(imagingData.samples,2)) - generalProperty.ToneTime;
 ttraj = linspace(0, generalProperty.Duration, size(BehaveData.traj.data,2)) - generalProperty.ToneTime;
 
 INDICES = crossvalind('Kfold',size(imagingData.samples, 3),foldsNum);
-for time_seg_i = [2  ]%3 4  11:length(timesegments)-1
-    timeinds = find(t >= timesegments(time_seg_i) & t <= timesegments(time_seg_i+1));
-    timeinds_traj = find(ttraj >= timesegments(time_seg_i) & ttraj <= timesegments(time_seg_i+1));
-    for fold_i = 1:foldsNum        
-        test_i = INDICES == fold_i;
-        train_i = ~test_i;        
-        Y_train = imagingData.samples(:, timeinds, train_i == true);
-        Y_test = imagingData.samples(:, timeinds, test_i == true);
-        [X_train, x_train] = getFilteredBehaveData(generalProperty.successLabel,...
-            BehaveData, eventsMovements, splinesFuns, train_i, timeinds, timeinds_traj);
-        [X_test, x_test] = getFilteredBehaveData(generalProperty.successLabel, ...
-            BehaveData, eventsMovements, splinesFuns, test_i, (timeinds), timeinds_traj);
-        types = unique(X_train.type);
-        for nrni = 1:size(imagingData.samples, 1)
-            tt = tic;
-            disp([time_seg_i/(length(timesegments)-1) nrni/size(imagingData.samples, 1) fold_i/foldsNum]);
-            Ytr = squeeze(Y_train(nrni, :, :));
-            Yte = squeeze(Y_test(nrni, :, :));
-            [~, ~, R2full_tr(nrni, fold_i,time_seg_i ), R2full_te(nrni, fold_i, time_seg_i)] = LassoCV(x_train, Ytr(:), foldsNum, x_test, Yte(:));
-            
-            for type_i = 1:length(types)
-                binds = setdiff(1:size(x_train,2), find(X_train.type==types(type_i)));
-                [~, ~, R2p_train(nrni, type_i, fold_i, time_seg_i), R2p_test(nrni, type_i, fold_i, time_seg_i)] = ...
-                    LassoCV(x_train(:, binds), Ytr(:), foldsNum, x_test(:, binds), Yte(:));            
-            end
-            Rnorm_tr(nrni, :, fold_i, time_seg_i) = R2p_train(nrni, :, fold_i, time_seg_i)/R2full_tr(nrni, fold_i, time_seg_i);
-            contribution_tr(nrni, :, fold_i, time_seg_i) = (1-Rnorm_tr(nrni,:, fold_i, time_seg_i))/sum(1-Rnorm_tr(nrni,:, fold_i, time_seg_i));            
-            Rnorm_te(nrni, :, fold_i, time_seg_i) = R2p_test(nrni, :, fold_i, time_seg_i)/R2full_te(nrni, fold_i, time_seg_i);
-            contribution_te(nrni, :, fold_i, time_seg_i) = (1-Rnorm_te(nrni,:, fold_i, time_seg_i))/sum(1-Rnorm_te(nrni,:, fold_i, time_seg_i));            
-            disp('Train');
-            disp(mean(mean(contribution_tr(1:nrni, :, 1:fold_i, time_seg_i),1),3));
-            disp('Test');
-            disp(mean(mean(contribution_te(1:nrni, :, 1:fold_i, time_seg_i),1),3));
-            toc(tt);
-        end
-    end
-end
-leg = [eventsMovements, {'Success/Failure'}];
-for time_seg_i = 1:2%length(timesegments)-1
-    inds = find(mean(R2full_te(:,:,2),2)>0.95); 
-    M_tr(:,time_seg_i) = mean(mean(contribution_tr(inds, :, :, time_seg_i),3),1);
-    S_tr(:,time_seg_i) = std(mean(contribution_tr(inds, :, :, time_seg_i),3),[],1);
-    n = size(contribution_tr(inds, :, :, time_seg_i),1);
-    SEM_tr(:,time_seg_i) = S_tr(:,time_seg_i)/sqrt(n);
-    M_te(:,time_seg_i) = mean(mean(contribution_te(inds, :, :, time_seg_i),3),1);
-    S_te(:,time_seg_i) = std(mean(contribution_te(inds, :, :, time_seg_i),3),[],1);
-    n = size(contribution_te(inds, :, :, time_seg_i),1);
-    SEM_te(:,time_seg_i) = S_te(:,time_seg_i)/sqrt(n);
-end
-
-figure;barwitherr(100*SEM_tr',100*M_tr');
-legend( leg)
-xlabel('Segment');
-ylabel('% Contribution');
-title(['Train']);
-figure;barwitherr(100*SEM_te',100*M_te');
-legend( leg)
-xlabel('Segment');
-ylabel('% Contribution');
-title(['Test']);
-% M = mean(mean(contribution_te(:, :, :, time_seg_i),3),1);
-% S = std(mean(contribution_te(:, :, :, time_seg_i),3),[],1);
-% n = size(contribution_te,1);
-% SEM = S/sqrt(n);
-% figure;barwitherr(100*SEM,100*M);
-% set(gca,'XTickLabel', leg)
-% xlabel('Predictor');
-% ylabel('% Contribution');
-% title(['Test Segment #' num2str(time_seg_i)]);
-%
-types = unique(X_test.type);
-figure;
-for time_seg_i = 1:length(timesegments)-1
-    
-    for type_i = 1:length(leg)
-        subplot(2,length(timesegments)-1,(time_seg_i-1)*2+type_i);
-        hist(mean(100*contribution_tr(:, type_i, :, time_seg_i),3), 100);
-        ylabel('# Neurons');
-        xlabel('% Contribution');
-        title([leg{type_i} ' Segment #' num2str(time_seg_i)]);
-    end
-    
-    
-    
-    
-    % figure;
-    % for type_i = 1:length(leg)
-    % subplot(2,1,type_i);
-    % hist(mean(100*contribution_te(:, type_i, :, time_seg_i),3), 100);
-    % ylabel('# Neurons');
-    % xlabel('% Contribution');
-    % title(leg{type_i});
-    % end
-    % suptitle(['Test Segment #' num2str(time_seg_i)]);
-end
-suptitle(['Train ' ]);
-
-
-figure;
-for time_seg_i = 1:length(timesegments)-1
-    
-    for type_i = 1:length(leg)
-        subplot(2,length(timesegments)-1,(time_seg_i-1)*2+type_i);
-        hist(mean(100*contribution_te(:, type_i, :, time_seg_i),3), 100);
-        ylabel('# Neurons');
-        xlabel('% Contribution');
-        title([leg{type_i} ' Segment #' num2str(time_seg_i)]);
-    end
-    
-    
-    
-    
-end
-suptitle(['Test' ]);
+time_seg_i=1;
+timeinds = find(t >= timesegments(1,time_seg_i) & t <= timesegments(2,time_seg_i));
+timeinds_traj = find(ttraj >= timesegments(1,time_seg_i) & ttraj <= timesegments(2, time_seg_i));
+pos = BehaveData.traj.data;
+vel = diff(pos, 1, 2);
+ac = diff(pos, 2, 2);
+ttraj=ttraj(1:end-2);
+BehaveData.traj.data = cat(1, pos(:,1:end-2,:), vel(:,1:end-1,:), ac);
+% before tone - kinematics + prev succ/fail
+doGlmAnalysis(BehaveData, timesegments(:, 1), t, ttraj, foldsNum, INDICES, imagingData, ...
+    generalProperty, splinesFuns, eventsNames, eventsTypes, outputPath, 'glmRessegsBeforeTone', true, 0.9);
+% after tone - all times, at mouth has his own category
+doGlmAnalysis(BehaveData, [-2; 8], t, ttraj, foldsNum, INDICES, imagingData, ...
+    generalProperty, splinesFuns, eventsNames, eventsTypes, outputPath, 'glmResAllTimesSepAtMouth', false, 0.9);
+% after tone - segments, at mouth has his own category
+doGlmAnalysis(BehaveData, timesegments(:, 2:end), t, ttraj, foldsNum, INDICES, imagingData, ...
+    generalProperty, splinesFuns, eventsNames, eventsTypes, outputPath, 'glmRessegsAfterToneSepAtMouth', false, 0.9);
+% after tone - at mouth is in movment with lift and grab
+eventsTypes(strcmp(eventsTypes, 'atmouth')) = {'movement'};
+% all times
+doGlmAnalysis(BehaveData, timesegments(:, 2:end), t, ttraj, foldsNum, INDICES, imagingData, ...
+    generalProperty, splinesFuns, eventsNames, eventsTypes, outputPath, 'glmResAllTimesMoveAtMouth', false, 0.9);
+% segments
+doGlmAnalysis(BehaveData, timesegments(:, 2:end), t, ttraj, foldsNum, INDICES, imagingData, ...
+    generalProperty, splinesFuns, eventsNames, eventsTypes, outputPath, 'glmRessegsAfterToneMoveAtMouth', false, 0.9);

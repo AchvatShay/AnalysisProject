@@ -43,7 +43,7 @@ for index = 1: length(listExperiments)
 
                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
                 mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis', 'imaging');
 
                 close all;
                 BdaTpaList = [];

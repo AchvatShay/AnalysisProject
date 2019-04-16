@@ -3,13 +3,14 @@ function Pca2DRunner
  
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\M27';
-folderAnimalOutputPath = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\M27\ResultsTaste';
+folderAnimal = '\\192.114.20.50\f\Zohar\Analysis\4575';
+folderAnimalOutputPath = 'D:\zohar_A\Output\4575';
+trajpth = '';
 
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
-specific_experiment = '';
+specific_experiment = '03_19_19';
 
 listExperiments = dir (folderAnimal);
 
@@ -39,10 +40,11 @@ for index = 1: length(listExperiments)
                         end
                     end
                 end
+                BdaTpaList = getTrajFiles(BdaTpaList, trajpth, listExperiments(index).name);
 
                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+                mkNewFolder(outputPath);
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D', 'both');
 
                 close all;
                 BdaTpaList = [];

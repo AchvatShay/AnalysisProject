@@ -5,6 +5,7 @@ xmlfile = 'XmlByBoth.xml';
 
 folderAnimal = 'F:\Data\M26\';
 folderAnimalOutputPath = 'F:\Data\Test\M26\';
+trajpth = 'C:\Users\Jackie.MEDICINE\Dropbox (Technion Dropbox)\AnalysisResultsShay\Hadas\trajectoriesData\M26\';
 
 
 % if you want to run only one date from the animal experiments change the 
@@ -40,10 +41,11 @@ for index = 1: length(listExperiments)
                         end
                     end
                 end
+                BdaTpaList = getTrajFiles(BdaTpaList, trajpth, listExperiments(index).name);
 
                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
-                mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
+                mkNewFolder(outputPath);
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'both');
 
                 close all;
                 BdaTpaList = [];

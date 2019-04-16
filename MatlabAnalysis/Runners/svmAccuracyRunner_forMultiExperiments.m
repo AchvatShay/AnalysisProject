@@ -4,8 +4,10 @@ addpath('../');
 
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'F:\Data\M26\';
-folderAnimalOutputPath = 'F:\Data\Test\M26\';
+% folderAnimal = 'F:\Data\M26\';
+% folderAnimalOutputPath = 'F:\Data\Test\M26\';
+folderAnimal = '\\192.114.20.85\d\Maria\Layer 2-3\Analysis\M27\';
+folderAnimalOutputPath='C:\Users\Jackie.MEDICINE\Dropbox (Technion Dropbox)\AnalysisResultsShay\Hadas\analysisRes\M27';
 
 
 listExperiments = dir (folderAnimal);
@@ -39,5 +41,5 @@ end
 
     outputPath = strcat(folderAnimalOutputPath , '\All\' , '\Analysis\svmAccuracy');
     mkdir(outputPath);
-    runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
+    runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'imaging');
 end
