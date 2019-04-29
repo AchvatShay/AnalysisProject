@@ -10,7 +10,7 @@ t = linspace(0, generalProperty.Duration, size(imagingData.samples, 2)) - genera
 fields = fieldnames(BehaveData);
 
 tstim = -t(1);
-trialinds{1} = ones(size(imagingData.samples,3),1);
+trialinds{1} = true(size(imagingData.samples,3),1);
 trialinds{2} = sum(BehaveData.(generalProperty.successLabel).indicator,2)>0;
 trialinds{3} = sum(BehaveData.(generalProperty.failureLabel).indicator,2)>0;
 strTrials = {'All',generalProperty.successLabel,generalProperty.failureLabel};
