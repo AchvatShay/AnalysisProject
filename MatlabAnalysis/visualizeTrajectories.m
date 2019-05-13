@@ -15,11 +15,31 @@ t = linspace(0, generalProperty.Duration, size(X,2)) - toneTime;
 xlimmin = generalProperty.visualization_startTime2plot-toneTime;
 [clrs, clrscurrprev] = cellClr2matClrs(clrs, clrscurrprev);
 % 1. plot eig values
-figure;plot(100*cumsum(eigs.^2)/sum(eigs.^2));
+eigsvalue_vector = 100*cumsum(eigs.^2)/sum(eigs.^2); 
+figure;plot(eigsvalue_vector);
 xlabel(['# Eigen Value of ' Method]);
 ylabel('% Energy');
 title([num2str(effDim) ' PCs - 95% energy; 3 PCs - ' num2str(100*sum(eigs(1:3).^2)/sum(eigs.^2)) '%']);
 mysave(gcf, fullfile(outputPath, ['eigenValuesTraj' Method eventsStr] ));
+
+% save to excle the eigs valuse
+filenameExcel = fullfile(outputPath, ['eigenValuesTrajExcle' Method eventsStr] );
+
+[~, ~, excelDataRaw] = xlsread('tamplateEigsValue.xlsx');
+
+[currentRow, currentCol] = find(strcmp(excelDataRaw, 'Title'));
+excelDataRaw{currentRow, currentCol + 1} = [num2str(effDim) ' PCs - 95% energy; 3 PCs - ' num2str(100*sum(eigs(1:3).^2)/sum(eigs.^2)) '%'];
+
+[currentRow, currentCol] = find(strcmp(excelDataRaw, 'Method'));
+excelDataRaw{currentRow, currentCol + 1} = Method;
+
+[currentRow, currentCol] = find(strcmp(excelDataRaw, '% Energy'));
+excelDataRaw((currentRow + 1):(currentRow + length(eigsvalue_vector)), currentCol) = num2cell(eigsvalue_vector);
+
+[currentRow, currentCol] = find(strcmp(excelDataRaw, '# Eigen Value'));
+excelDataRaw((currentRow + 1):(currentRow + length(eigsvalue_vector)), currentCol) = num2cell(1:length(eigsvalue_vector));
+
+xlswrite(filenameExcel,excelDataRaw);
 
 % 2. eval dprime for smoothed data
 [dprimeSmoothed, dprimeNextSmoothed] = evalDprime(recon, labels);
