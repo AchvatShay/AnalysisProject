@@ -44,6 +44,8 @@ if length(filesEPC) > 2 && length(filesEPC) == length(filesTPA) + 2
 end
  
 end
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events');
+
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis');
 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
