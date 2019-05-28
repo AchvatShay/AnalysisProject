@@ -1,9 +1,12 @@
 function visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, embedding, outputPath, Method)
+b = hist(labels, unique(labels));
+b=b/sum(b);
 
 if ~isempty(ACC2D)
 fid = fopen(fullfile(outputPath, [Method 'accuracy2D.txt']), 'w');
-fprintf(fid, 'Accuracy of %s :\t\tmean = %f std = %f\n', Method, ACC2D.mean, ACC2D.std);
-fprintf(fid, 'Accuracy of %s :\t\tmean = %f std = %f\n', Method, ACC2D.mean, ACC2D.std);
+fprintf(fid, 'Accuracy of %s:\t\tmean = %f std = %f\n', Method, ACC2D.mean, ACC2D.std);
+% fprintf(fid, 'Accuracy of %s :\t\tmean = %f std = %f\n', Method, ACC2D.mean, ACC2D.std);
+fprintf(fid, 'Chance:\t %f\n', max(b));
 fclose(fid);
 end
 [clrs, clrsprevCurr] = cellClr2matClrs(generalProperty.labels2clusterClrs, generalProperty.prevcurrlabels2clusterClrs);
