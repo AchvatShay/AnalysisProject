@@ -1,23 +1,24 @@
 clear;
 %% user input
-outputPath = 'layer23_perievent';    % path to the results directory
-xlsFile = 'periEventAnalysis.xlsx';  % path to the input excel file
-sheet_name ='working sheet';         % working sheet in the excel file
-xmlfile = 'XmlBoth.xml';             % xml file
+outputPath = 'E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\PeriEventHis\Perieventhistogram indicative PT\5%';    % path to the results directory
+xlsFile = 'Runners\periEventAnalysisForJackie_PT.xlsx';  % path to the input excel file
+sheet_name ='Example1';         % working sheet in the excel file
+xmlfile = 'Runners\XmlBySuc.xml';             % xml file
 
 %% begining of code
 mkNewFolder(outputPath);
 [NUM,TXT,RAW]=xlsread(xlsFile, sheet_name);
 mkNewFolder('temp');
 for pi = 2:size(TXT,1)
+    BdaTpaList = [];
     % loading bda tpa
     pth = TXT{pi, 1};
     filesTPA = dir([pth, '\TPA*.mat']);
     filesBDA = dir([pth, '\BDA*.mat']);
     l=1;
     for k=1:length(filesTPA)
-        BdaTpaList(l).TPA = fullfile(filesTPA(1).folder, filesTPA(k).name);
-        BdaTpaList(l).BDA = fullfile(filesBDA(1).folder, filesBDA(k).name);
+        BdaTpaList(l).TPA = fullfile(filesTPA(k).folder, filesTPA(k).name);
+        BdaTpaList(l).BDA = fullfile(filesBDA(k).folder, filesBDA(k).name);
         l = l + 1;
     end
     
