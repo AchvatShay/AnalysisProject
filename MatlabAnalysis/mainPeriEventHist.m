@@ -1,14 +1,15 @@
 clear;
 %% user input
-outputPath = 'E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\PeriEventHis\Perieventhistogram indicative PT\5%';    % path to the results directory
+outputPath = 'E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\PeriEventHis\Perieventhistogram all PT\';    % path to the results directory
 xlsFile = 'Runners\periEventAnalysisForJackie_PT.xlsx';  % path to the input excel file
-sheet_name ='Example1';         % working sheet in the excel file
+sheet_name ='Example2';         % working sheet in the excel file
 xmlfile = 'Runners\XmlBySuc.xml';             % xml file
 
 %% begining of code
 mkNewFolder(outputPath);
 [NUM,TXT,RAW]=xlsread(xlsFile, sheet_name);
 mkNewFolder('temp');
+trialssum = 0;
 for pi = 2:size(TXT,1)
     BdaTpaList = [];
     % loading bda tpa
@@ -43,6 +44,7 @@ for pi = 2:size(TXT,1)
     if ~isempty(nrnsList)
     imagingData.roiNames=imagingData.roiNames(nrnsList);
     imagingData.samples=imagingData.samples(nrnsList, :, :);
+    trialssum = trialssum + size(imagingData.samples, 3); 
     [res{pi}, strTrials, Events2plotDelay]=getPeriEventHist( generalProperty, imagingData, BehaveData);
     end
 end
@@ -66,6 +68,8 @@ for si = 1:length(strTrials)
             bins_values_percentage = hist2onset/sum(N)*100;
             bar(bins, bins_values_percentage, 'FaceColor',[192,192,192]/255);
             
+            histOnsetDelay_sum_percentage(bins, bins_values_percentage, outputPath, Events2plotDelay{evi}, strTrials{si}, 'First');
+            
             xlabel('Delay Time [sec]', 'FontSize',labelsFontSz);
             ylabel('Neurons [%]', 'FontSize',labelsFontSz);
             set(gca, 'Box','off');
@@ -84,6 +88,8 @@ for si = 1:length(strTrials)
             bins_values_percentage = hist2onset/sum(N)*100;
             bar(bins, bins_values_percentage, 'FaceColor',[192,192,192]/255);
             
+            histOnsetDelay_sum_percentage(bins, bins_values_percentage, outputPath, Events2plotDelay{evi}, strTrials{si}, 'Last');
+            
             xlabel('Delay Time [sec]', 'FontSize',labelsFontSz);
             ylabel('Neurons [%]', 'FontSize',labelsFontSz);
             set(gca, 'Box','off');
@@ -98,5 +104,3 @@ for si = 1:length(strTrials)
         
     end
 end
-
-

@@ -38,7 +38,12 @@ for ei = 1:length(Events2plotDelay)
         eventnumber = num2str(generalProperty.Events2plotDelayNumber{ei}, '%02d');
         ind = find(strcmp([lower(Events2plotDelay{ei}) eventnumber], fields), 1);
         if isempty(ind)
-            continue;
+             for index = 1:length(strTrials)
+                 res.first{ei,index} = [];
+                 res.last{ei,index} = [];
+             end
+             continue;
+            
 %             error('Unrecognized event to plot');
         end
         

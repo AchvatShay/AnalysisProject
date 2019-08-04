@@ -1,37 +1,37 @@
 function TestRunner
 
-xmlfile = 'XmlTest2.xml';
+% xmlfile = 'XmlTest2.xml';
 % 
-folderAnimal = 'E:\Data\M26\';
-folderAnimalOutputPath = 'E:\Data\Shahar\AnalysisResults\M26-11_16_17-plotAllNrnsAcrossTrials-ByBoth';
-listExperiments = dir (folderAnimal);
-
-for index = 1: length(listExperiments)
+% folderAnimal = 'E:\Data\M26\';
+% folderAnimalOutputPath = 'E:\Data\Shahar\AnalysisResults\M26-11_16_17-plotAllNrnsAcrossTrials-ByBoth';
+% listExperiments = dir (folderAnimal);
+% 
+% for index = 1: length(listExperiments)
 %     strcmp(listExperiments(index).name, '8_26_18') &&
-    if strcmp(listExperiments(index).name, '11_16_17') && ~strcmp(listExperiments(index).name, 'All') && ~strcmp(listExperiments(index).name, '..') && ~contains(listExperiments(index).name, 'NOT') && ~strcmp(listExperiments(index).name, '.')
-        bda_tpa_folder = strcat(listExperiments(index).folder, '\',listExperiments(index).name, '\Trials');
-        listFiles = dir(bda_tpa_folder);
-        
-        if ~isempty(listFiles)
-            
-            bdaCount = 1;
-            for i = 1: length(listFiles)
-                testBDA = listFiles(i).name;
-                if contains(testBDA, 'BDA')
-                    BdaTpaList(bdaCount).BDA = [bda_tpa_folder '\' testBDA]; 
-
-                    for k = 1: length(listFiles)
-                        if contains(listFiles(k).name, 'TPA')
-                            testTPA = strrep(listFiles(k).name,'TPA','BDA');
-                            if (strcmp(testTPA, testBDA))
-                                BdaTpaList(bdaCount).TPA = [bda_tpa_folder '\' listFiles(k).name]; 
-                                bdaCount = bdaCount + 1;
-                            end
-                        end
-                    end
-                end
-            end
-
+%     if strcmp(listExperiments(index).name, '11_16_17') && ~strcmp(listExperiments(index).name, 'All') && ~strcmp(listExperiments(index).name, '..') && ~contains(listExperiments(index).name, 'NOT') && ~strcmp(listExperiments(index).name, '.')
+%         bda_tpa_folder = strcat(listExperiments(index).folder, '\',listExperiments(index).name, '\Trials');
+%         listFiles = dir(bda_tpa_folder);
+%         
+%         if ~isempty(listFiles)
+%             
+%             bdaCount = 1;
+%             for i = 1: length(listFiles)
+%                 testBDA = listFiles(i).name;
+%                 if contains(testBDA, 'BDA')
+%                     BdaTpaList(bdaCount).BDA = [bda_tpa_folder '\' testBDA]; 
+% 
+%                     for k = 1: length(listFiles)
+%                         if contains(listFiles(k).name, 'TPA')
+%                             testTPA = strrep(listFiles(k).name,'TPA','BDA');
+%                             if (strcmp(testTPA, testBDA))
+%                                 BdaTpaList(bdaCount).TPA = [bda_tpa_folder '\' listFiles(k).name]; 
+%                                 bdaCount = bdaCount + 1;
+%                             end
+%                         end
+%                     end
+%                 end
+%             end
+% 
 %              outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
 %              mkdir(outputPath);
 %             runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
@@ -41,9 +41,9 @@ for index = 1: length(listExperiments)
 %             runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
 % 
 % 
-            outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotAllNrnsAcrossTrials');
-            mkdir(outputPath);
-            runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
+%             outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotAllNrnsAcrossTrials');
+%             mkdir(outputPath);
+%             runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
 % % 
 %             outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
 %             mkdir(outputPath);
@@ -52,7 +52,7 @@ for index = 1: length(listExperiments)
 %             outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\diffMap2D');
 %             mkdir(outputPath);
 %             runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
-
+% 
 %             outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\diffMapTrajectories');
 %             mkdir(outputPath);
 %             runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
@@ -65,11 +65,11 @@ for index = 1: length(listExperiments)
 %             mkdir(outputPath);
 %             runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 % % %             
-            close all;
-            BdaTpaList = [];
-        end
-    end
-end
+%             close all;
+%             BdaTpaList = [];
+%         end
+%     end
+% end
 
 
 % outputPath = strcat(folderAnimalOutputPath , '\All\svmAccuracy');
@@ -170,34 +170,40 @@ end
 %     end
 % % end
 % 
-% outputPath = 'E:\Data\Shahar\J\Den6\PostAnalysisNewBy-Suc-Cat23';
-% mkdir(outputPath);
-% 
-% pth = 'E:\Data\Shahar\Den6\2_21_17_1\Trials';
-% 
-% for k=36:46
-% BdaTpaList(k).TPA = fullfile(pth, ['TPA_TSeries_02212017_1040_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
-% BdaTpaList(k).BDA = fullfile(pth, ['BDA_TSeries_02212017_1040_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
-% end
 
-% Matlist{1} = 'E:\Results9_9_17\Den6Analysis\2_21_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-% Matlist{1} = 'E:\Results9_9_17\Den6Analysis\2_22_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-% Matlist{2} = 'E:\Results9_9_17\Den6Analysis\2_27_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-% Matlist{3} = 'E:\Results9_9_17\Den6Analysis\2_23_17_1_1stAndThird\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
+xmlfile = 'Runners\XmlByBoth.xml';
+outputPath = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\success-nopellet\M27\All';
+mkdir(outputPath);
+
+pth = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\Shahar\success- failure project\Layer 2-3\M27\1_18_18';
+
+for k=1:81
+BdaTpaList(k).TPA = fullfile(pth, ['TPA_TSeries_01182018_0859_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
+BdaTpaList(k).BDA = fullfile(pth, ['BDA_TSeries_01182018_0859_' sprintf('%03d',k) '_Cycle00001_Ch2_000001_ome.mat']);
+end
+
+Matlist{1} = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\success-nopellet\M27\1_18_18\Analysis\svmAccuracy\acc_res_folds10lin_success_nopellet.mat';
+Matlist{2} = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\success-nopellet\M27\1_22_18\Analysis\svmAccuracy\acc_res_folds10lin_success_nopellet.mat';
+% Matlist{3} = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\failure-nopellet\M26\10_18_17\Analysis\svmAccuracy\acc_res_folds10lin_failure_nopellet.mat';
+% Matlist{4} = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\failure-nopellet\M26\11_2_17\Analysis\svmAccuracy\acc_res_folds10lin_failure_nopellet.mat';
+% Matlist{5} = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\failure-nopellet\M26\11_5_17\Analysis\svmAccuracy\acc_res_folds10lin_failure_nopellet.mat';
+% Matlist{6} = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\OmissionsResults\failure-nopellet\M26\11_8_17\Analysis\svmAccuracy\acc_res_folds10lin_failure_nopellet.mat';
+% Matlist{3} = 'E:\Results9_9_17\Den6Analysis\2_27_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
+% Matlist{4} = 'E:\Results9_9_17\Den6Analysis\2_23_17_1_1stAndThird\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{5} = 'E:\Results9_9_17\Den6Analysis\3_1_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{5} = 'E:\Results9_9_17\Den6Analysis\4_2_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{7} = 'E:\Results9_9_17\Den6Analysis\2_21_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{8} = 'E:\Data\Results\Den6Analysis\8_13_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{9} = 'E:\Data\Results\Den7Analysis\8_10_17_1 (1)\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{10} = 'E:\Data\Results\Den7Analysis\8_13_17_1 (1)\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-
+% 
 % Matlist{8} = 'E:\Data\Feedi\L5_PT_PD\HR5-10Results\8_13_17_1 (1)\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{7} = 'E:\Data\Shahar\Den6Results\8_7_17_1 (1)\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{8} = 'E:\Data\Shahar\Den6Results\8_9_17_1 (1)\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{9} = 'E:\Data\Shahar\Den6Results\8_10_17_1 (1)\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
 % Matlist{9} = 'E:\Data\Shahar\Den6Results\8_13_17_1 (1)\Analysis\Accuracy\acc_res_folds10lin_success_failure.mat';
 
-% runAverageAnalysis(outputPath, xmlfile,BdaTpaList(36:46), Matlist, 'accuracy');
+runAverageAnalysis(outputPath, xmlfile,BdaTpaList(1:81), Matlist, 'svmAccuracy');
 
 % 
 % 

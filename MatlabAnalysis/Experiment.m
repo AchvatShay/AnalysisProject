@@ -61,10 +61,30 @@ classdef Experiment %< handle
         indicativeNrns_maxbinnum = 2;
         glm_events_names= {};
         glm_events_types= {};
+       
+        glmKinematics_pos = false;
+        glmKinematics_vel = false;
+        glmKinematics_acc = false;
+        glmSeg=[];
+        glm_energyTh = .8;
     end
     methods
         function obj = Experiment(xmlfile)
             xmlstrct = xml2struct(xmlfile);
+            obj.glm_energyTh = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_energyTh.Text);
+            for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg)
+                obj.glmSeg(1,k) = str2double(   xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.start.Text);
+                obj.glmSeg(2,k) = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.end.Text);
+            end
+            if strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.glmKinematics.position.Text, 'true')
+            obj.glmKinematics_pos = true;
+            end
+            if strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.glmKinematics.velosity.Text, 'true')
+            obj.glmKinematics_vel = true;
+            end
+            if strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.glmKinematics.accelration.Text, 'true')
+            obj.glmKinematics_acc = true;
+            end
             obj.analysis_pca_thEffDim = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.pca_thEffDim.Text);
             for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event)
                obj.glm_events_names{k} = xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event{k}.name.Text; 

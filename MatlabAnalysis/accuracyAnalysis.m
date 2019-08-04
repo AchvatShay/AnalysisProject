@@ -57,6 +57,11 @@ duration = generalProperty.Duration;
 [behaveHist, allbehave] = getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
 
 t=linspace(0,duration, size(behaveHist{1},2))-toneTime;
+
+fileID = fopen(fullfile(outputPath, ['accNoLegendSTD_' foldstr linstr eventsStr 'chanceV_mean']),'w');
+fprintf(fileID,'chance = %f, accSVM mean value = %f', num2str(chanceLevel), num2str(mean(accSVM.raw.mean)));
+fclose(fileID);
+
 [atop, htoneLine]=plotAccResFinal(tmid-toneTime, accSVM, chanceLevel, behaveHist,  t, 0, labelsFontSz, xlimmin-toneTime, generalProperty.Events2plot);
 mysave(gcf, fullfile(outputPath, ['accNoLegendSTD_' foldstr linstr eventsStr]));
 ylim(atop,[0 max(get(atop, 'YLim'))]);

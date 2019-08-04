@@ -41,7 +41,8 @@ for nrind=1:length(nerons2plot)
     currnrnind = find(imagingData.roiNames(:,1)-curr_nrn2plot==0);
     
     if isempty(currnrnind)
-        error('the neuron selected for ploting is not exists in the neurons selected for analysis');
+        continue;
+%         error('the neuron selected for ploting is not exists in the neurons selected for analysis');
     end
     
     x = squeeze(X(currnrnind,:,:))';
