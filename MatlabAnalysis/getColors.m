@@ -40,6 +40,10 @@ for k = 1:length(strColors)
             clrs(k, :) = [1 1 0];
         case 'dark_yellow'
             clrs(k, :) = [0.8 0.8 0];
+        case 'green_atogram'
+            clrs(k, :) = [118, 255, 3] ./ 255;
+        case 'blue_atogram'
+            clrs(k, :) = [41, 98, 255] ./ 255;
         otherwise
             error('Unfamiliar color');
     end

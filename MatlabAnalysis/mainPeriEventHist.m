@@ -1,9 +1,9 @@
 clear;
 %% user input
-outputPath = 'E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\PeriEventHis\Perieventhistogram all PT\';    % path to the results directory
+outputPath = 'E:\Dropbox (Technion Dropbox)\';    % path to the results directory
 xlsFile = 'Runners\periEventAnalysisForJackie_PT.xlsx';  % path to the input excel file
 sheet_name ='Example2';         % working sheet in the excel file
-xmlfile = 'Runners\XmlBySuc.xml';             % xml file
+xmlfile = 'Runners\XmlByBoth.xml';             % xml file
 
 %% begining of code
 mkNewFolder(outputPath);

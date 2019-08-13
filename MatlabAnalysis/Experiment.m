@@ -16,6 +16,8 @@ classdef Experiment %< handle
         BehavioralDelay  = 20;
         ToneTime = 4;
         Duration = 12;
+        atogramStartTime = -2;
+        atogramEndTime = 4;
         Injection = 'None'; %'saline' 'cno';
         PelletPertubation = 'None';
         Neurons2keep = 0;
@@ -35,11 +37,25 @@ classdef Experiment %< handle
         Events2plotDelay = {'tone' 'lift' 'grab' 'atmouth'};
         Events2plotDelayNumber = {1 1 1 1}
         
+        orderActivationFileLocation = '';
+        min_points_above_baseline = 1;
+        trailsToRunOrderByData = '1:end';
+        alignedOrderByDataAccordingToEvent_eventName = '';
+        alignedOrderByDataAccordingToEvent_eventNum = 0;
+        alignedOrderPlot_start_time = 0;
+        alignedOrderPlot_end_time = 8;
+        min_points_under_FWHM = 5;
+        data_downsamples_FWHM = 3;
+        
         delay2events_start_time = 0;
         delay2events_end_time = 2;
         
         tastesLabels = {};%{'sucrose','quinine','regular'};% to be populized by the xml
         tastesColors = {};%{'cyan', 'purpile', 'blue'};  % to be populized by the xml      
+        
+        atogramLabels = {};
+        atogramColors = {};      
+        
         foldsNum = 10;
         linearSVN = true;
         slidingWinLen = 1;
@@ -123,6 +139,18 @@ classdef Experiment %< handle
             obj.visualization_viewparams1 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams1.Text);
             obj.visualization_viewparams2 = str2double(xmlstrct.GeneralProperty.Experiment.visualization.viewparams2.Text);
             obj.visualization_legendLocation = xmlstrct.GeneralProperty.Experiment.visualization.legend.Attributes.Location;
+            
+            obj.orderActivationFileLocation = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.orderActivationFileLocation.Text;
+            obj.min_points_above_baseline = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.min_points_above_baseline.Text);
+            
+            obj.trailsToRunOrderByData = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.TrailsToRunOrderByData.Text;
+            obj.alignedOrderByDataAccordingToEvent_eventNum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.AlignedOrderByDataAccordingToEvent.EventNum.Text);
+            obj.alignedOrderByDataAccordingToEvent_eventName = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.AlignedOrderByDataAccordingToEvent.EventName.Text;
+            obj.alignedOrderPlot_start_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_start_time.Text);
+            obj.alignedOrderPlot_end_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_end_time.Text);
+            obj.min_points_under_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.min_points_under_FWHM.Text);
+            obj.data_downsamples_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.data_downsamples_FWHM.Text);
+            
             obj.visualization_labelsFontSize = str2double(xmlstrct.GeneralProperty.Experiment.visualization.labelsFontSize.Text);
             obj.visualization_startTime2plot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.startTime2plot.Text);
             obj.name = xmlstrct.GeneralProperty.Experiment.name;
@@ -207,6 +235,17 @@ classdef Experiment %< handle
                    end
                end
             end
+            
+            for k = 1:length(xmlstrct.GeneralProperty.Experiment.visualization.AtogramLabels.Atogram)
+               if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.AtogramLabels.Atogram{k}.is_active.Text)
+                  obj.atogramLabels{end+1} = xmlstrct.GeneralProperty.Experiment.visualization.AtogramLabels.Atogram{k}.name.Text;
+                  obj.atogramColors{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.AtogramLabels.Atogram{k}.color.Text});
+               end
+            end
+            
+            obj.atogramStartTime = str2double(xmlstrct.GeneralProperty.Experiment.visualization.atogramStartTime.Text);
+            obj.atogramEndTime = str2double(xmlstrct.GeneralProperty.Experiment.visualization.atogramEndTime.Text);
+            
             % nerons for analyis
             
             if isfield(xmlstrct.GeneralProperty.Experiment.NeuronesToPut, 'Text')

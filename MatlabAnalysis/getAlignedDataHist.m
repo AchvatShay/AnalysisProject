@@ -31,7 +31,7 @@ end
 tglobalcrop = t(findClosestDouble(t, 1.5):end);
 dataAlltimesAlcrop=dataAlltimesAl(:, findClosestDouble(t, 1.5) + max(onsetdiffvalid):end,:);
 meanDat = mean(dataAlltimesAlcrop,3);
-meanbase = mean(dataAlltimesAlcrop(:, 1:findClosestDouble(tglobalcrop, toneTime-.1)),2);
+meanbase = mean(meanDat(:, 1:findClosestDouble(tglobalcrop, toneTime-.1)),2);
 stdbase = std(meanDat(:, 1:findClosestDouble(tglobalcrop, toneTime-.1)),[],2);
 
 
