@@ -1,11 +1,12 @@
 function FWHM_analysis(outputPath, generalProperty, imagingData, BehaveData)
-    [labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
-        generalProperty.labels2cluster, generalProperty.includeOmissions);
     
-    classes = unique(labels);
-    
-    s_t = examinedInds(labels==classes(strcmp(labelsLUT, generalProperty.successLabel)));
-    
+    fields = fieldnames(BehaveData);
+    ind = find(strcmpi(generalProperty.eventName_FWHM, fields), 1);
+    if isempty(ind)
+        error('Event selected for data is incorrect');
+    end
+
+    s_t = find(BehaveData.(fields{ind}).indicatorPerTrial == 1);
     [~, ~, excelDataRaw] = xlsread('FWHM_template.xlsx');
         
     lastrow = size(excelDataRaw,1);
@@ -13,7 +14,7 @@ function FWHM_analysis(outputPath, generalProperty, imagingData, BehaveData)
     [line, currentCol] = find(strcmp(excelDataRaw, 'event:'));
     excelDataRaw{line, currentCol+1} = generalProperty.successLabel;
     
-    min_points_above_baseline = generalProperty.min_points_above_baseline;
+    min_points_above_baseline = generalProperty.min_points_above_baseline_FWHM;
     min_points_under_FWHM = generalProperty.min_points_under_FWHM;
     data_downsamples_FWHM = generalProperty.data_downsamples_FWHM;
     

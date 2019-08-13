@@ -38,12 +38,15 @@ classdef Experiment %< handle
         Events2plotDelayNumber = {1 1 1 1}
         
         orderActivationFileLocation = '';
-        min_points_above_baseline = 1;
+        min_points_above_baseline = 3;
         trailsToRunOrderByData = '1:end';
         alignedOrderByDataAccordingToEvent_eventName = '';
         alignedOrderByDataAccordingToEvent_eventNum = 0;
         alignedOrderPlot_start_time = 0;
         alignedOrderPlot_end_time = 8;
+        
+        min_points_above_baseline_FWHM = 3;
+        eventName_FWHM = 'tone';
         min_points_under_FWHM = 5;
         data_downsamples_FWHM = 3;
         
@@ -148,8 +151,11 @@ classdef Experiment %< handle
             obj.alignedOrderByDataAccordingToEvent_eventName = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.AlignedOrderByDataAccordingToEvent.EventName.Text;
             obj.alignedOrderPlot_start_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_start_time.Text);
             obj.alignedOrderPlot_end_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_end_time.Text);
-            obj.min_points_under_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.min_points_under_FWHM.Text);
-            obj.data_downsamples_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.data_downsamples_FWHM.Text);
+            
+            obj.min_points_above_baseline_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.FWHMAnalysis.min_points_above_baseline.Text);
+            obj.eventName_FWHM = xmlstrct.GeneralProperty.Experiment.analysisParams.FWHMAnalysis.EventName.Text;
+            obj.min_points_under_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.FWHMAnalysis.min_points_under_FWHM.Text);
+            obj.data_downsamples_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.FWHMAnalysis.data_downsamples_FWHM.Text);
             
             obj.visualization_labelsFontSize = str2double(xmlstrct.GeneralProperty.Experiment.visualization.labelsFontSize.Text);
             obj.visualization_startTime2plot=str2double(xmlstrct.GeneralProperty.Experiment.visualization.startTime2plot.Text);
