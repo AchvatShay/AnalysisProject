@@ -4,16 +4,16 @@ addpath('../');
 
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = '\\192.114.20.85\d\Maria\Layer 2-3\Analysis\M27\';
-trajpth = 'C:\Users\Jackie.MEDICINE\Dropbox (Technion Dropbox)\AnalysisResultsShay\Hadas\trajectoriesData\M27\';
-folderAnimalOutputPath='C:\Users\Jackie.MEDICINE\Dropbox (Technion Dropbox)\AnalysisResultsShay\Hadas\analysisRes\M27';
+folderAnimal = 'E:\Data\Feedi\L5_PT_PD\HR5-7\09_14_17_S';
+trajpth = '';
+folderAnimalOutputPath='E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\L5_PT_PD\HR5-7\';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
-specific_experiment = '1_8_18';
+specific_experiment = 'Trials';
 
 listExperiments = dir (folderAnimal);
 
@@ -29,11 +29,11 @@ for index = 1: length(listExperiments)
                 bdaCount = 1;
                 for i = 1: length(listFiles)
                     testBDA = listFiles(i).name;
-                    if contains(testBDA, 'BDA')
+                    if contains({testBDA}, 'BDA')
                         BdaTpaList(bdaCount).BDA = [bda_tpa_folder '\' testBDA]; 
 
                         for k = 1: length(listFiles)
-                            if contains(listFiles(k).name, 'TPA')
+                            if contains({listFiles(k).name}, 'TPA')
                                 testTPA = strrep(listFiles(k).name,'TPA','BDA');
                                 if (strcmp(testTPA, testBDA))
                                     BdaTpaList(bdaCount).TPA = [bda_tpa_folder '\' listFiles(k).name]; 
@@ -44,39 +44,53 @@ for index = 1: length(listExperiments)
                     end
                 end
                 BdaTpaList = getTrajFiles(BdaTpaList, trajpth, listExperiments(index).name);
+% 
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'both');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\atogram_printer');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'atogram_printer', 'imaging');
+% % 
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotSingleNrnAcrossTrials');
+                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\FWHM_analysis');
                 mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials', 'imaging');
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'FWHM_analysis', 'imaging');
 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'imaging');
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotAllNrnsAcrossTrials');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials', 'imaging');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotSingleNrnAcrossTrials');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials', 'imaging');
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D', 'both');
-                
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\delay2events');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events', 'imaging');
+% % 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\grabsCountHis');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'grabsCountHis', 'imaging');
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\diffMap2D');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D', 'both');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'both');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis', 'imaging');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotAllNrnsAcrossTrials');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials', 'imaging');
+% 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D', 'imaging');
+%                 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\delay2events');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events', 'imaging');
+% 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\diffMap2D');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D', 'imaging');
+% 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'imaging');
+% 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis', 'imaging');
 
                 close all;
                 BdaTpaList = [];

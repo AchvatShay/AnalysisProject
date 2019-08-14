@@ -26,6 +26,7 @@
 		</PelletPertubation>
 	</Condition>
 	<NeuronesToPut>
+      
 	</NeuronesToPut>
 	<TrialsToPut>
 		<Trial>
@@ -35,7 +36,44 @@
 			<name>0</name>
 		</Trial>
     </TrialsToPut>
-    <analysisParams>  
+    <analysisParams> 
+        <orderAnalysis>
+            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Den7Test\8_13_17_1\Analysis\getOrderOFActivationByData\activation_order_peak_success_failureBy_grab1.mat</orderActivationFileLocation>
+            <min_points_above_baseline>3</min_points_above_baseline>
+            <TrailsToRunOrderByData>1:35</TrailsToRunOrderByData>
+            <AlignedOrderByDataAccordingToEvent>
+                <EventName></EventName>
+                <EventNum></EventNum>
+            </AlignedOrderByDataAccordingToEvent>
+            <plot_start_time>0</plot_start_time>
+            <plot_end_time>8</plot_end_time>
+        </orderAnalysis>
+        <FWHMAnalysis>
+            <min_points_above_baseline>3</min_points_above_baseline>
+            <min_points_under_FWHM>5</min_points_under_FWHM>
+            <data_downsamples_FWHM>3</data_downsamples_FWHM>
+            <EventName>tone</EventName>
+        </FWHMAnalysis>
+        <glm_energyTh>0.15</glm_energyTh>
+        <glmSegments>
+            <seg>
+                <start>-1</start>
+                <end>2</end>
+            </seg>
+            <seg>
+                <start>2</start>
+                <end>5</end>
+            </seg>
+            <seg>
+                <start>5</start>
+                <end>8</end>
+            </seg>
+        </glmSegments>
+        <glmKinematics>
+            <position>true</position>
+            <velosity>false</velosity>
+            <accelration>false</accelration>
+        </glmKinematics>
         <glmBehaveEvents>
             <event>
                 <name>tone</name>
@@ -105,19 +143,10 @@
         <startBehaveTime4trajectory>4</startBehaveTime4trajectory>
         <endBehaveTime4trajectory>6</endBehaveTime4trajectory>
         <NeuronesToPlot>
-		<Neuron>
-			<name>1</name>
-		</Neuron>
-		<Neuron>
-			<name>2</name>
-		</Neuron>
-		<Neuron>
-			<name>3</name>
-		</Neuron>
-		<Neuron>
-			<name>4</name>
-		</Neuron>
-	</NeuronesToPlot>
+             <Neuron>
+                <name>191</name>
+            </Neuron> 
+        </NeuronesToPlot>
     </analysisParams>
     <visualization> 
         <bestpcatrajectories2plot>5</bestpcatrajectories2plot>
@@ -136,6 +165,43 @@
         <legend Location='Best'></legend>
         <labelsFontSize>14</labelsFontSize>
         <startTime2plot>1.5</startTime2plot>
+       <TastesLabels>
+        <Taste>			
+            <name>success</name>
+            <color>cyan</color>  
+            <is_active>true</is_active>  
+        </Taste>
+        <Taste>			
+            <name>failure</name>
+            <color>purple</color>  
+            <is_active>true</is_active>  
+        </Taste>
+        <Taste>			
+            <name>nopellet</name>
+            <color>blue</color>  
+            <is_active>true</is_active>  
+        </Taste>
+       </TastesLabels>
+       
+        <AtogramLabels>
+            <Atogram>			
+                <name>lift</name>
+                <color>blue_atogram</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
+                <name>grab</name>
+                <color>green_atogram</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
+                <name>atmouth</name>
+                <color>red</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+       </AtogramLabels>
+        <atogramStartTime>-2</atogramStartTime>
+        <atogramEndTime>4</atogramEndTime>
         <Events2plot>
 			<grab is_active='True'></grab>
 			<lift is_active='True'></lift>
