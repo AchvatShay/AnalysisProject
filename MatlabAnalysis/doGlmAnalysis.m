@@ -14,7 +14,7 @@ else
     for time_seg_i = 1:size(timesegments,2)
         timeinds = find(t >= timesegments(1,time_seg_i) & t <= timesegments(2,time_seg_i));
         timeinds_traj = find(ttraj >= timesegments(1,time_seg_i) & ttraj <= timesegments(2, time_seg_i));
-        for fold_i = 1:foldsNum
+        for fold_i = 1:foldsNum % iterations over different train and test
             test_i = INDICES == fold_i;
             train_i = ~test_i;
             if isprev
@@ -25,6 +25,7 @@ else
             Y_train = Y_train(:,timeinds,:);
             Y_test = imagingData.samples(:, :, test_i == true);
             Y_test = Y_test(:,timeinds,:);
+            % splines
             [X_train, x_train] = getFilteredBehaveData(generalProperty.successLabel,...
                 BehaveData, eventsNames, [eventsTypes, 'reward'], splinesFuns, train_i, timeinds, timeinds_traj, generalProperty);
             [X_test, x_test] = getFilteredBehaveData(generalProperty.successLabel, ...
