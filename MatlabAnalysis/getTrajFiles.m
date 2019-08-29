@@ -1,5 +1,6 @@
 function BdaTpaList = getTrajFiles(BdaTpaList, trajpth, expname)
-trajdirs = dir(fullfile(trajpth, expname, '\*.csv'));
+
+trajdirs = dir(fullfile(trajpth, expname, '\*\*.csv'));
 if isempty(trajdirs)
     disp('No trajectories')
 else
