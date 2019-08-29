@@ -1,11 +1,15 @@
-function getOrderOFActivationByData(outputPath, generalProperty, imagingData, BehaveData)
+function results = getOrderOFActivationByData(outputPath, generalProperty, imagingData, BehaveData)
     [labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
         generalProperty.labels2cluster, generalProperty.includeOmissions);
     
     classes = unique(labels);
+    allTrailsIndex = 1:size(imagingData.samples, 3);
     
-    [examinedInds, labels] = getTrialsIndexAccordingToString(generalProperty.trailsToRunOrderByData, examinedInds, labels);
-        
+    examinedIndsResults = getTrialsIndexAccordingToString(generalProperty.trailsToRun, allTrailsIndex);
+    
+    labels = labels(sum(examinedInds == allTrailsIndex(examinedIndsResults == 1), 2) == 1);
+    examinedInds = examinedInds(sum(examinedInds == allTrailsIndex(examinedIndsResults == 1), 2) == 1);
+    
     minPointsForSettingActivity = generalProperty.min_points_above_baseline;
     t = linspace(0, generalProperty.Duration, size(imagingData.samples, 2));
     results = [];
@@ -40,7 +44,7 @@ function getOrderOFActivationByData(outputPath, generalProperty, imagingData, Be
         
         currData = imagingData.samples(:, :, trails_list);
         
-        [~, ~, order_loctions_neurons, neurons_order_index, meanDat, ~, ~] = getNeuronsActivationOrder(t, currData, toneTime, minPointsForSettingActivity, onsetdiffvalid);
+        [~, ~, order_loctions_neurons, neurons_order_index, meanDat, ~, ~] = getNeuronsActivationOrder(t, currData, toneTime, minPointsForSettingActivity, onsetdiffvalid, generalProperty.orderMethod, generalProperty.centerOfMassStartTime, generalProperty.centerOfMassEndTime);
         
         tNew= linspace(-max(onsetdiffvalid)*t(2), t(end), size(imagingData.samples,2)+max(onsetdiffvalid));
         
@@ -58,25 +62,30 @@ function getOrderOFActivationByData(outputPath, generalProperty, imagingData, Be
         T_save.alignedEventName = generalProperty.alignedOrderByDataAccordingToEvent_eventName;
         T_save.alignedEventNum = generalProperty.alignedOrderByDataAccordingToEvent_eventNum;
         T_save.table = table((1:length(order_loctions_neurons))', save_data_roi_names, order_loctions_neurons, save_data_time);
-                
+        T_save.time = tNew;
+        T_save.meanData = meanDat;
+        
         results{index_events + 1} = T_save;
         
         fig = figure;
         hold on;
         order_data = meanDat(neurons_order_index, :);
-        imagesc(tNew, 1:length(order_loctions_neurons), order_data);
-        fig.UserData = neurons_order_index;
+        im = imagesc(tNew, 1:length(order_loctions_neurons), order_data);
+        im.UserData = neurons_order_index;
+        
         dcm_obj = datacursormode(fig);
         set(dcm_obj,'UpdateFcn',@getRealNeuronNameCursor)
-        plot(save_data_time, 1:length(order_loctions_neurons), 'color', 'black', 'LineWidt', 2);
+        plot(save_data_time, 1:length(order_loctions_neurons), 'color', 'black', 'LineWidth', 2);
         colormap jet;
         ylabel('Neurons','FontSize',10);
 %         placeToneTime(toneTime, 3);
+        
+        legend(gca, {'Timing'})
         xlim([tNew(findClosestDouble(tNew, generalProperty.alignedOrderPlot_start_time)),tNew(findClosestDouble(tNew, generalProperty.alignedOrderPlot_end_time))]);
         ylim([1, length(order_loctions_neurons)]);
         
-        mysave(fig, fullfile(outputPath, ['activation_order_peak'  eventName 'By_' alignedEventName '_plot']));
+        mysave(fig, fullfile(outputPath, ['activation_order_'  eventName 'By_' alignedEventName 'Method_' generalProperty.orderMethod '_plot']));
     end
     
-    save(fullfile(outputPath, ['activation_order_peak' eventsStr 'By_' alignedEventName '.mat']), 'results');
+    save(fullfile(outputPath, ['activation_order_' eventsStr 'By_' alignedEventName 'Method_' generalProperty.orderMethod '.mat']), 'results');
 end

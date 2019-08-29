@@ -37,13 +37,21 @@ classdef Experiment %< handle
         Events2plotDelay = {'tone' 'lift' 'grab' 'atmouth'};
         Events2plotDelayNumber = {1 1 1 1}
         
+        startTimeGrabCountHis = 4;
+        endTimeGrabCountHis = 6;
+        
+        centerOfMassStartTime = 4;
+        centerOfMassEndTime = 6;
+        
+        orderMethod = 'peak';
         orderActivationFileLocation = '';
         min_points_above_baseline = 3;
-        trailsToRunOrderByData = '1:end';
+        trailsToRun = '1:end';
         alignedOrderByDataAccordingToEvent_eventName = '';
         alignedOrderByDataAccordingToEvent_eventNum = 0;
         alignedOrderPlot_start_time = 0;
         alignedOrderPlot_end_time = 8;
+        pearsonOnlyFromStartTime = 4;
         
         min_points_above_baseline_FWHM = 3;
         eventName_FWHM = 'tone';
@@ -58,6 +66,12 @@ classdef Experiment %< handle
         
         atogramLabels = {};
         atogramColors = {};      
+        
+        do_Plot3DTraj = false;
+        traj3D_startTime = 4;
+        traj3D_endTime = 6;
+        traj3DLabels = {};
+        traj3DColors = {};
         
         foldsNum = 10;
         linearSVN = true;
@@ -146,11 +160,21 @@ classdef Experiment %< handle
             obj.orderActivationFileLocation = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.orderActivationFileLocation.Text;
             obj.min_points_above_baseline = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.min_points_above_baseline.Text);
             
-            obj.trailsToRunOrderByData = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.TrailsToRunOrderByData.Text;
+            obj.trailsToRun = xmlstrct.GeneralProperty.Experiment.analysisParams.TrailsToRun.Text;
             obj.alignedOrderByDataAccordingToEvent_eventNum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.AlignedOrderByDataAccordingToEvent.EventNum.Text);
             obj.alignedOrderByDataAccordingToEvent_eventName = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.AlignedOrderByDataAccordingToEvent.EventName.Text;
             obj.alignedOrderPlot_start_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_start_time.Text);
             obj.alignedOrderPlot_end_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_end_time.Text);
+            
+            obj.pearsonOnlyFromStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.PearsonOnlyFromStartTime.Text);
+            obj.orderMethod = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.OrderMethod.Text;
+            obj.centerOfMassStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.startTime.Text);
+            obj.centerOfMassEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.endTime.Text);
+        
+            
+            
+            obj.startTimeGrabCountHis = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.startTimeGrabCountHis.Text);
+            obj.endTimeGrabCountHis = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.endTimeGrabCountHis.Text);
             
             obj.min_points_above_baseline_FWHM = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.FWHMAnalysis.min_points_above_baseline.Text);
             obj.eventName_FWHM = xmlstrct.GeneralProperty.Experiment.analysisParams.FWHMAnalysis.EventName.Text;
@@ -251,6 +275,17 @@ classdef Experiment %< handle
             
             obj.atogramStartTime = str2double(xmlstrct.GeneralProperty.Experiment.visualization.atogramStartTime.Text);
             obj.atogramEndTime = str2double(xmlstrct.GeneralProperty.Experiment.visualization.atogramEndTime.Text);
+            
+           for k = 1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.plotTraj3D.trajLabels.Traj)
+               if str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.plotTraj3D.trajLabels.Traj{k}.is_active.Text)
+                  obj.traj3DLabels{end+1} = xmlstrct.GeneralProperty.Experiment.analysisParams.plotTraj3D.trajLabels.Traj{k}.name.Text;
+                  obj.traj3DColors{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.analysisParams.plotTraj3D.trajLabels.Traj{k}.color.Text});
+               end
+            end
+            
+            obj.traj3D_startTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.plotTraj3D.startTime.Text);
+            obj.traj3D_endTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.plotTraj3D.endTime.Text);
+            obj.do_Plot3DTraj = str2bool(xmlstrct.GeneralProperty.Experiment.analysisParams.do_Plot3DTraj.Text);
             
             % nerons for analyis
             

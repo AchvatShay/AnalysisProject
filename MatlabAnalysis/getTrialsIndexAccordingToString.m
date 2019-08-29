@@ -1,8 +1,8 @@
-function [examinedInds, labels] = getTrialsIndexAccordingToString(trialsStr, examinedInds, labels)     
-    errorStr = 'The generalProperty trailsToRunOrderByData is incorrect';
+function savedT = getTrialsIndexAccordingToString(trialsStr, trailsArray, labels)     
+    errorStr = 'The generalProperty trailsToRun is incorrect';
     if (~isempty(trialsStr))
         splitR = split(trialsStr, ';');
-        savedT = zeros(1,length(examinedInds));
+        savedT = zeros(1,length(trailsArray));
         for i = 1: length(splitR)
             currentT = split(splitR{i}, ':');
             
@@ -14,19 +14,18 @@ function [examinedInds, labels] = getTrialsIndexAccordingToString(trialsStr, exa
             endI = str2double(currentT{2});
             
             if isnan(startI)
-                error('The generalProperty trailsToRunOrderByData is incorrect');
+                error('The generalProperty trailsToRun is incorrect');
             elseif isnan(endI)
                 if strcmp(currentT{2}, 'end')
-                    savedT(find(examinedInds == startI):end) = 1;
+                    savedT(find(trailsArray == startI):end) = 1;
                 else
                     error(errorStr);
                 end
             else
-                savedT(find(examinedInds == startI):find(examinedInds == endI)) = 1;
+                savedT(find(trailsArray == startI):find(trailsArray == endI)) = 1;
             end
         end
-        
-        examinedInds = examinedInds(savedT == 1);
-        labels = labels(savedT == 1);
-    end 
+    else
+        savedT = ones(1,length(trailsArray));
+    end
 end

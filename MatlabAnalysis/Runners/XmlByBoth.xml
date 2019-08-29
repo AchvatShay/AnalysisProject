@@ -36,17 +36,48 @@
 			<name>0</name>
 		</Trial>
     </TrialsToPut>
-    <analysisParams> 
+    <analysisParams>
+        <startTimeGrabCountHis>4</startTimeGrabCountHis>
+        <endTimeGrabCountHis>6</endTimeGrabCountHis>
+        <TrailsToRun>1:end</TrailsToRun>
+        <do_Plot3DTraj>true</do_Plot3DTraj>
+        <plotTraj3D>
+            <startTime>0</startTime>
+            <endTime>5</endTime>
+            <trajLabels>
+                <Traj>			
+                    <name>lift</name>
+                    <color>blue_atogram</color>  
+                    <is_active>true</is_active>  
+                </Traj>
+                <Traj>			
+                    <name>grab</name>
+                    <color>green_atogram</color>  
+                    <is_active>true</is_active>  
+                </Traj>
+                <Traj>			
+                    <name>atmouth</name>
+                    <color>red</color>  
+                    <is_active>true</is_active>  
+                </Traj>
+           </trajLabels>
+        </plotTraj3D>
         <orderAnalysis>
-            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Den7Test\8_13_17_1\Analysis\getOrderOFActivationByData\activation_order_peak_success_failureBy_grab1.mat</orderActivationFileLocation>
+            <!--choose master result file order for Order By master-->
+            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Test2\4_12_17_1\Analysis\crossValidationOrderAnalysis\master\activation_order__success_failureBy_toneMethod_centerOfMass.mat</orderActivationFileLocation>
             <min_points_above_baseline>3</min_points_above_baseline>
-            <TrailsToRunOrderByData>1:35</TrailsToRunOrderByData>
             <AlignedOrderByDataAccordingToEvent>
-                <EventName></EventName>
-                <EventNum></EventNum>
+                <EventName>grab</EventName>
+                <EventNum>1</EventNum>
             </AlignedOrderByDataAccordingToEvent>
             <plot_start_time>0</plot_start_time>
             <plot_end_time>8</plot_end_time>
+            <PearsonOnlyFromStartTime>5</PearsonOnlyFromStartTime><!--choose start time to compare pearson between master and self timing-->
+            <OrderMethod>centerOfMass</OrderMethod><!--choose the method running order by: peak or centerOfMass--> 
+            <centerOfMass>
+                <startTime>4</startTime>
+                <endTime>7</endTime>
+            </centerOfMass>
         </orderAnalysis>
         <FWHMAnalysis>
             <min_points_above_baseline>3</min_points_above_baseline>

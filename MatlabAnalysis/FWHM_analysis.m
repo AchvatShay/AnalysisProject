@@ -18,10 +18,13 @@ function FWHM_analysis(outputPath, generalProperty, imagingData, BehaveData)
     min_points_under_FWHM = generalProperty.min_points_under_FWHM;
     data_downsamples_FWHM = generalProperty.data_downsamples_FWHM;
     
-    data_downS_index = 1;
-    for ds_index = 1:data_downsamples_FWHM:size(imagingData.samples, 2)
-        downSampling_imagingData(:, data_downS_index,:) = mean(imagingData.samples(:, ds_index:(ds_index + (data_downsamples_FWHM - 1)),:), 2);
-        data_downS_index = data_downS_index + 1;
+    for ds_index = 1:size(imagingData.samples, 2)
+        currentEndValue = (ds_index + data_downsamples_FWHM - 1);
+        if currentEndValue > size(imagingData.samples, 2)
+            currentEndValue = size(imagingData.samples, 2);
+        end
+        
+        downSampling_imagingData(:, ds_index,:) = mean(imagingData.samples(:, ds_index:currentEndValue,:), 2);
     end
     
     imagingData.samples = downSampling_imagingData;
@@ -64,7 +67,7 @@ function FWHM_analysis(outputPath, generalProperty, imagingData, BehaveData)
             if (firstIndexMean < 1 || lastIndexMean > size(meanDat, 2))
                 fw_mean = nan;    
             else
-                fw_mean = lastIndexMean - firstIndexMean;
+                fw_mean = t(lastIndexMean) - t(firstIndexMean);
             end
         end
         
@@ -103,7 +106,7 @@ function FWHM_analysis(outputPath, generalProperty, imagingData, BehaveData)
                     continue;
                 end
 
-                fw_trails(tr) = lastIndex - firstIndex;
+                fw_trails(tr) = t(lastIndex) - t(firstIndex);
             else
                 fw_trails(tr) = nan;
             end
