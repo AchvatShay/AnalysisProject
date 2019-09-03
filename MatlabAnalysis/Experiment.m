@@ -37,6 +37,9 @@ classdef Experiment %< handle
         Events2plotDelay = {'tone' 'lift' 'grab' 'atmouth'};
         Events2plotDelayNumber = {1 1 1 1}
         
+        PlotSingleNrnAcrossTrials_AlignedEvent_Name = '';
+        PlotSingleNrnAcrossTrials_AlignedEvent_Num = 0;
+       
         startTimeGrabCountHis = 4;
         endTimeGrabCountHis = 6;
         
@@ -52,6 +55,7 @@ classdef Experiment %< handle
         alignedOrderPlot_start_time = 0;
         alignedOrderPlot_end_time = 8;
         pearsonOnlyFromStartTime = 4;
+        pearsonOnlyFromEndTime = 6;
         
         min_points_above_baseline_FWHM = 3;
         eventName_FWHM = 'tone';
@@ -166,7 +170,12 @@ classdef Experiment %< handle
             obj.alignedOrderPlot_start_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_start_time.Text);
             obj.alignedOrderPlot_end_time = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.plot_end_time.Text);
             
+            obj.PlotSingleNrnAcrossTrials_AlignedEvent_Name = xmlstrct.GeneralProperty.Experiment.visualization.PlotSingleNrnAcrossTrials.AlignedEvent.EventName.Text;
+            obj.PlotSingleNrnAcrossTrials_AlignedEvent_Num = str2double(xmlstrct.GeneralProperty.Experiment.visualization.PlotSingleNrnAcrossTrials.AlignedEvent.EventNum.Text);       
+            
             obj.pearsonOnlyFromStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.PearsonOnlyFromStartTime.Text);
+            obj.pearsonOnlyFromEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.PearsonOnlyFromEndTime.Text);
+           
             obj.orderMethod = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.OrderMethod.Text;
             obj.centerOfMassStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.startTime.Text);
             obj.centerOfMassEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.endTime.Text);

@@ -18,6 +18,15 @@ end
 
 % [Sbehave, Fbehave, allbehave] = getHistEvents(BehaveData, generalProperty.Events2plot, examinedInds);
 X = imagingData.samples;
+
+% if ~isempty(generalProperty.PlotSingleNrnAcrossTrials_AlignedEvent_Name) && ~isempty(generalProperty.PlotSingleNrnAcrossTrials_AlignedEvent_Num) 
+%     delays = alignedDataAccordingToEvent(generalProperty.PlotSingleNrnAcrossTrials_AlignedEvent_Name, generalProperty.PlotSingleNrnAcrossTrials_AlignedEvent_Num, BehaveData);
+%     alignedEventName = [generalProperty.alignedOrderByDataAccordingToEvent_eventName num2str(generalProperty.alignedOrderByDataAccordingToEvent_eventNum)];
+% else
+%     delays = findClosestDouble(t,toneTime)*ones(size(imagingData.samples,3), 1); 
+%     alignedEventName = 'tone';
+% end
+
 X=X(:,:,examinedInds);
 
 if (~isnan(grabCount))

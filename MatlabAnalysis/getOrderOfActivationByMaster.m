@@ -20,7 +20,8 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         [Spearman_r_t{index_events}, Spearman_p_t] = corr(X_timing, 'type', 'Spearman');
         
         self_start_p = findClosestDouble(self.timing,generalProperty.pearsonOnlyFromStartTime);
-        X_timing_sec = [self.timing(self_start_p:end)', selfBymaster.masterTiming(self_start_p:end)'];
+        self_end_p = findClosestDouble(self.timing,generalProperty.pearsonOnlyFromEndTime);
+        X_timing_sec = [self.timing(self_start_p:self_end_p)', selfBymaster.masterTiming(self_start_p:self_end_p)'];
         [kendall_r_t_sec{index_events}, kendall_p_t_sec] = corr(X_timing_sec, 'type', 'kendall');
         [Pearson_r_t_sec{index_events}, Pearson_p_t_sec] = corr(X_timing_sec, 'type', 'Pearson');
         [Spearman_r_t_sec{index_events}, Spearman_p_t_sec] = corr(X_timing_sec, 'type', 'Spearman');

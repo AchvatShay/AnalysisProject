@@ -39,11 +39,12 @@
     <analysisParams>
         <startTimeGrabCountHis>4</startTimeGrabCountHis>
         <endTimeGrabCountHis>6</endTimeGrabCountHis>
+        <!--1:20;56:70;71:71;1:end-->
         <TrailsToRun>1:end</TrailsToRun>
         <do_Plot3DTraj>true</do_Plot3DTraj>
         <plotTraj3D>
-            <startTime>0</startTime>
-            <endTime>5</endTime>
+            <startTime>4</startTime>
+            <endTime>9</endTime>
             <trajLabels>
                 <Traj>			
                     <name>lift</name>
@@ -64,16 +65,17 @@
         </plotTraj3D>
         <orderAnalysis>
             <!--choose master result file order for Order By master-->
-            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Test2\4_12_17_1\Analysis\crossValidationOrderAnalysis\master\activation_order__success_failureBy_toneMethod_centerOfMass.mat</orderActivationFileLocation>
+            <orderActivationFileLocation>C:\Users\User\Dropbox (Technion Dropbox)\Shahar\learning project\experiments\results\Den7\Order\4_12_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
             <min_points_above_baseline>3</min_points_above_baseline>
             <AlignedOrderByDataAccordingToEvent>
-                <EventName>grab</EventName>
-                <EventNum>1</EventNum>
+                <EventName></EventName>
+                <EventNum></EventNum>
             </AlignedOrderByDataAccordingToEvent>
             <plot_start_time>0</plot_start_time>
             <plot_end_time>8</plot_end_time>
             <PearsonOnlyFromStartTime>5</PearsonOnlyFromStartTime><!--choose start time to compare pearson between master and self timing-->
-            <OrderMethod>centerOfMass</OrderMethod><!--choose the method running order by: peak or centerOfMass--> 
+            <PearsonOnlyFromEndTime>7</PearsonOnlyFromEndTime><!--choose End time to compare pearson between master and self timing-->
+            <OrderMethod>peak</OrderMethod><!--choose the method running order by: peak or centerOfMass--> 
             <centerOfMass>
                 <startTime>4</startTime>
                 <endTime>7</endTime>
@@ -239,6 +241,12 @@
 			<atmouth is_active='True'></atmouth>
             <lick is_active='True'></lick>
 		</Events2plot>
+        <PlotSingleNrnAcrossTrials>
+            <AlignedEvent>
+                <EventName></EventName>
+                <EventNum></EventNum>
+            </AlignedEvent>
+        </PlotSingleNrnAcrossTrials>
         <Events2plotDelay>
 			<grab is_active='True' number='1'></grab>
 			<lift is_active='True' number='1'></lift>
