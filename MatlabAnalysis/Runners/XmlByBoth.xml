@@ -241,17 +241,11 @@
 			<atmouth is_active='True'></atmouth>
             <lick is_active='True'></lick>
 		</Events2plot>
-        <PlotSingleNrnAcrossTrials>
-            <AlignedEvent>
-                <EventName></EventName>
-                <EventNum></EventNum>
-            </AlignedEvent>
-        </PlotSingleNrnAcrossTrials>
         <Events2plotDelay>
-			<grab is_active='True' number='1'></grab>
-			<lift is_active='True' number='1'></lift>
-			<atmouth is_active='True' number='1'></atmouth>
-            <tone is_active='True' number='1'></tone>
+			<grab is_active='True' number='1' color='green_atogram'></grab>
+			<lift is_active='True' number='1' color='blue_atogram'></lift>
+			<atmouth is_active='True' number='1' color='red'></atmouth>
+            <tone is_active='True' number='1' color='black'></tone>
 		</Events2plotDelay>
         <delay2events_start_time>0</delay2events_start_time>
         <delay2events_end_time>2</delay2events_end_time>

@@ -1,4 +1,4 @@
-function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList, labelsList)
+function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList, behaveUnifiedIndicatormatrix_allevents)
 validinds=~isnan(delays) ;
 if all(validinds==0)
     f=[];
@@ -9,7 +9,6 @@ currBehave = behaveDat(:, validinds).';
 onsetdiffvalid=max(delays(validinds))-delays(validinds);
 currBehaveAl= zeros(size(onsetdiffvalid,1), size(imagingData,2)+max(onsetdiffvalid));
 
-
 for m=1:length(onsetdiffvalid)
     currBehaveAl(m, 1:(size(imagingData,2)+onsetdiffvalid(m))) = [zeros(1, onsetdiffvalid(m)) currBehave(m, :)];
 end
@@ -19,6 +18,22 @@ histbehaveAl = mean(currBehaveAl);
 [~,ic]=max(histbehaveAl);
 eventTime = t(ic-max(onsetdiffvalid));
 
+
+if (nargin > 12)
+    fields = fieldnames(behaveUnifiedIndicatormatrix_allevents);
+    
+    for f = 1:length(fields)
+       currBehave_allevents.(fields{f}) = behaveUnifiedIndicatormatrix_allevents.(fields{f}).data(:, validinds).';
+       currBehaveAl_allevents.(fields{f}) = zeros(size(onsetdiffvalid,1), size(imagingData,2)+max(onsetdiffvalid));
+       
+
+        for m=1:length(onsetdiffvalid)
+            currBehaveAl_allevents.(fields{f})(m, 1:(size(imagingData,2)+onsetdiffvalid(m))) = [zeros(1, onsetdiffvalid(m)) currBehave_allevents.(fields{f})(m, :)];
+        end
+        
+        activitySum.(fields{f}) = sum(currBehaveAl_allevents.(fields{f})(:, findClosestDouble(t, 1.5) + max(onsetdiffvalid):end)) / length(onsetdiffvalid);
+    end    
+end
 
 currData = imagingData(:, :, validinds);
 dataAlltimesAl = zeros(size(currData,1), size(imagingData,2)+max(onsetdiffvalid), length(onsetdiffvalid));
@@ -196,26 +211,49 @@ mysave(f(3), fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_al
 
 for nrni = neurons2plotList
     ff = figure;
+    hold on;
+    
+    set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
+    
+    subplot(12,1,1:6);
     imagesc(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, 1:size(dataAlltimesAlcrop,3),squeeze((dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:)))', [-.15 2]);
-xlabel('Time [sec]', 'FontSize', 12);
-ylabel('Trials', 'FontSize', 12);
-set(gca,'XTick', -2:2:7)
-  
-set(gca,'XTickLabel',xticklabels);
-placeToneTime(0,3);
-colormap jet;
-set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
-title(['aligned Neuron #' num2str(nrni) ' ' firstlaststr ' ' eventName ' ' sfstr]);
+    title(['aligned Neuron #' num2str(nrni) ' ' firstlaststr ' ' eventName ' ' sfstr]);
+%     xlabel('Time [sec]', 'FontSize', 12);
+    ylabel('Trials', 'FontSize', 12);
+    set(gca,'XTick', -2:2:7)
 
-subplot(4,1,4);
-plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:),3),'k','LineWidth',2);
-set(gca,'XTick', -2:2:7)
-set(gca,'XTickLabel',xticklabels);
-placeToneTime(0,3);
-axis tight;
-ylabel('Average', 'FontSize', 12);
-xlabel('Time [sec]', 'FontSize', 12);
-mysave(ff, fullfile(currfigs, ['alignedNeuron' num2str(nrni) firstlaststr eventName sfstr '_allnrns']));
+    set(gca,'XTickLabel',xticklabels);
+    placeToneTime(0,3);
+    colormap jet;
+  
+    
+    subplot(12,1,8:9);
+    plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:),3),'k','LineWidth',2);
+    set(gca,'XTick', -2:2:7)
+    set(gca,'XTickLabel',xticklabels);
+    placeToneTime(0,3);
+    axis tight;
+    ylabel('Average', 'FontSize', 11);
+%     xlabel('Time [sec]', 'FontSize', 12);
+
+    if (nargin > 12)
+        subplot(12,1,11:12);
+        hold on;
+        fields = fieldnames(currBehaveAl_allevents);
+
+        for f_ind = 1:length(fields)                
+            plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, activitySum.(fields{f_ind})(1:end-max(onsetdiffvalid)), 'color',behaveUnifiedIndicatormatrix_allevents.(fields{f_ind}).color,'LineWidth',2);
+        end
+
+        set(gca,'XTick', -2:2:7)
+        set(gca,'XTickLabel',xticklabels);
+        placeToneTime(0,3);
+        axis tight;
+        ylabel('Events Average', 'FontSize', 10);
+        xlabel('Time [sec]', 'FontSize', 12);
+    end
+
+    mysave(ff, fullfile(currfigs, ['alignedNeuron' num2str(nrni) firstlaststr eventName sfstr '_allnrns']));
 
 end
 
