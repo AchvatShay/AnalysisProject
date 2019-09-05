@@ -1,4 +1,4 @@
-function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList, behaveUnifiedIndicatormatrix_allevents)
+function f=plotAlignedDataHist(currfigs, firstlaststr,sfstr, eventName, delays, behaveDat, t, imagingData, toneTime, labelsFontSz, plotUnalignedData, neurons2plotList,roiNames, behaveUnifiedIndicatormatrix_allevents)
 validinds=~isnan(delays) ;
 if all(validinds==0)
     f=[];
@@ -210,13 +210,20 @@ mysave(f(3), fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_al
 
 
 for nrni = neurons2plotList
+    currnrnind = find(roiNames(:,1)-nrni==0);
+    
+    if isempty(currnrnind)
+        continue;
+%         error('the neuron selected for ploting is not exists in the neurons selected for analysis');
+    end
+    
     ff = figure;
     hold on;
     
     set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
     
     subplot(12,1,1:6);
-    imagesc(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, 1:size(dataAlltimesAlcrop,3),squeeze((dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:)))', [-.15 2]);
+    imagesc(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, 1:size(dataAlltimesAlcrop,3),squeeze((dataAlltimesAlcrop(currnrnind,1:end-max(onsetdiffvalid),:)))', [-.15 2]);
     title(['aligned Neuron #' num2str(nrni) ' ' firstlaststr ' ' eventName ' ' sfstr]);
 %     xlabel('Time [sec]', 'FontSize', 12);
     ylabel('Trials', 'FontSize', 12);
@@ -228,7 +235,7 @@ for nrni = neurons2plotList
   
     
     subplot(12,1,8:9);
-    plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(nrni,1:end-max(onsetdiffvalid),:),3),'k','LineWidth',2);
+    plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(currnrnind,1:end-max(onsetdiffvalid),:),3),'k','LineWidth',2);
     set(gca,'XTick', -2:2:7)
     set(gca,'XTickLabel',xticklabels);
     placeToneTime(0,3);

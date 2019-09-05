@@ -50,7 +50,7 @@ for ei = 1:length(Events2plotDelay)
           
             plotAlignedDataHist(outputPath, 'First', strTrials{ti}, Events2plotDelay{ei}, ...
                 delays.start(trialinds{ti}), behaveindicators(trialinds{ti},:).', ...
-                t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot, behaveUnifiedIndicatormatrix_alleventsCurr);
+                t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot, imagingData.roiNames, behaveUnifiedIndicatormatrix_alleventsCurr);
         end
         
         
@@ -93,11 +93,11 @@ for ei = 1:length(Events2plotDelay)
         
         plotAlignedDataHist(outputPath, 'First', strTrials{ti}, Events2plotDelay{ei}, ...
             tstampFirst.start(trialinds{ti}), behaveUnifiedIndicatormatrix(trialinds{ti},:).', ...
-            t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot, behaveUnifiedIndicatormatrix_alleventsCurr);
+            t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot,imagingData.roiNames, behaveUnifiedIndicatormatrix_alleventsCurr);
         % last
         plotAlignedDataHist(outputPath, 'Last', strTrials{ti}, Events2plotDelay{ei}, ...
             tstampLast.start(trialinds{ti}), behaveUnifiedIndicatormatrix(trialinds{ti},:).', ...
-            t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot, behaveUnifiedIndicatormatrix_alleventsCurr);
+            t+tstim, imagingData.samples(:,:,trialinds{ti}==1), tstim, labelsFontSz, false, generalProperty.Neurons2plot,imagingData.roiNames, behaveUnifiedIndicatormatrix_alleventsCurr);
     end
     
     
