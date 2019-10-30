@@ -91,7 +91,7 @@ maxbinnum = generalProperty.indicativeNrns_maxbinnum;
 
 % [behaveHist, allbehave]= getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
 
-fid = fopen(fullfile(outputPath, ['indicative_report' foldstr linstr eventsStr '.txt']), 'w');
+fid = fopen(fullfile(outputPath, [savestr 'indicative_report' foldstr linstr eventsStr '.txt']), 'w');
 fprintf(fid, 'chance is: %2.2f\n',chanceLevel);
 for binsnum = 2:maxbinnum
  count = getIndicativeNrnsMean(isindicative5, 'consecutive', maxbinnum, time2st, time2end);
