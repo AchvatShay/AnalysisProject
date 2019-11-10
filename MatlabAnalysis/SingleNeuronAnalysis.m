@@ -90,28 +90,11 @@ time2end = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanEn
 maxbinnum = generalProperty.indicativeNrns_maxbinnum;
 
 % [behaveHist, allbehave]= getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
+filename = fullfile(outputPath, ['indicative_report' foldstr linstr eventsStr '.txt']);
 
-fid = fopen(fullfile(outputPath, [savestr 'indicative_report' foldstr linstr eventsStr '.txt']), 'w');
-fprintf(fid, 'chance is: %2.2f\n',chanceLevel);
-for binsnum = 2:maxbinnum
- count = getIndicativeNrnsMean(isindicative5, 'consecutive', maxbinnum, time2st, time2end);
-    fprintf(fid, 'mean indicative nrns  starting from %f to %f with %d consecutive bins and 5 percent confidence: %f\n',...
-        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, maxbinnum, count);
-   count = getIndicativeNrnsMean(isindicative1, 'consecutive', maxbinnum, time2st, time2end);
+export2textMeanNrnsFromHist('indicative', filename, chanceLevel,maxbinnum,time2st, time2end, isindicative1, isindicative5, generalProperty )
 
-    fprintf(fid, 'mean indicative nrns  starting from %f to %f with %d consecutive bins and 1 percent confidence: %f\n',...
-        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, maxbinnum, count);
-end
-for binsnum = 1:maxbinnum
-    count = getIndicativeNrnsMean(isindicative5, 'any', binsnum, time2st, time2end);
-    fprintf(fid, 'mean indicative nrns  starting from %f to %f with any %d bins and 5 percent confidence: %f\n',...
-        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, binsnum, count);
-    
-     count = getIndicativeNrnsMean(isindicative1, 'any', binsnum, time2st, time2end);
-      fprintf(fid, 'mean indicative nrns  starting from %f to %f with any %d bins and 1 percent confidence: %f\n',...
-        generalProperty.indicativeNrnsMeanStartTime, generalProperty.indicativeNrnsMeanEndTime, binsnum, count);
-   end
-fclose(fid);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -160,8 +143,12 @@ a=get(gcf,'Children');
 setAxisFontSz(a(end), labelsFontSz);
 mysave(gcf, fullfile(outputPath, [savestr 'significantNrs5percent' foldstr linstr eventsStr]));
 
+filename = fullfile(outputPath, ['sig_report' eventsStr '.txt']);
 
-if isempty(savestr)
+export2textMeanNrnsFromHist('significat', filename, [],maxbinnum,time2st, time2end, H1, H5, generalProperty )
+
+
+if isempty(savestr)&&0
 disp('delay2events');
 generalProperty4indicative = generalProperty;
 generalProperty4indicative.Neurons2plot = [];
