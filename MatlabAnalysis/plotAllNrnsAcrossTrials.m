@@ -52,21 +52,34 @@ mA = inf;
 [clrs, clrsprevCurr] = cellClr2matClrs(generalProperty.labels2clusterClrs, generalProperty.prevcurrlabels2clusterClrs);
 
 figure;
+tableToWrite = table;
 for ci = 1:length(classes)
-plot(t, mean(mean(X(:, :, labels==classes(ci)),1),3), 'Color',clrs(ci,:));
+tableToWrite.(labelsLUT{ci}) = mean(mean(X(:, :, labels==classes(ci)),1),3)';
+plot(t, tableToWrite.(labelsLUT{ci})', 'Color',clrs(ci,:));
 hold all;
 end
+
+% Add All activity average plot
+averageActivityAll = mean(mean(X,1),3);
+tableToWrite.All = averageActivityAll';
+plot(t, averageActivityAll, 'Color','black');
+hold all;
+
 xlabel('Time [secs]','FontSize', labelsFontSz);
 placeToneTime(0, 2);
 axis tight;
 set(gca,'XLim', [xlimmin, t(end)]);
 
 ylabel('Average Activity','FontSize', labelsFontSz);
-leg = legend(labelsLUT);
+leg = legend([labelsLUT, {'All'}]);
 set(leg, 'FontSize', labelsFontSz);
 set(leg, 'Location','northeast');
 
 mysave(gcf, fullfile(outputPath, ['averagedActivity' eventsStr]));
+
+% Add Excel File For Activity Average
+writetable(tableToWrite,fullfile(outputPath, ['averagedActivityExcel' eventsStr, '.csv']));
+
 
 %% all trials
 figure;
@@ -170,10 +183,19 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
         clsColorTaste(clr_i, :) =  reshape(cell2mat(generalProperty.tastesColors{clr_i}), 3 ,[])';
     end
 
+    tableToWriteTaste = table;
     for ci = 1:length(classes_Taste)
-        plot(t, mean(mean(X_Taste(:, :, labelsTaste==classes_Taste(ci)),1),3), 'Color',clsColorTaste(ci,:));
+        tableToWriteTaste.(labelsLUTTaste{ci}) = mean(mean(X_Taste(:, :, labelsTaste==classes_Taste(ci)),1),3)';
+        plot(t, tableToWriteTaste.(labelsLUTTaste{ci})', 'Color',clsColorTaste(ci,:));
         hold all;
     end
+    
+
+    % Add All activity average plot
+    averageActivityAllTaste = mean(mean(X_Taste,1),3);
+    tableToWriteTaste.All = averageActivityAllTaste';
+    plot(t, averageActivityAllTaste, 'Color','black');
+    hold all;
     
     xlabel('Time [secs]','FontSize', labelsFontSz);
     placeToneTime(0, 2);
@@ -181,11 +203,14 @@ if strcmp(generalProperty.PelletPertubation, 'Taste')
     set(gca,'XLim', [xlimmin, t(end)]);
 
     ylabel('Average Activity','FontSize', labelsFontSz);
-    leg = legend(labelsLUTTaste);
+    leg = legend([labelsLUTTaste, 'All']);
     set(leg, 'FontSize', labelsFontSz);
     set(leg, 'Location','northeast');
 
     mysave(gcf, fullfile(outputPath, ['averagedActivity' eventsStrTaste]));
+
+    % Add Excel File For Activity Average
+    writetable(tableToWriteTaste,fullfile(outputPath, ['averagedActivityExcel' eventsStrTaste, '.csv']));
 
     
     for ci = 1:length(classes_Taste)
