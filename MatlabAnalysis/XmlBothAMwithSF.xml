@@ -35,22 +35,7 @@
 			<name>0</name>
 		</Trial>
     </TrialsToPut>
-    <analysisParams> 
-        <glm_energyTh>0.15</glm_energyTh>
-        <glmSegments>
-            <seg>
-                <start>-1</start>
-                <end>2</end>
-            </seg>
-            <seg>
-                <start>2</start>
-                <end>5</end>
-            </seg>
-            <seg>
-                <start>5</start>
-                <end>8</end>
-            </seg>
-        </glmSegments>
+    <analysisParams>         
         <glmKinematics>
             <position>true</position>
             <velosity>false</velosity>
@@ -59,30 +44,30 @@
         <glmBehaveEvents>
             <event>
                 <name>tone</name>
-                <type>tone</type>                
+                <type>movement</type>                
             </event>    
             <event>
                 <name>lift</name>
-                <type>lift</type>                
+                <type>movement</type>                
             </event> 
             <event>
                 <name>grab</name>
-                <type>grab</type>               
+                <type>movement</type>               
             </event>                       
             <event>
                 <name>traj</name>
-                <type>traj</type>                
+                <type>movement</type>                
             </event> 
             <event>
                 <name>atmouth</name>
                 <type>reward</type>                
             </event>
-            <event>
-                <name>success</name>
-                <type>reward</type>                
-            </event>
         </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
+        <significantNrns_maxbinnum>2</significantNrns_maxbinnum>
+        <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
+        <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
+        <significantPvalue>0.001</significantPvalue>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
         <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
         <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
