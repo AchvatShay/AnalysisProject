@@ -30,6 +30,8 @@ for trialInd = 1:fileNumRoi
             end
         else
             imagingDatatmp.samples{trialInd}{m} = usrData.strROI{m}.Data(:,2);
+            imagingDatatmp.loc{trialInd}{m} = usrData.strROI{m}.xyInd;
+            
         end
     end
     
@@ -60,17 +62,21 @@ if notthesameNrns
         ind2comb = findIndsLoc(combinds, cell2mat(imagingDatatmp.roiNames{trial_i}));
         for nr = 1:length(ind2comb)
         newImagingData(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{ind2comb(nr)};
+        imagingData.loc(nr, :, :,trial_i) = imagingDatatmp.loc{trial_i}{ind2comb(nr)};
         end
     end
     
     imagingData.roiNames = repmat(combinds(:), 1, length(imagingDatatmp.roiNames));
     imagingData.samples = newImagingData;
+    
+    
 else
    imagingData.roiNames = reshape(cell2mat([imagingDatatmp.roiNames{:}]), length(imagingDatatmp.roiNames{1}),[]);
-    for trial_i = 1:length(imagingDatatmp.roiNames)
-        for nr = 1:length(imagingDatatmp.roiNames{1})
-        imagingData.samples(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{(nr)};
-        end
+   for trial_i = 1:length(imagingDatatmp.roiNames)
+       for nr = 1:length(imagingDatatmp.roiNames{1})
+           imagingData.samples(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{(nr)};
+           imagingData.loc(nr, :, :,trial_i) = imagingDatatmp.loc{trial_i}{nr};
+       end
     end
 end
 
@@ -91,7 +97,6 @@ end
 framNum = size(imagingData.samples,2);
 for eventName_i = 1:length(eventNameList)
     BehaveData.(eventNameList{eventName_i}).indicator = zeros(size(imagingData.samples,3), framNum);
-    BehaveData.(eventNameList{eventName_i}).eventTimeStamps{size(imagingData.samples,3)} = []; 
 end
 
 for trial_i = 1:fileNumRoi
@@ -115,7 +120,6 @@ for trial_i = 1:fileNumRoi
         BehaveData.(eventname).eventTimeStamps{trial_i} = timeInd;
     end
 end
-
 NAMES = fieldnames(BehaveData);
 for name_i  =1:length(NAMES)
     [I,~] = find(BehaveData.(NAMES{name_i}).indicator);
@@ -164,29 +168,10 @@ end
 if isfield(BdaTpaList, 'traj')
 for k = 1:length(BdaTpaList)
     C = xlsread(BdaTpaList(k).traj);
-    
-    if (generalProperty.do_Plot3DTraj)
-        [~, ~, excelDataRaw] = xlsread(BdaTpaList(k).traj);
-    
-        [~, handFrontCol] = find(strcmp(excelDataRaw, 'HandFront'));   
-        [~, handSideCol] = find(strcmp(excelDataRaw, 'HandSide'));
-    else
-        handFrontCol = [2, 3];
-        handSideCol = [5, 6];
-    end
-    
-    BehaveData.traj.data(1,:,k) = C(:,handFrontCol(1));
-    BehaveData.traj.data(2,:,k) = C(:,handFrontCol(2));
-    BehaveData.traj.data(3,:,k) = C(:,handSideCol(1));
-    BehaveData.traj.data(4,:,k) = C(:,handSideCol(2));
-    
-    if length(handFrontCol) > 2
-%         likelhood
-        BehaveData.traj.data(5,:,k) = C(:,handFrontCol(3));
-        BehaveData.traj.data(6,:,k) = C(:,handSideCol(3));
-    end
-            
-    
+    BehaveData.traj.data(1,:,k) = C(:,2);
+    BehaveData.traj.data(2,:,k) = C(:,3);
+    BehaveData.traj.data(3,:,k) = C(:,5);
+    BehaveData.traj.data(4,:,k) = C(:,6);
     clear C;
 end
 end

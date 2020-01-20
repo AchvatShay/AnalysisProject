@@ -28,8 +28,8 @@ SEM = SVMsingle.raw.acc.std/sqrt(trialsNum);               % Standard Error
 ts = tinv(.9, (trialsNum)-1);      % T-Score
 ts1 = tinv(0.98, (trialsNum)-1);      % T-Score
 
-% isindicative5 = SVMsingle.raw.acc.mean-ts*SEM > chanceLevel;
-% isindicative1 = SVMsingle.raw.acc.mean-ts1*SEM > chanceLevel;
+isindicative5 = SVMsingle.raw.acc.mean-ts*SEM > chanceLevel;
+isindicative1 = SVMsingle.raw.acc.mean-ts1*SEM > chanceLevel;
 t = linspace(0, generalProperty.Duration, size(data4Svm, 2));
 % to run only on two label clustering
 classes = unique(labels);
@@ -138,3 +138,23 @@ mysave(gcf, fullfile(outputPath, ['indicativeNrs1percent' foldstr linstr eventsS
 % dataIndicative.roiNames = imagingData.roiNames;
 % delay2events([outputPath 'Indicative5'], generalProperty4indicative, dataIndicative, BehaveData)
 % end
+loclabels1 = zeros(size(imagingData.samples,1),1);
+loclabels5 = zeros(size(imagingData.samples,1),1);
+for nrni = 1:size(imagingData.samples,1)
+    if any(isindicative5(nrni, tmid >= generalProperty.indicativeNrnsMeanStartTime & tmid <=generalProperty.indicativeNrnsMeanEndTime))
+        loclabels5(nrni) = 1;
+        
+    end
+    if any(isindicative1(nrni, tmid >= generalProperty.indicativeNrnsMeanStartTime & tmid <=generalProperty.indicativeNrnsMeanEndTime))
+        loclabels1(nrni) = 1;
+        
+    end
+end
+cent = plotLocationByLabels(imagingData.loc, loclabels5);
+title('Blue - Indicativee by 5%; Black - Rest');
+
+mysave(gcf, fullfile(outputPath, ['Location_significantNrs5percent'  eventsStr]));
+cent = plotLocationByLabels(imagingData.loc, loclabels1);
+title('Blue - Indicativee by 1%; Black - Rest');
+
+mysave(gcf, fullfile(outputPath, ['Location_significantNrs1percent'  eventsStr]));

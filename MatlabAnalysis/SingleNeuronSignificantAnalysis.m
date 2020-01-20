@@ -70,9 +70,22 @@ if length(classes) == 2
     a=get(gcf,'Children');
     setAxisFontSz(a(end), labelsFontSz);
     mysave(gcf, fullfile(outputPath, ['significantNrs' num2str(pvalueth*100) 'percent'  eventsStr]));
-    
+     
+     loclabels = zeros(size(imagingData.samples,1),1);
+    for nrni = 1:size(imagingData.samples,1)
+    if any(H(nrni, tmid >= generalProperty.significantNrnsMeanStartTime & tmid <=generalProperty.significantNrnsMeanEndTime))
+        loclabels(nrni) = 1;
+        
+    end
+    end
+    cent = plotLocationByLabels(imagingData.loc, loclabels);
+    mysave(gcf, fullfile(outputPath, ['Location_significantNrs' num2str(pvalueth*100) 'percent'  eventsStr]));
+% 
+%     [ acc, accrand, scoresall, scoresallrand, confMat, confMatrand, ...
+%     accclasses, accclassesrand, Yhat, SVMModel] = svmClassifyAndRand(cent, loclabels, loclabels, 10, 'temp', 1, 0);
     
    
+    end
     
     
 %     disp('delay2events');
