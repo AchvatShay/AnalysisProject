@@ -14,6 +14,7 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         [Pearson_r_order{index_events}, Pearson_p_order] = corr(X_order, 'type', 'Pearson');
         [Spearman_r_order{index_events}, Spearman_p_order] = corr(X_order, 'type', 'Spearman');
 
+        
         X_timing = [self.timing', selfBymaster.masterTiming'];
         [kendall_r_t{index_events}, kendall_p_t] = corr(X_timing, 'type', 'kendall');
         [Pearson_r_t{index_events}, Pearson_p_t] = corr(X_timing, 'type', 'Pearson');
@@ -216,5 +217,7 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         sc.UserData = [selfBymaster.neuronesNames', selfBymaster.masterLocation'];
           
         mysave(fig, fullfile(outputPath, ['activation_order_SelfVSMaster'  self_eventName 'By' self_alignedEventName 'Method_' generalProperty.orderMethod '_plot']));
+    
+        calculateOrderTimingAnalysis(self.timing, self.neuronsName, selfBymaster.masterTiming, selfBymaster.neuronesNames, self_eventName, self_alignedEventName, generalProperty.orderMethod, outputPath, tNew);
     end
 end

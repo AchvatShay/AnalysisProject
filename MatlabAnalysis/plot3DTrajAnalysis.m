@@ -18,14 +18,55 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
     for event_i = 1:length(generalProperty.traj3DLabels)
         eventsL{event_i} = NAMES_BEHAVE(contains(NAMES_BEHAVE, generalProperty.traj3DLabels{event_i}));
     end
+    
+        fig6 = figure;
+        axes6 = axes('Parent',fig6);
+        hold(axes6,'on');   
+        view(3);
+        grid(axes6,'on');
+        axis(axes6,'ij');
+        xlim([-50, 350]);
+        ylim([-50, 350]);
+        zlim([-200,50]);
+        
+        set(axes6,'ZDir','reverse');
+
+        fig7 = figure;
+        axes7 = axes('Parent',fig7);
+        hold(axes7,'on');   
+        grid(axes7,'on');
+        axis(axes7,'ij');
+        xlim([-50, 350]);
+        ylim([-50, 350]);
+        set(axes7,'YDir','normal');
+
+
+        fig8 = figure;
+        axes8 = axes('Parent',fig8);
+        hold(axes8,'on');   
+        grid(axes8,'on');
+        axis(axes8,'ij');
+        xlim([-50, 350]);
+        ylim([-200,50]);
+        
+        fig9 = figure;
+        axes9 = axes('Parent',fig9);
+        hold(axes9,'on');   
+        grid(axes9,'on');
+        axis(axes9,'ij');
+        xlim([-50, 350]);
+        ylim([-200,50]);
+        
        
      for index_events = 0:length(classes)
         if index_events == 0
             trails_list = examinedInds;
             eventName = 'all';
+            eventColor = 'black';
         else
             trails_list = examinedInds(labels==classes(index_events));
             eventName = labelsLUT{index_events};
+            eventColor = generalProperty.labels2clusterClrs{index_events}{1};
         end
         
         fig = figure;
@@ -34,7 +75,10 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
         view(3);
         grid(axes1,'on');
         axis(axes1,'ij');
-
+        xlim([-50, 350]);
+        ylim([-50, 350]);
+        zlim([-200,50]);
+        
         set(axes1,'ZDir','reverse');
 
 %         xlim([0 600]);
@@ -44,18 +88,26 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
         hold(axes2,'on');   
         grid(axes2,'on');
         axis(axes2,'ij');
+        xlim([-50, 350]);
+        ylim([-50, 350]);
+        set(axes2,'YDir','normal');
+
 
         fig3 = figure;
         axes3 = axes('Parent',fig3);
         hold(axes3,'on');   
         grid(axes3,'on');
         axis(axes3,'ij');
+        xlim([-50, 350]);
+        ylim([-200,50]);
         
         fig4 = figure;
         axes4 = axes('Parent',fig4);
         hold(axes4,'on');   
         grid(axes4,'on');
         axis(axes4,'ij');
+        xlim([-50, 350]);
+        ylim([-200,50]);
         
         fig5 = figure;
         axes5 = axes('Parent',fig5);
@@ -63,9 +115,11 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
         view(3);
         grid(axes5,'on');
         axis(axes5,'ij');
-
-        set(axes5,'ZDir','reverse');
-
+        xlim([-50, 350]);
+        ylim([-50, 350]);
+        zlim([-200,50]);
+        
+        set(axes5,'ZDir','reverse');        
 %         xlim([0 600]);
      
         
@@ -81,8 +135,8 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
         
         BehaveData.traj.data(1, :, :) = BehaveData.traj.data(1, :, :) - 400; 
         
-        average_traj = zeros(3, 101);
-        trailsincludscount = zeros(1, 101);
+        average_traj = zeros(3, 121);
+        trailsincludscount = zeros(1, 121);
 %         trailsincludscount = 0;
         
         for trails_i = 1:length(trails_list)
@@ -90,16 +144,20 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
             alignedEvent = NAMES_BEHAVE(contains(NAMES_BEHAVE, 'lift'));
             startTimeIndex = findClosestDouble(t, generalProperty.traj3D_startTime);
             
-            framesSelected =  startTimeIndex : startTimeIndex + 100;
-    
+%             framesSelected =  startTimeIndex : startTimeIndex + 150;
+            framesSelected = [];
             for indexE = 1:length(alignedEvent)
                 event_time = BehaveData.(alignedEvent{indexE}).eventTimeStamps{trails_list(trails_i)};
                 event_time = round((event_time .* frameRateRatio) + generalProperty.BehavioralDelay); 
                     
-                if (~isempty(event_time) && event_time(1) > startTimeIndex)
-                    framesSelected = event_time(1) : (event_time(1) + 100);
+                if (~isempty(event_time) && event_time(1) >= startTimeIndex && (event_time(1) + 120) <= size(BehaveData.traj.data, 2))
+                    framesSelected = event_time(1) : (event_time(1) + 120);
                     break;
                 end
+            end
+            
+            if isempty(framesSelected)
+                continue;
             end
             
             indexAcordingToLikelyhood = BehaveData.traj.data(5, framesSelected, trails_list(trails_i)) < 0.9 | BehaveData.traj.data(6, framesSelected, trails_list(trails_i)) < 0.9;            
@@ -163,19 +221,25 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
            
         end
         
-        average_goodframes = trailsincludscount > (length(trails_list) * 0.8);
+        average_goodframes = trailsincludscount > (length(trails_list) * 0.5);
         
         average_traj(1, :) = average_traj(1, :) ./ trailsincludscount;  
         average_traj(2, :) = average_traj(2, :) ./ trailsincludscount;  
         average_traj(3, :) = average_traj(3, :) ./ trailsincludscount;  
         
-%         plot3(axes1, average_traj(1, average_goodframes), average_traj(2, average_goodframes),  average_traj(3, average_goodframes),'color', 'black', 'LineWidth', 2.0, 'HandleVisibility','off');
+        plot3(axes1, average_traj(1, average_goodframes), average_traj(2, average_goodframes),  average_traj(3, average_goodframes),'color', 'black', 'LineWidth', 2.0, 'HandleVisibility','off');
         plot3(axes5, average_traj(1, average_goodframes), average_traj(2, average_goodframes),  average_traj(3, average_goodframes),'color', 'black', 'LineWidth', 2.0, 'HandleVisibility','off');
+        plot3(axes6, average_traj(1, average_goodframes), average_traj(2, average_goodframes),  average_traj(3, average_goodframes),'color', eventColor, 'LineWidth', 2.0, 'HandleVisibility','off');
         
         plot(axes2, average_traj(1, average_goodframes), average_traj(2, average_goodframes), 'color', 'black', 'LineWidth', 2.0, 'HandleVisibility','off');
         plot(axes3, average_traj(2, average_goodframes), average_traj(3, average_goodframes), 'color', 'black', 'LineWidth', 2.0, 'HandleVisibility','off');
         plot(axes4, average_traj(1, average_goodframes), average_traj(3, average_goodframes), 'color', 'black', 'LineWidth', 2.0, 'HandleVisibility','off');
-%           
+%       
+
+        plot(axes7, average_traj(1, average_goodframes), average_traj(2, average_goodframes), 'color', eventColor, 'LineWidth', 2.0, 'HandleVisibility','off');
+        plot(axes8, average_traj(2, average_goodframes), average_traj(3, average_goodframes), 'color', eventColor, 'LineWidth', 2.0, 'HandleVisibility','off');
+        plot(axes9, average_traj(1, average_goodframes), average_traj(3, average_goodframes), 'color', eventColor, 'LineWidth', 2.0, 'HandleVisibility','off');
+%       
         
         mysave(fig, fullfile(outputPath, ['traj_colors_alignedtoevent' 'lift' '_event'  eventName]));
         mysave(fig2, fullfile(outputPath, ['traj_2D(1,2)colors_alignedtoevent' 'lift' '_event'  eventName]));
@@ -183,4 +247,10 @@ function plot3DTrajAnalysis(outputPath, generalProperty, imagingData, BehaveData
         mysave(fig4, fullfile(outputPath, ['traj_2D(1,3)colors_alignedtoevent' 'lift' '_event'  eventName]));
         mysave(fig5, fullfile(outputPath, ['traj_alignedtoevent' 'lift' '_event'  eventName]));
      end
+     
+     
+        mysave(fig6, fullfile(outputPath, ['averageTraj_alignedtoevent' 'lift']));
+        mysave(fig7, fullfile(outputPath, ['averageTraj_2D(1,2)_alignedtoevent' 'lift']));
+        mysave(fig8, fullfile(outputPath, ['averageTraj_2D(2,3)_alignedtoevent' 'lift']));
+        mysave(fig9, fullfile(outputPath, ['averageTraj_2D(1,3)_alignedtoevent' 'lift']));
 end

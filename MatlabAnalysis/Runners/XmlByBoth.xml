@@ -29,22 +29,18 @@
       
 	</NeuronesToPut>
 	<TrialsToPut>
-		<Trial>
-			<name>0</name>
-		</Trial>
-		<Trial>
-			<name>0</name>
-		</Trial>
+		
     </TrialsToPut>
     <analysisParams>
         <startTimeGrabCountHis>4</startTimeGrabCountHis>
         <endTimeGrabCountHis>6</endTimeGrabCountHis>
         <!--1:20;56:70;71:71;1:end-->
+        <!--<TrailsToRun>3:3;6:6;13:14;23:26;29:30;32:32;34:42;46:51;57:57;59:61;66:69</TrailsToRun>-->
         <TrailsToRun>1:end</TrailsToRun>
         <do_Plot3DTraj>true</do_Plot3DTraj>
         <plotTraj3D>
             <startTime>4</startTime>
-            <endTime>9</endTime>
+            <endTime>6</endTime>
             <trajLabels>
                 <Traj>			
                     <name>lift</name>
@@ -65,7 +61,7 @@
         </plotTraj3D>
         <orderAnalysis>
             <!--choose master result file order for Order By master-->
-            <orderActivationFileLocation>C:\Users\User\Dropbox (Technion Dropbox)\Shahar\learning project\experiments\results\Den7\Order\4_12_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
+            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\Shahar\learning project\experiments\results\Den7\Order\4_12_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
             <min_points_above_baseline>3</min_points_above_baseline>
             <AlignedOrderByDataAccordingToEvent>
                 <EventName></EventName>
@@ -135,8 +131,12 @@
         </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
-        <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
+        <indicativeNrnsMeanStartTime>-4</indicativeNrnsMeanStartTime>
         <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
+        <significantNrns_maxbinnum>2</significantNrns_maxbinnum>
+        <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
+        <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
+        <significantPvalue>0.001</significantPvalue>        
         <successLabel>success</successLabel> 
         <failureLabel>failure</failureLabel>
         <prevcurrlabels2cluster>
