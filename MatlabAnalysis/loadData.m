@@ -75,7 +75,7 @@ else
    for trial_i = 1:length(imagingDatatmp.roiNames)
        for nr = 1:length(imagingDatatmp.roiNames{1})
            imagingData.samples(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{(nr)};
-           imagingData.loc(nr, :, :,trial_i) = imagingDatatmp.loc{trial_i}{nr};
+           imagingData.loc{nr}(:, :,trial_i) = imagingDatatmp.loc{trial_i}{nr};
        end
     end
 end
