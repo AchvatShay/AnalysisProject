@@ -83,6 +83,7 @@
             <data_downsamples_FWHM>3</data_downsamples_FWHM>
             <EventName>tone</EventName>
         </FWHMAnalysis>
+        <glm_facial_features_dim>20</glm_facial_features_dim>
         <glm_energyTh>0.15</glm_energyTh>
         <glmSegments>
             <seg>
@@ -128,6 +129,14 @@
                 <name>atmouth</name>
                 <type>atmouth</type>
             </event>
+            <event>
+                <name>leftface</name>
+                <type>facemap</type>
+            </event>
+            <event>
+                <name>rightface</name>
+                <type>facemap</type>
+            </event>
         </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
@@ -136,6 +145,7 @@
         <significantNrns_maxbinnum>2</significantNrns_maxbinnum>
         <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
         <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
+        <locations_stripesNum>5</locations_stripesNum>
         <significantPvalue>0.001</significantPvalue>        
         <successLabel>success</successLabel> 
         <failureLabel>failure</failureLabel>

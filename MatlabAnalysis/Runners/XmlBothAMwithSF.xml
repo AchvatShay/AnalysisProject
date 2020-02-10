@@ -83,6 +83,10 @@
             </event>
         </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
+        <significantNrns_maxbinnum>2</significantNrns_maxbinnum>
+        <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
+        <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
+        <significantPvalue>0.001</significantPvalue>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
         <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
         <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>

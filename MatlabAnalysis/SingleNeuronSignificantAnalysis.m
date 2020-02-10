@@ -78,7 +78,17 @@ if length(classes) == 2
         
     end
     end
-    cent = plotLocationByLabels(imagingData.loc, loclabels);
+    [estimateX, estimateY] = plotLocationByLabels(imagingData.loc, loclabels, generalProperty.locations_stripesNum);
+    fid = fopen(fullfile(outputPath, ['significant_report'   eventsStr '.txt']), 'a');
+    fprintf(fid, 'location mean stats - stripes along x axis location: mean: %2.3f std: %2.3f\n',...
+        estimateX.meanRatio, estimateX.stdRatio);
+fprintf(fid, 'location mean stats - stripes along y axis location: mean: %2.3f std: %2.3f\n',...
+        estimateY.meanRatio, estimateY.stdRatio);
+fprintf(fid, 'location regression stats - stripes along x axis location: constant: %2.3f slope: %2.3f R2 %f with p %2.3f\n',...
+        estimateX.constant, estimateX.slope, estimateX.Rsquare.Ordinary, estimateX.pvalue);
+ fprintf(fid, 'location regression stats - stripes along y axis location: constant: %2.3f slope: %2.3f R2 %f with p %2.3f\n',...
+        estimateY.constant, estimateY.slope, estimateY.Rsquare.Ordinary, estimateY.pvalue);
+   fclose(fid);
     mysave(gcf, fullfile(outputPath, ['Location_significantNrs' num2str(pvalueth*100) 'percent'  eventsStr]));
 % 
 %     [ acc, accrand, scoresall, scoresallrand, confMat, confMatrand, ...

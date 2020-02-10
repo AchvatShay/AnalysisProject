@@ -98,6 +98,7 @@ classdef Experiment %< handle
         significantNrnsMeanEndTime = 8;
         significantNrns_maxbinnum = 2;
         significantPvalue = 0.001;
+        locations_stripesNum = 5;
         glm_events_names= {};
         glm_events_types= {};
        
@@ -106,10 +107,12 @@ classdef Experiment %< handle
         glmKinematics_acc = false;
         glmSeg=[];
         glm_energyTh = .8;
+        glm_facial_features_dim = 20;
     end
     methods
-        function obj = Experiment(xmlfile)
+        function obj = Experiment(xmlfile)            
             xmlstrct = xml2struct(xmlfile);
+            obj.glm_facial_features_dim = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_facial_features_dim.Text);
             obj.glm_energyTh = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_energyTh.Text);
             for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg)
                 obj.glmSeg(1,k) = str2double(   xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.start.Text);
@@ -129,6 +132,7 @@ classdef Experiment %< handle
                obj.glm_events_names{k} = xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event{k}.name.Text; 
                obj.glm_events_types{k} = xmlstrct.GeneralProperty.Experiment.analysisParams.glmBehaveEvents.event{k}.type.Text; 
             end
+            obj.locations_stripesNum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.locations_stripesNum.Text);
             obj.significantNrns_maxbinnum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantNrns_maxbinnum.Text);
             obj.significantNrnsMeanStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantNrnsMeanStartTime.Text);
             obj.significantNrnsMeanEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantNrnsMeanEndTime.Text);

@@ -165,8 +165,8 @@ switch generalProperty.DetermineSucFailBy
     case 'both'
         % do nothing
 end
-
 if isfield(BdaTpaList, 'traj')
+    
 for k = 1:length(BdaTpaList)
     C = xlsread(BdaTpaList(k).traj);
     
@@ -193,7 +193,16 @@ for k = 1:length(BdaTpaList)
             
     
     clear C;
+    
 end
+T = size(BehaveData.traj.data,2);
+    filefacemap = fullfile(fileparts(fileparts(BdaTpaList(1).traj)),'facemap.mat');
+    if exist(filefacemap, 'file')
+        res = load(filefacemap);
+
+        BehaveData.faceMapR = reshape(res.proc.motSVD{2}.', size(res.proc.motSVD{2},2), T, []);
+        BehaveData.faceMapL = reshape(res.proc.motSVD{3}.', size(res.proc.motSVD{3},2), T, []);
+    end
 end
 
 

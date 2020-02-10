@@ -13,6 +13,44 @@ for ei = 1:length(eventsnames)
                 ones(tsize,1)).';
             X.name{end+1} = successLabel;
             X.type(end+1) = find(strcmp('reward', types));
+        case 'leftface'
+            datasvm = BehaveData.faceMapL(:, timeindsTraj, :);
+            t = linspace(0, 1, tsize);
+            ttraj = linspace(0, 1, size(timeindsTraj, 2));
+            for T = 1:length(trialsinds)
+                if trialsinds(T) == true
+                    for di = 1:generalProperty.glm_facial_features_dim
+                        traj_sampled(di, :, T) = interp1(ttraj, datasvm(di, :, T), t);
+                    end
+                end
+            end
+            traj_sampled = traj_sampled(:,:,trialsinds == true);
+            for di = 1:size(traj_sampled,1)
+                indicatorMat = squeeze(traj_sampled(di,:,:))';
+                X.filt{end+1} = indicatorMat;
+                X.name{end+1} = [eventsnames{ei} num2str(di)];
+                X.type(end+1) = find(strcmp(eventtypes{ei}, types));
+                
+            end
+        case 'rightface'
+            datasvm = BehaveData.faceMapR(:, timeindsTraj, :);
+            t = linspace(0, 1, tsize);
+            ttraj = linspace(0, 1, size(timeindsTraj, 2));
+            for T = 1:length(trialsinds)
+                if trialsinds(T) == true
+                    for di = 1:generalProperty.glm_facial_features_dim
+                        traj_sampled(di, :, T) = interp1(ttraj, datasvm(di, :, T), t);
+                    end
+                end
+            end
+            traj_sampled = traj_sampled(:,:,trialsinds == true);
+            for di = 1:size(traj_sampled,1)
+                indicatorMat = squeeze(traj_sampled(di,:,:))';
+                X.filt{end+1} = indicatorMat;
+                X.name{end+1} = [eventsnames{ei} num2str(di)];
+                X.type(end+1) = find(strcmp(eventtypes{ei}, types));
+                
+            end
         case 'traj'
             datatraj = BehaveData.(eventsnames{(ei)}).data(:, timeindsTraj, :);
             t = linspace(0, 1, tsize);

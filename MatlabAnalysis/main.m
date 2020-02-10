@@ -1,6 +1,10 @@
-function BdaTpaList = main(pth, outputPath, Trials2keep, pthTraj)
-
+function BdaTpaList = main(pth, outputPath, Trials2keep, pthTraj, xmlfile, movpath)
+if ~exist('xmlfile','var')
 xmlfile = 'XmlBoth.xml';
+end
+if ~exist('movpath','var')
+    movpath=[];
+end
 % xmlfile = 'XmlD54.xml';
 % xmlfile = 'XmlPT3_1nrn.xml';
 % xmlfile = 'XmlPT3_nonrns.xml';
@@ -19,8 +23,8 @@ if nargin == 2 || isempty(Trials2keep)
 end
 l = 1;
 for k=Trials2keep
-    BdaTpaList(l).TPA = fullfile(filesTPA(1).folder, filesTPA(k).name);
-    BdaTpaList(l).BDA = fullfile(filesBDA(1).folder, filesBDA(k).name);
+    BdaTpaList(l).TPA = fullfile(pth, filesTPA(k).name);
+    BdaTpaList(l).BDA = fullfile(pth, filesBDA(k).name);
     l = l + 1;
 end
 % if length(filesTRK) == length(filesTPA)
@@ -32,23 +36,43 @@ end
 %         l = l + 1;
 %     end
 % end
+try
 if exist('pthTraj', 'var') && ~isempty(pthTraj)
 filesEPC = dir([pthTraj]);
-if length(filesEPC) > 2 && length(filesEPC) == length(filesTPA) + 2
+if length(filesEPC) > 2 && length(filesEPC) >= length(filesTPA) + 2
     l = 1;
     for k=Trials2keep
         filecsv = dir(fullfile(pthTraj,  filesEPC(k+2).name, '*.csv'));
-        BdaTpaList(l).traj = fullfile(filecsv.folder, filecsv.name);
+        BdaTpaList(l).traj = fullfile(pthTraj, filesEPC(k+2).name, filecsv(1).name);
         l = l + 1;
     end
 end
- 
 end
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events');
+catch
+    BdaTpaList = getTrajFiles(BdaTpaList, pthTraj, '');
 
+end
+if ~isempty(movpath)
+    dirlist = dir(movpath);
+    l=1;
+    for diri = 3:length(dirlist)
+        currfile = fullfile(movpath, dirlist(diri).name, 'movie_comb.avi');
+        if exist(currfile, 'file')
+            BdaTpaList(l).mov = currfile;
+        else
+          BdaTpaList(l).mov = '';
+        end
+        l = l +1;
+    end
+end
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis');
 
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
+%runAnalysis(outputPath, xmlfile, BdaTpaList, 'behaveMovieAnalysis');
+
+%runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis');
+%runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
+
+return;
 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
 
