@@ -65,11 +65,11 @@ if ~isempty(movpath)
         l = l +1;
     end
 end
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis');
+% runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis');
 
 %runAnalysis(outputPath, xmlfile, BdaTpaList, 'behaveMovieAnalysis');
 
-%runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis');
+runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis');
 %runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
 
 return;

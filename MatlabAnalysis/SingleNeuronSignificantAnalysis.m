@@ -94,10 +94,12 @@ fprintf(fid, 'ratios in stripes along y axis location: %2.3f \n',...
         estimateY.ratio);
    fclose(fid);
     mysave(gcf, fullfile(outputPath, ['Location_significantNrs' num2str(pvalueth*100) 'percent'  eventsStr]));
-% 
+figure;subplot(2,1,1);plot(estimateX.ratio);title('Ratio vs X location');
+subplot(2,1,2);plot(estimateY.ratio);title('Ratio vs Y location');
+mysave(gcf, fullfile(outputPath, 'RatioOfSignificantVsStrips'));
 %     [ acc, accrand, scoresall, scoresallrand, confMat, confMatrand, ...
 %     accclasses, accclassesrand, Yhat, SVMModel] = svmClassifyAndRand(cent, loclabels, loclabels, 10, 'temp', 1, 0);
-    
+  
   
     end
     
