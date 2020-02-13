@@ -88,13 +88,17 @@ fprintf(fid, 'location regression stats - stripes along x axis location: constan
         estimateX.constant, estimateX.slope, estimateX.Rsquare.Ordinary, estimateX.pvalue);
  fprintf(fid, 'location regression stats - stripes along y axis location: constant: %2.3f slope: %2.3f R2 %f with p %2.3f\n',...
         estimateY.constant, estimateY.slope, estimateY.Rsquare.Ordinary, estimateY.pvalue);
+fprintf(fid, 'ratios in stripes along x axis location: %2.3f \n',...
+        estimateX.ratio);
+fprintf(fid, 'ratios in stripes along y axis location: %2.3f \n',...
+        estimateY.ratio);
    fclose(fid);
     mysave(gcf, fullfile(outputPath, ['Location_significantNrs' num2str(pvalueth*100) 'percent'  eventsStr]));
 % 
 %     [ acc, accrand, scoresall, scoresallrand, confMat, confMatrand, ...
 %     accclasses, accclassesrand, Yhat, SVMModel] = svmClassifyAndRand(cent, loclabels, loclabels, 10, 'temp', 1, 0);
     
-   
+  
     end
     
     

@@ -47,7 +47,7 @@ estimateX.constant = LMx.Coefficients.Estimate(1);
 estimateX.slope = LMx.Coefficients.Estimate(2);
 estimateX.Rsquare = LMx.Rsquared;
 estimateX.pvalue = LMx.coefTest;
-
+estimateX.ratio = ratiox;
 LMy = fitlm(yborders(1:end-1),ratioy);
 estimateY.constant = LMy.Coefficients.Estimate(1);
 estimateY.slope = LMy.Coefficients.Estimate(2);
@@ -57,3 +57,4 @@ estimateX.meanRatio = mean(ratiox);
 estimateY.meanRatio = mean(ratioy);
 estimateX.stdRatio = std(ratiox);
 estimateY.stdRatio = std(ratioy);
+estimateY.ratio = ratioy;
