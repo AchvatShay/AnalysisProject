@@ -9,8 +9,8 @@ duration = generalProperty.Duration;
 data4Svm = imagingData.samples(:, :, examinedInds);
 
 foldstr = ['folds' num2str(foldsnum)];
-
-pvalueth = generalProperty.significantPvalue;
+for pii = 1:length(generalProperty.significantPvalues)
+pvalueth = generalProperty.significantPvalues(pii);
 
 t = linspace(0, generalProperty.Duration, size(data4Svm, 2));
 tmid = (winendSec + winstSec)/2;
@@ -96,14 +96,14 @@ fprintf(fid, 'ratios in stripes along y axis location: %2.3f \n',...
     mysave(gcf, fullfile(outputPath, ['Location_significantNrs' num2str(pvalueth*100) 'percent'  eventsStr]));
 figure;subplot(2,1,1);plot(estimateX.ratio);title('Ratio vs X location');
 subplot(2,1,2);plot(estimateY.ratio);title('Ratio vs Y location');
-mysave(gcf, fullfile(outputPath, 'RatioOfSignificantVsStrips'));
+mysave(gcf, fullfile(outputPath, ['RatioOfSignificantVsStrips' num2str(pvalueth*100)]));
 %     [ acc, accrand, scoresall, scoresallrand, confMat, confMatrand, ...
 %     accclasses, accclassesrand, Yhat, SVMModel] = svmClassifyAndRand(cent, loclabels, loclabels, 10, 'temp', 1, 0);
   
   
     end
     
-    
+end
 %     disp('delay2events');
 %     generalProperty4indicative = generalProperty;
 %     generalProperty4indicative.Neurons2plot = [];

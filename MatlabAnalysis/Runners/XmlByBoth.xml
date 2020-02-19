@@ -142,11 +142,18 @@
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
         <indicativeNrnsMeanStartTime>-4</indicativeNrnsMeanStartTime>
         <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
+        <indicativePvalue>
+            <val>0.001</val>
+            <val>0.05</val>
+        </indicativePvalue> 
         <significantNrns_maxbinnum>2</significantNrns_maxbinnum>
         <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
         <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
         <locations_stripesNum>5</locations_stripesNum>
-        <significantPvalue>0.001</significantPvalue>        
+        <significantPvalue>
+            <val>0.001</val>
+            <val>0.05</val>
+        </significantPvalue>        
         <successLabel>success</successLabel> 
         <failureLabel>failure</failureLabel>
         <prevcurrlabels2cluster>

@@ -94,10 +94,12 @@ classdef Experiment %< handle
         indicativeNrnsMeanStartTime = 0;
         indicativeNrnsMeanEndTime = 8;
         indicativeNrns_maxbinnum = 2;
+        indicativePvalues = [0.05 0.01 0.001];
+
         significantNrnsMeanStartTime = 0;
         significantNrnsMeanEndTime = 8;
         significantNrns_maxbinnum = 2;
-        significantPvalue = 0.001;
+        significantPvalues = [0.05 0.01 0.001];
         locations_stripesNum = 5;
         glm_events_names= {};
         glm_events_types= {};
@@ -136,11 +138,17 @@ classdef Experiment %< handle
             obj.significantNrns_maxbinnum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantNrns_maxbinnum.Text);
             obj.significantNrnsMeanStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantNrnsMeanStartTime.Text);
             obj.significantNrnsMeanEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantNrnsMeanEndTime.Text);
-            obj.significantPvalue = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantPvalue.Text);
-            
+            obj.significantPvalues = zeros(length(xmlstrct.GeneralProperty.Experiment.analysisParams.significantPvalue.val),1);
+            for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.significantPvalue.val)
+            obj.significantPvalues(k) = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.significantPvalue.val{k}.Text);
+            end
             obj.indicativeNrns_maxbinnum = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrns_maxbinnum.Text);
             obj.indicativeNrnsMeanStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanStartTime.Text);
             obj.indicativeNrnsMeanEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeNrnsMeanEndTime.Text);
+            obj.indicativePvalues = zeros(length(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativePvalue.val),1);
+            for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativePvalue.val)
+            obj.indicativePvalues(k) = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.indicativePvalue.val{k}.Text);
+            end
             obj.visualization_bestpcatrajectories2plot = str2double(xmlstrct.GeneralProperty.Experiment.visualization.bestpcatrajectories2plot.Text);
             obj.successLabel = xmlstrct.GeneralProperty.Experiment.analysisParams.successLabel.Text;
             obj.failureLabel = xmlstrct.GeneralProperty.Experiment.analysisParams.failureLabel.Text;
