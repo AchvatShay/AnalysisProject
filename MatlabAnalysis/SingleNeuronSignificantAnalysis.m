@@ -34,8 +34,8 @@ end
 % visualize
 labelsFontSz = generalProperty.visualization_labelsFontSize;
 toneTime = generalProperty.ToneTime;
-time2st = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanStartTime);
-time2end = findClosestDouble(tmid-toneTime, generalProperty.indicativeNrnsMeanEndTime);
+time2st = findClosestDouble(tmid-toneTime, generalProperty.significantNrnsMeanStartTime);
+time2end = findClosestDouble(tmid-toneTime, generalProperty.significantNrnsMeanEndTime);
 maxbinnum = generalProperty.indicativeNrns_maxbinnum;
 
 % [behaveHist, allbehave]= getHistEventsByDynamicLabels(generalProperty, BehaveData, generalProperty.Events2plot, examinedInds);
