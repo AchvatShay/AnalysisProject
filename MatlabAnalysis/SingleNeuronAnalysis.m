@@ -84,7 +84,7 @@ for pii = 1:length(pvalues)
     
     title('Blue - Indicativee by 5%; Black - Rest');
     
-    mysave(gcf, fullfile(outputPath, ['Location_indicativeNrs' 100*pvalues(pii) 'percent'  eventsStr]));
+    mysave(gcf, fullfile(outputPath, ['Location_indicativeNrs' num2str(100*pvalues(pii)) 'percent'  eventsStr]));
     
     
     
