@@ -58,11 +58,12 @@ if notthesameNrns
     end
     combinds = setdiff(combinds, 0);% avoid zero which is a place holder
     newImagingData = zeros(length(combinds), length(imagingDatatmp.samples{1}{1} ), length(imagingDatatmp.samples));
+    ind2comb = findIndsLoc(combinds, cell2mat(imagingDatatmp.roiNames{1}));
+    imagingData.loc(:, :, :) = imagingDatatmp.loc{1}(ind2comb);
     for trial_i = 1:length(imagingDatatmp.roiNames)
         ind2comb = findIndsLoc(combinds, cell2mat(imagingDatatmp.roiNames{trial_i}));
         for nr = 1:length(ind2comb)
         newImagingData(nr, :, trial_i) = imagingDatatmp.samples{trial_i}{ind2comb(nr)};
-        imagingData.loc(nr, :, :,trial_i) = imagingDatatmp.loc{trial_i}{ind2comb(nr)};
         end
     end
     
