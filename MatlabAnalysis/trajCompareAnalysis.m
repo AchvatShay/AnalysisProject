@@ -36,7 +36,7 @@ function trajCompareAnalysis(outputPath, generalProperty, imagingData, BehaveDat
     avg_front_tone = sum_front_tone ./ trajSize;
     avg_side_tone = sum_side_tone ./ trajSize;
     
-    tableSave = table(avg_front_zero, avg_side_zero, avg_front_tone, avg_side_tone, 'VariableNames',  {'Front_Zero_Time', 'Side_Zero_Time', 'Front_Tone_Time', 'Side_Tone_Time'});
+    tableSave = table(avg_front_zero, avg_side_zero, avg_front_tone, avg_side_tone, 'VariableNames',  {'Front_Zero_PeriTime', 'Side_Zero_PeriTime', 'Front_Tone_PeriTime', 'Side_Tone_PeriTime'});
     writetable(tableSave,[outputPath '\compareResults.xlsx'],'Sheet',1,'Range','D1')
 end
 
