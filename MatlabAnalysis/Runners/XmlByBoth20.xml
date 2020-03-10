@@ -13,7 +13,7 @@
 		<BehavioralSamplingRate>200</BehavioralSamplingRate>
         <BehavioralDelay>20</BehavioralDelay>
 		<ToneTime>4</ToneTime>
-		<Duration>12</Duration>
+		<Duration>20</Duration>
 		<Injection>
 			<None is_active='True'></None>
 			<Saline is_active='False'></Saline>
