@@ -30,6 +30,7 @@ for pii = 1:length(pvalues)
     
     ts = tinv(1-2*pvalues(pii), (trialsNum)-1);      % T-Score
     isindicative = SVMsingle.raw.acc.mean-ts*SEM > chanceLevel;
+    save(fullfile(outputPath, ['indicativeNrs' num2str(100*pvalues(pii)) 'percent' foldstr linstr eventsStr '.mat']), 'isindicative');
     t = linspace(0, generalProperty.Duration, size(data4Svm, 2));
     % to run only on two label clustering
     classes = unique(labels);

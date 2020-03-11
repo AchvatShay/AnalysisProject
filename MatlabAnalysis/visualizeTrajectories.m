@@ -46,6 +46,8 @@ xlswrite(filenameExcel,excelDataRaw);
 f = plotDprime(t, dprimeSmoothed, dprimeNextSmoothed, ...
 generalProperty.visualization_labelsFontSize, generalProperty.visualization_startTime2plot-generalProperty.ToneTime, ...
 0);
+save(fullfile(outputPath, 'dprimeAndNext_smoothed.mat'), 'dprimeSmoothed', 'dprimeNextSmoothed');
+
 mysave(f(1), fullfile(outputPath, ['smoothed_dprime' Method eventsStr] ));
 mysave(f(2), fullfile(outputPath, ['smoothed_dprimePrevCurr' Method eventsStr]));
 mysave(f(3), fullfile(outputPath, ['smoothed_dprimeNext' Method eventsStr]));
@@ -80,8 +82,8 @@ end
 
 if length(unique(labels)) == 2
 % Tube Plot & Dprime - ' Method ' Trajectories
-f=plotTrajectoryUsingTube(xlimmin, t, projeff, labels, clrs, 0, labelsFontSz);
-
+ [f,dprime,dprimeNext]=plotTrajectoryUsingTube(xlimmin, t, projeff, labels, clrs, 0, labelsFontSz);
+save(fullfile(outputPath, 'dprimeAndNext.mat'), 'dprime', 'dprimeNext');
 mysave(f(2), fullfile(outputPath, ['dprime' Method eventsStr] ));
 mysave(f(3), fullfile(outputPath, ['dprimePrevCurr' Method eventsStr]));
 mysave(f(4), fullfile(outputPath, ['dprimeNext' Method eventsStr]));

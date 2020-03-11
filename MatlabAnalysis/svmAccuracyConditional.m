@@ -8,11 +8,11 @@ function svmAccuracyConditional(outputPath, generalProperty, imagingData, Behave
 BehaveData, generalProperty.prevcurrlabels2cluster, generalProperty.includeOmissions);
 eventsStr = [eventsStr '_contitional'];
 if length(examinedInds) ~= size(imagingData.samples,3)
-    error('Need to debug');
+    imagingData.samples=imagingData.samples(:,:,examinedInds);
 end
 
-successtrials = find(BehaveData.(generalProperty.successLabel).indicatorPerTrial==1);
-failtrials = find(BehaveData.(generalProperty.successLabel).indicatorPerTrial==0);
+successtrials = find(labels==1);
+failtrials = find(labels==2);
 
 successtrials=setdiff(successtrials,1);
 failtrials=setdiff(failtrials,1);
