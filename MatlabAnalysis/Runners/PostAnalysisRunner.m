@@ -4,9 +4,9 @@ addpath('../');
 xmlfile = 'XmlByBoth.xml';
 
 BDA_folders{1} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_19_2015\11192015_1\';
-BDA_folders{2} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_22_2015\11222015_1\';
-BDA_folders{3} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_23_2015\11232015_1\';
-BDA_folders{4} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_25_2015\11252015_1\';
+% BDA_folders{2} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_22_2015\11222015_1\';
+% BDA_folders{3} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_23_2015\11232015_1\';
+% BDA_folders{4} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_25_2015\11252015_1\';
 
 path2saveAllResults = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\All_11_18_11_22_11_23_11_25';
 mkNewFolder(path2saveAllResults);
