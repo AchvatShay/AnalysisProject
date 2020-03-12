@@ -22,6 +22,10 @@ end
 allAccTot = collectAcc([analysisRes.accSVM], [analysisRes.trialsNum], [analysisRes.chanceLevel]);
 plotAccRes(analysisRes(1).tmid-toneTime, allAccTot, [], allAccTot.chanceLevel, [], [], [], 0);
 mysave(gcf, fullfile(outputPath,[ 'AverageAnalysis_accuracy' foldstr linstr eventsStr]));
+allAccTotSEM = allAccTot;
+allAccTotSEM.raw.std=allAccTotSEM.raw.std/sqrt(length(analysisRes));
+plotAccRes(analysisRes(1).tmid-toneTime, allAccTotSEM, [], allAccTotSEM.chanceLevel, [], [], [], 0);
+mysave(gcf, fullfile(outputPath,[ 'AverageAnalysis_accuracy' foldstr linstr eventsStr '_SEM']));
 
 %% S/F Clustering - Linear Classifier (SVM) of previous and next trial
 allAccTotConseq = collectAcc([analysisRes.accSVMlinseq], [analysisRes.trialsNumseq], [analysisRes.chanceLevelseq]);
@@ -30,7 +34,12 @@ allAccTotPrev = collectAcc([analysisRes.accSVMlinPrev], [analysisRes.trialsNumPr
 chanceLevels = [allAccTotConseq.chanceLevel allAccTot.chanceLevel allAccTotPrev.chanceLevel];
 plotAccUnion(tmid, allAccTotConseq, allAccTot, allAccTotPrev, chanceLevels, 0, labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyPrevNext' foldstr linstr eventsStr]));
-
+allAccTotConseqSEM = allAccTotConseq;
+allAccTotPrevSEM = allAccTotPrev;
+allAccTotConseqSEM.raw.std=allAccTotConseqSEM.raw.std/sqrt(length(analysisRes));
+allAccTotPrevSEM.raw.std=allAccTotPrevSEM.raw.std/sqrt(length(analysisRes));
+plotAccUnion(tmid, allAccTotConseqSEM, allAccTotSEM, allAccTotPrevSEM, chanceLevels, 0, labelsFontSz);
+mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyPrevNext' foldstr linstr eventsStr '_SEM']));
 
 
 %% Fig. 1 - Mean and STD, Fig. 2 - Mean and 5% Confidence Interval
@@ -43,6 +52,10 @@ set(aleft,'XLim',[0,max(get(aleft,'XLim'))]);
 set(aleft,'XTick',0:2:6);
 set(aright,'XLim',[min(get(aright,'XLim')) toneTime]);
 mysave(gcf, fullfile(outputPath,[ 'AverageAnalysis_accuracyNextStartingAtZero' foldstr linstr eventsStr]));
+
+
+
+
 
 time4confplotNext = generalProperty.visualization_time4confplotNext;
 for ti = 1:length(time4confplotNext)
