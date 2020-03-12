@@ -1,7 +1,8 @@
 function trajCompareEMDAnalysis(outputPath, generalProperty, imagingData, BehaveData)
     
     t = linspace(0, generalProperty.Duration, size(BehaveData.traj.data,2));
-    
+    frameRateRatio = generalProperty.BehavioralSamplingRate/generalProperty.ImagingSamplingRate;
+
     NAMES_BEHAVE = fields(BehaveData);
     
 %     [labels, examinedInds, eventsStr, labelsLUT] = getLabels4clusteringFromEventslist(BehaveData, ...
@@ -66,17 +67,18 @@ function trajCompareEMDAnalysis(outputPath, generalProperty, imagingData, Behave
             % Compare First Lift after Tone
              for liftIndex = 1:length(liftEvents)
                 e_loc = BehaveData.(liftEvents{liftIndex}).eventTimeStamps{examinedIndsToRun(currentTraj)};
+                e_loc = round(e_loc .* frameRateRatio) + generalProperty.BehavioralDelay;
                 if ~isempty(e_loc)
                     if t(e_loc(1)) >= generalProperty.ToneTime
                         startTimeLift(examinedIndsToRun(currentTraj)) = findClosestDouble(t, t(e_loc(1)) - 0.5);
                         endTimeLift(examinedIndsToRun(currentTraj)) = findClosestDouble(t, t(e_loc(1)) + 0.5);
                         lift_index(examinedIndsToRun(currentTraj)) = 1;
                         
-                        sum_front_lift(examinedIndsToRun(currentTraj)) = emd_calc(trajAvarage(1:2, startTime:endTime)',...
-                            BehaveData.traj.data(1:2, startTime:endTime, examinedIndsToRun(currentTraj))');
+                        sum_front_lift(examinedIndsToRun(currentTraj)) = emd_calc(trajAvarage(1:2, startTimeLift(examinedIndsToRun(currentTraj)):endTimeLift(examinedIndsToRun(currentTraj)))',...
+                            BehaveData.traj.data(1:2, startTimeLift(examinedIndsToRun(currentTraj)):endTimeLift(examinedIndsToRun(currentTraj)), examinedIndsToRun(currentTraj))');
 
-                        sum_side_lift(examinedIndsToRun(currentTraj)) = emd_calc(trajAvarage(3:4, startTime:endTime)',...
-                            BehaveData.traj.data(3:4, startTime:endTime, examinedIndsToRun(currentTraj))');
+                        sum_side_lift(examinedIndsToRun(currentTraj)) = emd_calc(trajAvarage(3:4, startTimeLift(examinedIndsToRun(currentTraj)):endTimeLift(examinedIndsToRun(currentTraj)))',...
+                            BehaveData.traj.data(3:4, startTimeLift(examinedIndsToRun(currentTraj)):endTimeLift(examinedIndsToRun(currentTraj)), examinedIndsToRun(currentTraj))');
                         break;
                     end
                 else
@@ -104,40 +106,56 @@ function trajCompareEMDAnalysis(outputPath, generalProperty, imagingData, Behave
         % Zero
         figZeroFront = figure;
         hold on;
-        shadedErrorBar(trajAvarage(1, startTimeZero:endTimeZero), trajAvarage(2, startTimeZero:endTimeZero), std_front_zero);
-        title('PeriTime Zero Front');
+%         errorbar(trajAvarage(1, startTimeZero:endTimeZero), abs(trajAvarage(2, startTimeZero:endTimeZero) - 400), ones(endTimeZero - startTimeZero + 1, 1) * std_front_zero,  'both');
+        shadedErrorBar(1:trajSize, sum_front_zero, ones(trajSize, 1) * std_front_zero);
+        title('PeriTime 1sec Zero Front');
+        xlabel('Trial#');
+        ylabel('EMD from average traj');
         mysave(figZeroFront, fullfile(outputPath, ['TrajCompareResultsZeroFront_' labelName]));
        
         figZeroSide = figure;
         hold on;
-        shadedErrorBar(trajAvarage(3, startTimeZero:endTimeZero), trajAvarage(4, startTimeZero:endTimeZero), std_side_zero);
-        title('PeriTime Zero Side');
+        shadedErrorBar(1:trajSize, sum_side_zero, ones(trajSize, 1) * std_side_zero);
+        title('PeriTime 1sec Zero Side');
+        xlabel('Trial#');
+        ylabel('EMD from average traj');
         mysave(figZeroSide, fullfile(outputPath, ['TrajCompareResultsZeroSide_' labelName]));
                
         % Tone
         figToneFront = figure;
         hold on;
-        shadedErrorBar(trajAvarage(1, startTimeTone:endTimeTone), trajAvarage(2, startTimeTone:endTimeTone), std_front_tone);
-        title('PeriTime Tone Front');
+        shadedErrorBar(1:trajSize, sum_front_tone, ones(trajSize, 1) * std_front_tone);
+        xlabel('Trial#');
+        ylabel('EMD from average traj');
+        title('PeriTime 1sec Tone Front');
         mysave(figToneFront, fullfile(outputPath, ['TrajCompareResultsToneFront_' labelName]));
        
         figToneSide = figure;
         hold on;
-        shadedErrorBar(trajAvarage(3, startTimeTone:endTimeTone), trajAvarage(4, startTimeTone:endTimeTone), std_side_tone);
-        title('PeriTime Tone Side');
+        shadedErrorBar(1:trajSize, sum_side_tone, ones(trajSize, 1) * std_side_tone);
+        xlabel('Trial#');
+        ylabel('EMD from average traj');
+        title('PeriTime 1sec Tone Side');
         mysave(figToneSide, fullfile(outputPath, ['TrajCompareResultsToneSide_' labelName]));
        
         % Lift first after tone
         figLiftFront = figure;
         hold on;
-        shadedErrorBar(trajAvarage(1, mean(startTimeLift(lift_index == 1)):mean(endTimeLift(lift_index == 1))), trajAvarage(2, mean(startTimeLift(lift_index == 1)):mean(endTimeLift(lift_index == 1))), std_front_lift);
-        title('PeriTime Lift Front');
+        liftAvglength = length(find(lift_index == 1));
+        shadedErrorBar(1:liftAvglength, sum_front_lift(lift_index == 1), ones(liftAvglength, 1) * std_front_lift);
+        xlabel('Trial#');
+        ylabel('EMD from average traj');
+        
+        title('PeriTime 1sec Lift Front');
         mysave(figLiftFront, fullfile(outputPath, ['TrajCompareResultsLiftFront_' labelName]));
        
         figLiftSide = figure;
         hold on;
-        shadedErrorBar(trajAvarage(3, mean(startTimeLift(lift_index == 1)):mean(endTimeLift(lift_index == 1))), trajAvarage(4, mean(startTimeLift(lift_index == 1)):mean(endTimeLift(lift_index == 1))), std_side_lift);
-        title('PeriTime Lift Side');
+        shadedErrorBar(1:liftAvglength, sum_side_lift(lift_index == 1), ones(liftAvglength, 1) * std_side_lift);
+        xlabel('Trial#');
+        ylabel('EMD from average traj');
+        
+        title('PeriTime 1sec Lift Side');
         mysave(figLiftSide, fullfile(outputPath, ['TrajCompareResultsLiftSide_' labelName]));
               
         
@@ -145,11 +163,21 @@ function trajCompareEMDAnalysis(outputPath, generalProperty, imagingData, Behave
         figBox = figure;
         hold on;
         
-        boxplot([sum_front_zero', sum_side_zero' ,sum_front_tone', sum_side_tone', sum_front_lift(lift_index == 1)', sum_side_lift(lift_index == 1)'], ...
-            'Labels',{'FrontZero','SideZero', 'FrontTone', 'SideTone', 'FrontLift','SideLift'})
-        title({'Traj Compare Results ', labelName})  
+        boxplot([sum_front_zero', sum_side_zero' ,sum_front_tone', sum_side_tone'], ...
+            'Labels',{'FrontZero','SideZero', 'FrontTone', 'SideTone'})
+        title({'Traj Compare Results PeriTime 1 sec Tone\Zero', labelName})  
         
-        mysave(figBox, fullfile(outputPath, ['TrajCompareResultsBox_' labelName]));
+        mysave(figBox, fullfile(outputPath, ['TrajCompareResultsBox_Tone_Zero' labelName]));
+        
+        figBox2 = figure;
+        hold on;
+        
+        boxplot([sum_front_lift(lift_index == 1)', sum_side_lift(lift_index == 1)'], ...
+            'Labels',{'FrontLift','SideLift'})
+        title({'Traj Compare Results PeriTime 1 sec Lift', labelName})  
+        
+        mysave(figBox2, fullfile(outputPath, ['TrajCompareResultsBox_Lift' labelName]));
+        
         
         tableSave = table(avg_front_zero, std_front_zero, avg_side_zero, std_side_zero, avg_front_tone, std_front_tone, avg_side_tone, std_side_tone, ...
             avg_front_lift, std_front_lift, avg_side_lift, std_side_lift, ...
