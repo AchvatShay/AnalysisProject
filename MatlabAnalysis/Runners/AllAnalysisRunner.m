@@ -55,9 +55,9 @@ for index = 1: length(listExperiments)
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'FWHM_analysis', 'imaging');
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'imaging');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'imaging');
 
 %                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotSingleNrnAcrossTrials');
 %                 mkNewFolder(outputPath);
@@ -72,9 +72,9 @@ for index = 1: length(listExperiments)
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials', 'imaging');
 % 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D', 'imaging');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\Pca2D');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D', 'imaging');
 %                 
 %                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\delay2events');
 %                 mkNewFolder(outputPath);
@@ -84,17 +84,21 @@ for index = 1: length(listExperiments)
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D', 'imaging');
 % 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'imaging');
+% 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis', 'imaging');
+% 
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronSignificantAnalysis');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis', 'imaging');
+                
                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
                 mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'imaging');
-% 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis', 'imaging');
-
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronSignificantAnalysis');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis', 'imaging');
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'indicativeNrns');
 
                 close all;
                 BdaTpaList = [];
