@@ -1,4 +1,4 @@
-function f=plotTrajectoryUsingTube(xlimmin, t, trajData, labels, clrs, toneTime, labelsFontSz)
+function [f,dprime,dprimeNext]=plotTrajectoryUsingTube(xlimmin, t, trajData, labels, clrs, toneTime, labelsFontSz)
 
 f(1)=figure;
 map=colormap('jet');

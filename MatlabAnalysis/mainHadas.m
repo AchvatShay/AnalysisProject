@@ -1,4 +1,4 @@
-function BdaTpaList = main(pth, outputPath, Trials2keep, pthTraj, xmlfile, movpath)
+function BdaTpaList = mainHadas(pth, outputPath, Trials2keep, pthTraj, xmlfile, movpath)
 if ~exist('xmlfile','var')
 xmlfile = 'XmlBoth.xml';
 end
@@ -65,61 +65,26 @@ if ~isempty(movpath)
         l = l +1;
     end
 end
-%runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis');
 
-%runAnalysis(outputPath, xmlfile, BdaTpaList, 'behaveMovieAnalysis');
+runAnalysis(fullfile(outputPath, 'svmAccuracyConditional'), xmlfile, BdaTpaList, 'svmAccuracyConditional','traj');close all;
+runAnalysis(fullfile(outputPath, 'Pca2D'), xmlfile, BdaTpaList, 'Pca2D','traj');close all;
+runAnalysis(fullfile(outputPath, 'pcaTrajectories'), xmlfile, BdaTpaList, 'pcaTrajectories','traj');close all;
 
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis');
+runAnalysis(fullfile(outputPath, 'svmAccuracy'), xmlfile, BdaTpaList, 'svmAccuracy','traj');close all;
+
 %
 
 return;
 
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories');
 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events');
 
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D');
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D');
+% 
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy');
 
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'tiling');
-% runAnalysis(o`utputPath, xmlfile, BdaTpaList, 'tilingNrnsTrials');
-%
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotAllNrnsAcrossTrials');
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-%
-% close all;
 return;
-% runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMapTrajectories');
-runAverageAnalysis(outputPath, xmlfile, BdaTpaList(1:10), MatList, 'accuracy');
 
  
 
 
 
-
-
-
-
-
-% this is just an example to see how to extract the neurons' names from a
-% tpa file
-[Neurons] = getAllExperimentNeurons(BdaTpaList(1).TPA);
-% just checking if this code works with 1 neuron to plot or none
-xmlfile = 'XmlPT3_1nrn.xml';
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-
-xmlfile = 'XmlPT3_nonrns.xml';
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-% now for more than 1 neuron
-xmlfile = 'XmlPT3.xml';
-runAnalysis(outputPath, xmlfile, BdaTpaList, 'plotSingleNrnAcrossTrials');
-
-% this is just an example to see how to extract the events' labels from a
-% bda file
-eventsLabels = getAllExperimentLabels({BdaTpaList.BDA});
-
-% running analysis averaging
-analysisName = 'accuracy';
-% generalProperty = Experiment(xmlfile);

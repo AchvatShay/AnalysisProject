@@ -59,6 +59,10 @@ else
             end
             
             if ~(nanmean(R2full_te{time_seg_i}(nrni,:),2)>=energyTh)
+                 for type_i = 1:length(types)
+                R2p_train{time_seg_i}(nrni, type_i, fold_i) = nan;
+                R2p_test{time_seg_i}(nrni, type_i, fold_i) = nan;
+                 end
                 continue;
             end
             for fold_i = 1:foldsNum
@@ -81,6 +85,7 @@ else
     end
     save(fullfile(outputpath, outputfile), 'R2p_test','glmmodelpart','glmmodelfull','R2full_te','R2full_tr','timesegments','eventsNames', 'eventsTypes', 'INDICES');
 end
+return;
 Nrns = size(R2full_te{1},1);
 types = size(R2p_test{1},2);
 Nsegs = size(timesegments,2);
@@ -91,6 +96,9 @@ Cont = nan(Nrns, types,Nsegs);
 for time_seg_i = 1:size(timesegments,2)
     Rfull(:,time_seg_i) = nanmean(R2full_te{time_seg_i},2);
     inds = find(Rfull(:,time_seg_i)>energyTh);
+    if isempty(inds)
+        continue;
+    end
     N(time_seg_i) = length(inds);
     Rpartial(inds,:, time_seg_i) = nanmean( R2p_test{time_seg_i}(inds,:,:),3);
     for type_i = 1:size(Rpartial, 2)

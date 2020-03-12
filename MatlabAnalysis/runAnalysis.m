@@ -16,7 +16,9 @@ switch runOnWhat
             error('Could not find trajectories in this path');
         else
             trajData.samples = BehaveData.traj.data;
-            trajData.roiNames = {'frontx','fronty','sidex','sidey'};
+            for k=1:size(trajData.samples,1)
+            trajData.roiNames{k} = num2str(k);
+            end
             outputPath = [outputPath 'Traj'];
             mkNewFolder(outputPath);
             generalProperty.ImagingSamplingRate = generalProperty.BehavioralSamplingRate;

@@ -1,44 +1,117 @@
 function PostAnalysisRunner
 addpath('../');
 
-xmlfile = 'XmlFail.xml';
+xmlfile = 'XmlByBoth.xml';
 
-folderAnimal_experiment_BDA = 'E:\Data\Shahar\M27\11_11_18';
+BDA_folders{1} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_19_2015\11192015_1\';
+% BDA_folders{2} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_22_2015\11222015_1\';
+% BDA_folders{3} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_23_2015\11232015_1\';
+% BDA_folders{4} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_25_2015\11252015_1\';
 
-outputPath = 'E:\Data\Shahar\J\Den6\PostAnalysisNewBy-Suc-Cat23';
-mkdir(outputPath);
+path2saveAllResults = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\All_11_18_11_22_11_23_11_25';
+mkNewFolder(path2saveAllResults);
 
-listExperiments = dir (folderAnimal_experiment_BDA);
+path2loadIndividualResults = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\';
+BdaTpaList=[];
 bdaCount = 1;
-if ~isempty(listExperiments)
-    for i = 1: length(listFiles)
-        testBDA = listFiles(i).name;
-        if contains(testBDA, 'BDA')
-            BdaTpaList(bdaCount).BDA = [bda_tpa_folder '\' testBDA]; 
+for i = 1: length(BDA_folders)
+    testBDA = dir([BDA_folders{i} '/BDA*.mat']);
+    testTPA = dir([BDA_folders{i} '/TPA*.mat']);
+    for k=1:length(testBDA)
+        BdaTpaList(bdaCount).BDA = [BDA_folders{i} '\' testBDA(k).name ];
+        BdaTpaList(bdaCount).TPA = [BDA_folders{i} '\' testTPA(k).name ];
+        bdaCount = bdaCount + 1;
+    end
+    
+    
+end
+dirs = dir(path2loadIndividualResults);
 
-            for k = 1: length(listFiles)
-                if contains(listFiles(k).name, 'TPA')
-                    testTPA = strrep(listFiles(k).name,'TPA','BDA');
-                    if (strcmp(testTPA, testBDA))
-                        BdaTpaList(bdaCount).TPA = [bda_tpa_folder '\' listFiles(k).name]; 
-                        bdaCount = bdaCount + 1;
-                    end
-                end
+
+%% svm
+Matlist=[];
+for k=3:length(dirs)
+    if  dirs(k).isdir
+        filedprime = dir( fullfile(path2loadIndividualResults, dirs(k).name, '/**/svmAccuracy/acc_res_folds10lin_success_failure.mat') );
+        if isempty(filedprime)
+            continue;
+        end
+        Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
+    end
+end
+runAverageAnalysis(path2saveAllResults, xmlfile,BdaTpaList, Matlist, 'svmAccuracy');
+%% dprime smooth
+clear filedprime;
+Matlist=[];
+for k=3:length(dirs)
+    if  dirs(k).isdir
+        filedprime = dir( fullfile(path2loadIndividualResults, dirs(k).name, '/**/pcaTrajectories/dprimeAndNext_smoothed.mat') );
+        if isempty(filedprime)
+            continue;
+        end
+        Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
+    end
+end
+runAverageAnalysis(path2saveAllResults, xmlfile,BdaTpaList, Matlist, 'dprime');
+
+%% indicative
+clear filedprime;
+for l=3:length(dirs)
+temp = dir(fullfile(path2loadIndividualResults, dirs(l).name, '/**/SingleNeuronAnalysis/indicativeNrs*.mat'));
+if ~isempty(temp)
+    break;
+end
+    
+end
+for k=1:length(temp)
+    pvvalues(k) = sscanf(temp(k).name, 'indicativeNrs%fpercentfolds10lin_success_failure.mat');
+end
+for pii = 1:length(pvvalues)
+    Matlist=[];
+    for k=3:length(dirs)
+        if  dirs(k).isdir
+            filedprime = dir( fullfile(path2loadIndividualResults, dirs(k).name, ['/**/SingleNeuronAnalysis/indicativeNrs' num2str(pvvalues(pii)) 'percentfolds10lin_success_failure.mat']) );
+            if isempty(filedprime)
+                continue;
             end
+            Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
         end
     end
+    mkNewFolder([path2saveAllResults '/indicativeAllpvalue' num2str(pvvalues(pii))]);
+    runAverageAnalysis([path2saveAllResults '/indicativeAllpvalue' num2str(pvvalues(pii))], xmlfile,BdaTpaList, Matlist, 'SingleNeuronAnalysis');
+end
+%% significant
+clear filedprime;
+for l=3:length(dirs)
+temp = dir(fullfile(path2loadIndividualResults, dirs(l).name, '/**/SingleNeuronSignificantAnalysis/significantNrs*.mat'));
+if ~isempty(temp)
+    break;
+end
+    
+end
+for k=1:length(temp)
+    pvvalues(k) = sscanf(temp(k).name, 'significantNrs%fpercent_success_failure.mat');
+end
+Matlist=[];
+for pii = 1:length(pvvalues)
+    Matlist=[];
+    for k=3:length(dirs)
+        if  dirs(k).isdir
+            filedprime = dir( fullfile(path2loadIndividualResults, dirs(k).name, ['/**/SingleNeuronSignificantAnalysis/significantNrs' num2str(pvvalues(pii)) 'percent_success_failure.mat']) );
+            if isempty(filedprime)
+                continue;
+            end
+            Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
+        end
+    end
+    mkNewFolder([path2saveAllResults '/significantAllpvalue' num2str(pvvalues(pii))]);
+    runAverageAnalysis([path2saveAllResults '/significantAllpvalue' num2str(pvvalues(pii))], xmlfile,BdaTpaList, Matlist, 'SingleNeuronSignificantAnalysis');
 end
 
 
-    Matlist{1} = 'E:\Results9_9_17\Den6Analysis\2_22_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{2} = 'E:\Results9_9_17\Den6Analysis\2_27_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{3} = 'E:\Results9_9_17\Den6Analysis\2_23_17_1_1stAndThird\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{4} = 'E:\Results9_9_17\Den6Analysis\3_1_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{5} = 'E:\Results9_9_17\Den6Analysis\4_2_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{6} = 'E:\Results9_9_17\Den6Analysis\2_21_17\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{7} = 'E:\Data\Results\Den6Analysis\8_13_17_1\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{8} = 'E:\Data\Results\Den7Analysis\8_10_17_1 (1)\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
-    Matlist{9} = 'E:\Data\Results\Den7Analysis\8_13_17_1 (1)\Analysis\svmAccuracy\acc_res_folds10lin_success_failure.mat';
 
-    runAverageAnalysis(outputPath, xmlfile,BdaTpaList, Matlist, 'svmAccuracy');
+
+
+
+
 end

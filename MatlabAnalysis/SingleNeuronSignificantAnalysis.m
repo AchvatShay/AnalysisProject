@@ -28,6 +28,9 @@ if length(classes) == 2
         end
         sigHist(win_i, :) = hist(H(:, win_i), 0:1);
     end
+    issignificant = H;
+    save(fullfile(outputPath, ['significantNrs' num2str(pvalueth*100) 'percent'  eventsStr '.mat']),'issignificant');
+
     chanceLevel = sum(labels==classes(1))/length(labels);
     chanceLevel = max(chanceLevel, 1-chanceLevel);
 end
