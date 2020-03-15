@@ -78,6 +78,9 @@ end
 %% Acc averaged over experiments - Next trial
 plotAccResFinalCI(analysisRes(1).tmid-toneTime, allAccTotPrev, allAccTotPrev.chanceLevel, {[] []}, [], 0, labelsFontSz, xlimmin, []);
 mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyNext' foldstr linstr eventsStr]));
+plotAccResFinalCI(analysisRes(1).tmid-toneTime, allAccTot, allAccTot.chanceLevel, {[] []}, [], 0, labelsFontSz, xlimmin, []);
+mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracy' foldstr linstr eventsStr '_by_trials']));
+
 % %% Accuracy with behave
 % plotAccResFinalCI(tmid, allAccTot,  chanceLevels(2), Sbehave, Fbehave, t, 0, labelsFontSz, xlimmin-toneTime)
 % mysave(gcf, fullfile(outputPath, 'accNoLegend'));
