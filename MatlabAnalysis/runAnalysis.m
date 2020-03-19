@@ -8,6 +8,32 @@ generalProperty = Experiment(xmlfile);
 
 [imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
 switch runOnWhat
+    case 'NotindicativeNrns'
+        if generalProperty.linearSVN
+                linstr = 'lin';
+            else
+                linstr = 'Rbf';
+         end
+         indicativefiles = dir(fullfile(outputPath, ['../SingleNeuronAnalysis/indicativeNrs*percentfolds' num2str(generalProperty.foldsNum) linstr '_success_failure.mat']));
+         if isempty(indicativefiles)
+             error('Cannot find indicative files, please run SingleNeuronAnalysis');
+         end
+       
+        for fi=1:length(indicativefiles)           
+            
+            pvalue = sscanf(indicativefiles(fi).name, ['indicativeNrs%fpercentfolds' num2str(generalProperty.foldsNum) linstr '_success_failure.mat']);
+            Notindicativpth = fullfile(outputPath, ['NotindicativeAnalysis_pvalue' num2str(pvalue)]);
+            r=load(fullfile(indicativefiles(fi).folder, indicativefiles(fi).name));
+            mkNewFolder(Notindicativpth);
+            
+            [winstSec, winendSec] = getFixedWinsFine(generalProperty.Duration, generalProperty.slidingWinLen, generalProperty.slidingWinHop);
+            tmid = (winstSec+winendSec)/2;
+            isindicativeLabel = sum(r.isindicative(:, tmid>=generalProperty.indicativeNrnsMeanStartTime & tmid<= generalProperty.indicativeNrnsMeanEndTime),2)>0;
+            imagingDataIndicative.samples = imagingData.samples(isindicativeLabel==0, :, :);
+            imagingDataIndicative.roiNames = imagingData.roiNames(isindicativeLabel==0, :);
+            imagingDataIndicative.loc = imagingData.loc(isindicativeLabel==0);
+            feval(analysisName,Notindicativpth, generalProperty, imagingDataIndicative, BehaveData);
+        end
     case 'indicativeNrns'
          if generalProperty.linearSVN
                 linstr = 'lin';
@@ -52,6 +78,25 @@ switch runOnWhat
             imagingDataSignificant.roiNames = imagingData.roiNames(issignificantLabel, :);
             imagingDataSignificant.loc = imagingData.loc(issignificantLabel);
             feval(analysisName,significantpath, generalProperty, imagingDataSignificant, BehaveData);
+        end
+        case 'NotsignificantNrns'
+        significantfiles = dir(fullfile(outputPath,'../SingleNeuronSignificantAnalysis/significantNrs*percent_success_failure.mat'));
+        if isempty(significantfiles)
+        error('Cannot find significant files, please run SingleNeuronSignificantAnalysis');
+        end
+        for fi=1:length(significantfiles)
+            pvalue = sscanf(significantfiles(fi).name, 'significantNrs%fpercent_success_failure.mat');
+            Notsignificantpath = fullfile(outputPath, ['NotsignificantAnalysis_pvalue' num2str(pvalue)]);
+            r=load(fullfile(significantfiles(fi).folder, significantfiles(fi).name));
+            mkNewFolder(Notsignificantpath);
+            
+            [winstSec, winendSec] = getFixedWinsFine(generalProperty.Duration, generalProperty.slidingWinLen, generalProperty.slidingWinHop);
+            tmid = (winstSec+winendSec)/2;
+            issignificantLabel = sum(r.issignificant(:, tmid>=generalProperty.indicativeNrnsMeanStartTime & tmid<= generalProperty.indicativeNrnsMeanEndTime),2)>0;
+            imagingDataSignificant.samples = imagingData.samples(issignificantLabel==0, :, :);
+            imagingDataSignificant.roiNames = imagingData.roiNames(issignificantLabel==0, :);
+            imagingDataSignificant.loc = imagingData.loc(issignificantLabel==0);
+            feval(analysisName,Notsignificantpath, generalProperty, imagingDataSignificant, BehaveData);
         end
     case 'imaging'
         feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
