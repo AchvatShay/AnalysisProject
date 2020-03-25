@@ -146,6 +146,8 @@
         <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
         <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
         <locations_stripesNum>5</locations_stripesNum>
+        <indicativeAmplitudeStartTime>5</indicativeAmplitudeStartTime>
+        <indicativeAmplitudeEndTime>8</indicativeAmplitudeEndTime>
         <significantPvalue>
             <val>0.001</val>
             <val>0.05</val>

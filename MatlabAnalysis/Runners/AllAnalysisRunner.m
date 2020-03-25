@@ -103,7 +103,7 @@ for index = 1: length(listExperiments)
                 
  outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\predictionIndicativeAmp');
                 mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'predictionIndicativeAmp', 'traj');
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'predictionIndicativeAmp');
 
              
                 close all;
