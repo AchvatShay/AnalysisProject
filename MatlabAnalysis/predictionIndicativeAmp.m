@@ -31,6 +31,13 @@ for fi=1:length(indicativefiles)
     
     indicativeData = squeeze(mean(indicativeData(:, t<=indicativeEnd & t>=  indicativeStart,:),2));
     trialsLabelsByIndicatives = kmeans(indicativeData.', 2); 
+    figure;plot(trialsLabelsByIndicatives,'x')
+hold all
+plot(BehaveData.success.indicatorPerTrial+1,'ro');
+acc= sum(BehaveData.success.indicatorPerTrial+1 == trialsLabelsByIndicatives)/length(trialsLabelsByIndicatives);
+title(['Agreement: ' num2str(max(acc, 1-acc))]);
+
+mysave(gcf, fullfile(outputPath, ['indicativeLabelsAndSuccessAgreement_pvalue' num2str(pvalue)]));
 successtrials = find(trialsLabelsByIndicatives==1);
 failtrials = find(trialsLabelsByIndicatives==2);
 
