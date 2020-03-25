@@ -4,16 +4,16 @@ addpath('../');
 
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_25_2015\';
-trajpth = '';
-folderAnimalOutputPath='\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\11_25_2015';
+folderAnimal = 'D:\Maria\Layer 2-3\Analysis\M26\\';
+trajpth = 'D:\Maria\Layer 2-3\Videos\M26\9_28_17';
+folderAnimalOutputPath='\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\M26\';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
-specific_experiment = '11252015_1';
+specific_experiment = '9_28_17';
 
 listExperiments = dir (folderAnimal);
 
@@ -95,11 +95,17 @@ for index = 1: length(listExperiments)
 %                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronSignificantAnalysis');
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronSignificantAnalysis', 'imaging');
+                  
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\SingleNeuronAnalysis');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
                 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\svmAccuracy');
+                
+ outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\predictionIndicativeAmp');
                 mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'svmAccuracy', 'indicativeNrns');
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'predictionIndicativeAmp', 'traj');
 
+             
                 close all;
                 BdaTpaList = [];
             end

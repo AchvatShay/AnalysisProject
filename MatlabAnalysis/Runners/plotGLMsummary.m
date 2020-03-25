@@ -16,13 +16,20 @@ pthM{9} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\oro
 pthP{1} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\layer5\Den6_4_2_17';
 pthP{2} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\layer5\Den7_8_13_17';
 pthP{3} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\layer5\PT3_31318';
+
+
+pthplastic{1} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\plastic\M29_8_30_18';
+pthplastic{2} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\plastic\M30_7_30_18';
+pthplastic{3} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\plastic\M30_8_7_18';
+pthplastic{4} = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\plastic\M30_08_09_18';
+
 % 
 legendStr = {'tone', 'lift','grab','traj','atmouth','outcome'};
 filename = 'glmResHist.mat';
 
 energyth=.15;
 
-f=loadAndPlotGLM(filename,legendStr,pthM,pthP,energyth);
+loadAndPlotGLM1(filename,legendStr,pthM,pthP,pthplastic,energyth, '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\orofacial_glm\');
 suptitle('All animals');
 set(f,'Position',[0.0010    0.0410    1.5360    0.7488]*1e3);
 % mysave(f, ['All']);
