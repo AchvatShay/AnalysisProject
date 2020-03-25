@@ -27,7 +27,7 @@ switch runOnWhat
             mkNewFolder(Notindicativpth);
             
             [winstSec, winendSec] = getFixedWinsFine(generalProperty.Duration, generalProperty.slidingWinLen, generalProperty.slidingWinHop);
-            tmid = (winstSec+winendSec)/2;
+            tmid = (winstSec+winendSec)/2 - generalProperty.ToneTime;
             isindicativeLabel = sum(r.isindicative(:, tmid>=generalProperty.indicativeNrnsMeanStartTime & tmid<= generalProperty.indicativeNrnsMeanEndTime),2)>0;
             imagingDataIndicative.samples = imagingData.samples(isindicativeLabel==0, :, :);
             imagingDataIndicative.roiNames = imagingData.roiNames(isindicativeLabel==0, :);
@@ -53,7 +53,7 @@ switch runOnWhat
             mkNewFolder(indicativpth);
             
             [winstSec, winendSec] = getFixedWinsFine(generalProperty.Duration, generalProperty.slidingWinLen, generalProperty.slidingWinHop);
-            tmid = (winstSec+winendSec)/2;
+            tmid = (winstSec+winendSec)/2 - generalProperty.ToneTime;
             isindicativeLabel = sum(r.isindicative(:, tmid>=generalProperty.indicativeNrnsMeanStartTime & tmid<= generalProperty.indicativeNrnsMeanEndTime),2)>0;
             imagingDataIndicative.samples = imagingData.samples(isindicativeLabel, :, :);
             imagingDataIndicative.roiNames = imagingData.roiNames(isindicativeLabel, :);
@@ -72,7 +72,7 @@ switch runOnWhat
             mkNewFolder(significantpath);
             
             [winstSec, winendSec] = getFixedWinsFine(generalProperty.Duration, generalProperty.slidingWinLen, generalProperty.slidingWinHop);
-            tmid = (winstSec+winendSec)/2;
+            tmid = (winstSec+winendSec)/2 - generalProperty.ToneTime;
             issignificantLabel = sum(r.issignificant(:, tmid>=generalProperty.indicativeNrnsMeanStartTime & tmid<= generalProperty.indicativeNrnsMeanEndTime),2)>0;
             imagingDataSignificant.samples = imagingData.samples(issignificantLabel, :, :);
             imagingDataSignificant.roiNames = imagingData.roiNames(issignificantLabel, :);
@@ -91,7 +91,7 @@ switch runOnWhat
             mkNewFolder(Notsignificantpath);
             
             [winstSec, winendSec] = getFixedWinsFine(generalProperty.Duration, generalProperty.slidingWinLen, generalProperty.slidingWinHop);
-            tmid = (winstSec+winendSec)/2;
+            tmid = (winstSec+winendSec)/2 - generalProperty.ToneTime;
             issignificantLabel = sum(r.issignificant(:, tmid>=generalProperty.indicativeNrnsMeanStartTime & tmid<= generalProperty.indicativeNrnsMeanEndTime),2)>0;
             imagingDataSignificant.samples = imagingData.samples(issignificantLabel==0, :, :);
             imagingDataSignificant.roiNames = imagingData.roiNames(issignificantLabel==0, :);

@@ -110,10 +110,14 @@ classdef Experiment %< handle
         glmSeg=[];
         glm_energyTh = .8;
         glm_facial_features_dim = 20;
+        indicativeAmplitudeStartTime=5;
+        indicativeAmplitudeEndTime=8;
     end
     methods
         function obj = Experiment(xmlfile)            
             xmlstrct = xml2struct(xmlfile);
+            obj.indicativeAmplitudeEndTime = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeAmplitudeEndTime.Text); 
+            obj.indicativeAmplitudeStartTime = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.indicativeAmplitudeStartTime.Text); 
             obj.glm_facial_features_dim = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_facial_features_dim.Text);
             obj.glm_energyTh = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_energyTh.Text);
             for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg)
