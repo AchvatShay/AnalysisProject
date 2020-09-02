@@ -106,8 +106,7 @@ function trajCompareEMDAnalysis(outputPath, generalProperty, imagingData, Behave
         % Zero
         figZeroFront = figure;
         hold on;
-%         errorbar(trajAvarage(1, startTimeZero:endTimeZero), abs(trajAvarage(2, startTimeZero:endTimeZero) - 400), ones(endTimeZero - startTimeZero + 1, 1) * std_front_zero,  'both');
-        shadedErrorBar(1:trajSize, sum_front_zero, ones(trajSize, 1) * std_front_zero);
+        
         title('PeriTime 1sec Zero Front');
         xlabel('Trial#');
         ylabel('EMD from average traj');

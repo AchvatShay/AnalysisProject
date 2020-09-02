@@ -1,4 +1,8 @@
-function runAnalysis(outputPath, xmlfile, BdaTpaList, analysisName, runOnWhat)
+function runAnalysis(outputPath, xmlfile, BdaTpaList, analysisName, runOnWhat, structuralTreeLabels)
+if nargin < 6
+    structuralTreeLabels = [];
+end
+
 % mkNewFolder(outputPath);
 if ~exist('runOnWhat','var')
     runOnWhat = 'imaging';
@@ -99,7 +103,41 @@ switch runOnWhat
             feval(analysisName,Notsignificantpath, generalProperty, imagingDataSignificant, BehaveData);
         end
     case 'imaging'
-        feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
+        if isempty(structuralTreeLabels)
+            feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
+        else
+            indexingROI = zeros(size(structuralTreeLabels.roiNames, 1), 1);
+            roi_i = 1;
+            roiToExcludeFromTheTPA = [];
+            roiToExcludeFromTheTPA_indexing = 1;
+            for i = 1:size(imagingData.roiNames, 1)
+                locationCurrentROI = find(strcmp(structuralTreeLabels.roiNames, sprintf('roi%05d',imagingData.roiNames(i, 1))));
+                
+                if isempty(locationCurrentROI)
+                    roiToExcludeFromTheTPA(roiToExcludeFromTheTPA_indexing) = i;
+                    roiToExcludeFromTheTPA_indexing = roiToExcludeFromTheTPA_indexing + 1;
+                    continue;
+                end
+                
+                indexingROI(roi_i) = locationCurrentROI;
+                roi_i = roi_i + 1;
+            end
+            
+            imagingData.samples(roiToExcludeFromTheTPA, :, :) = [];
+            imagingData.roiNames(roiToExcludeFromTheTPA, :) = [];
+            imagingData.loc(roiToExcludeFromTheTPA) = [];
+            
+            roiTableNew.roiNames = structuralTreeLabels.roiNames(indexingROI);
+            roiTableNew.eventsStr = structuralTreeLabels.eventsStr;
+            roiTableNew.labels = structuralTreeLabels.labels(indexingROI);
+            roiTableNew.labelsLUT = structuralTreeLabels.labelsLUT;
+            roiTableNew.cls = structuralTreeLabels.cls;
+            roiTableNew.activity.dataEvents = structuralTreeLabels.activity.dataEvents(indexingROI, :, :);
+            roiTableNew.activity.labels = structuralTreeLabels.activity.labels';
+            roiTableNew.activity.dataTrials = structuralTreeLabels.activity.dataTrials(indexingROI, :, :);
+            
+            feval(analysisName,outputPath, generalProperty, imagingData, BehaveData, roiTableNew);
+        end
     case 'traj'
         
         if ~isfield(BehaveData, 'traj')
