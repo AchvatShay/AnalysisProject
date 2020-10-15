@@ -41,6 +41,8 @@ classdef Experiment %< handle
         startTimeGrabCountHis = 4;
         endTimeGrabCountHis = 6;
         
+        behaveTimeDiff = {'lift', 'grab'};
+        
         centerOfMassStartTime = 4;
         centerOfMassEndTime = 6;
         
@@ -250,6 +252,12 @@ classdef Experiment %< handle
             if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plot.atmouth.Attributes.is_active)
                 obj.Events2plot{end+1} = 'atmouth';
             end
+            
+            obj.behaveTimeDiff = {};
+            for k = 1:length(xmlstrct.GeneralProperty.Experiment.visualization.behaveTimeDiff.Event)
+                obj.behaveTimeDiff(k) = {xmlstrct.GeneralProperty.Experiment.visualization.behaveTimeDiff.Event{k}.Text};
+            end
+            
             % visualization of delay to events
             obj.Events2plotDelay={};
             obj.Events2plotDelayNumber={};

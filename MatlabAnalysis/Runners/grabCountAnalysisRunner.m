@@ -1,17 +1,17 @@
 function grabCountAnalysisRunner
 addpath(genpath('../'));
 
-xmlfile = 'XmlBothAMwithSF.xml';
+xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'C:\Users\Hadas Ben Esti\Documents\biomedData\M26';
-folderAnimalOutputPath = 'C:\Users\Hadas Ben Esti\Documents\biomedresults\M26';
+folderAnimal = 'E:\AmirTest\';
+folderAnimalOutputPath = 'E:\AmirTest\Test\';
 
 
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
 % specific_experiment = '3_13_18';
-specific_experiment = '9_28_17';
+specific_experiment = '20200702_091343';
 
 listExperiments = dir (folderAnimal);
 
@@ -42,10 +42,14 @@ for index = 1: length(listExperiments)
                     end
                 end
 
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\grabCountAnalysis');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\grabCountAnalysis');
+%                 mkdir(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'eventsCountHis', 'imaging');
+                
+                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\eventsTimeDiffAnalysis');
                 mkdir(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'grabCountAnalysis', 'imaging');
-
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'eventsTimeDiffAnalysis', 'imaging');
+                
                 close all;
                 BdaTpaList = [];
             end
