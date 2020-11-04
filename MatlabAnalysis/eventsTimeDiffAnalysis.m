@@ -32,20 +32,40 @@ function eventsTimeDiffAnalysis(outputPath, generalProperty, imagingData, Behave
         liftToGrabSum = zeros(1, max(examinedIndsToRun));
         trialsCounter = 0;
         
-        liftEvents = NAMES_BEHAVE(contains(NAMES_BEHAVE, 'lift'));
-        grabEvents = NAMES_BEHAVE(contains(NAMES_BEHAVE, 'grab'));
+        startEventTime = ones(1, max(examinedIndsToRun)) * toneTime;
+        
+        if (~strcmp(generalProperty.behaveTimeDiff{1}, 'tone'))
+            fEvents = NAMES_BEHAVE(contains(NAMES_BEHAVE, generalProperty.behaveTimeDiff{1}));
+            
+            for trailsIndex = 1:length(examinedIndsToRun)          
+                for liftIndex = 1:length(fEvents)
+                    e_loc = BehaveData.(fEvents{liftIndex}).eventTimeStamps{examinedIndsToRun(trailsIndex)};
+                    if ~isempty(e_loc) 
+                        if t(e_loc(1)) >= toneTime
+                            startEventTime(examinedIndsToRun(trailsIndex)) = t(e_loc(1));
+                            break;
+                        end
+                    else
+                        break;
+                    end
+                end
+            end
+        end
+        
+        liftEvents = NAMES_BEHAVE(contains(NAMES_BEHAVE, generalProperty.behaveTimeDiff{2}));
+        grabEvents = NAMES_BEHAVE(contains(NAMES_BEHAVE, generalProperty.behaveTimeDiff{3}));
         
         for trailsIndex = 1:length(examinedIndsToRun)          
             for liftIndex = 1:length(liftEvents)
                 e_loc = BehaveData.(liftEvents{liftIndex}).eventTimeStamps{examinedIndsToRun(trailsIndex)};
                 if ~isempty(e_loc)
-                    if t(e_loc(1)) >= toneTime
+                    if t(e_loc(1)) >= startEventTime(examinedIndsToRun(trailsIndex))
                         for grabIndex = 1:length(grabEvents)
                             e2_loc = BehaveData.(grabEvents{grabIndex}).eventTimeStamps{examinedIndsToRun(trailsIndex)};
                             
-                            if ~isempty(e_loc)
-                                if t(e2_loc(1)) >= toneTime && t(e2_loc(1)) >= t(e_loc(1))
-                                    toneToliftSum(examinedIndsToRun(trailsIndex)) = abs(t(e_loc(1)) - toneTime);
+                            if ~isempty(e2_loc)
+                                if t(e2_loc(1)) >= startEventTime(examinedIndsToRun(trailsIndex)) && t(e2_loc(1)) >= t(e_loc(1))
+                                    toneToliftSum(examinedIndsToRun(trailsIndex)) = abs(t(e_loc(1)) - startEventTime(examinedIndsToRun(trailsIndex)));
                                     liftToGrabSum(examinedIndsToRun(trailsIndex)) = abs(t(e_loc(1)) - t(e2_loc(1)));
                                     trialsCounter = trialsCounter + 1;
                                     
@@ -68,20 +88,21 @@ function eventsTimeDiffAnalysis(outputPath, generalProperty, imagingData, Behave
         hold on;
         
         boxplot([toneToliftSum', liftToGrabSum'], ...
-            'Labels',{'Tone-Lift','Lift-Grab'})
-        title({'Compare Events Diff', labelName})  
+            'Labels',{sprintf('%s-%s', generalProperty.behaveTimeDiff{1}, generalProperty.behaveTimeDiff{2}),...
+            sprintf('%s-%s', generalProperty.behaveTimeDiff{2}, generalProperty.behaveTimeDiff{3})})
+        title({'Compare Events Diff', labelName, sprintf('trails number %d', trialsCounter)})  
         
-        mysave(figBox2, fullfile(outputPath, ['Box_Compare' labelName]));
+        mysave(figBox2, fullfile(outputPath, ['Box_Compare' labelName, generalProperty.behaveTimeDiff{2}, generalProperty.behaveTimeDiff{3}]));
    
         
-        excelDataRaw{lineIndex, compareCol} = 'Lift-Tone';
+        excelDataRaw{lineIndex, compareCol} = sprintf('%s-%s', generalProperty.behaveTimeDiff{1}, generalProperty.behaveTimeDiff{2});
         excelDataRaw{lineIndex, currentCol} = sum(toneToliftSum) ./ trialsCounter;
         lineIndex = lineIndex + 1;
                 
-        excelDataRaw{lineIndex, compareCol} = 'Lift-Grab';
+        excelDataRaw{lineIndex, compareCol} = sprintf('%s-%s', generalProperty.behaveTimeDiff{2}, generalProperty.behaveTimeDiff{3});
         excelDataRaw{lineIndex, currentCol} = sum(liftToGrabSum) ./ trialsCounter;
     end
       
-    filenameExcel = fullfile(outputPath, 'EventsTimeDiff_analysisResults.xlsx');
+    filenameExcel = fullfile(outputPath, sprintf('EventsTimeDiff_analysisResults_%s_.xlsx', [generalProperty.behaveTimeDiff{2}, generalProperty.behaveTimeDiff{3}]));
     xlswrite(filenameExcel,excelDataRaw);
 end

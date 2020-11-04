@@ -288,6 +288,11 @@
 		</Events2plotDelay>
         <delay2events_start_time>0</delay2events_start_time>
         <delay2events_end_time>2</delay2events_end_time>
+        <behaveTimeDiff>
+            <Event>tone</Event>
+            <Event>lift</Event>
+            <Event>grab</Event>
+        </behaveTimeDiff>
     </visualization>
     <RoiCorrelation>
         <winLen>1</winLen>
