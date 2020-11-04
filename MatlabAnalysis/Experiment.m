@@ -112,6 +112,11 @@ classdef Experiment %< handle
         glm_facial_features_dim = 20;
         indicativeAmplitudeStartTime=5;
         indicativeAmplitudeEndTime=8;
+        
+        winLenRoiCorrelation = 1;
+        winHopRoiCorrelation = 0.5;
+        corrTypeRoiCorrelation = 'corr';
+        
     end
     methods
         function obj = Experiment(xmlfile)            
@@ -275,6 +280,18 @@ classdef Experiment %< handle
                 obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.number);
             end
             
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.supination.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'supination';
+                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.supination.Attributes.color});
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.supination.Attributes.number);
+            end
+            
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'backto';
+                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.color});
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.number);
+            end
+            
             obj.delay2events_start_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_start_time.Text);
             obj.delay2events_end_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_end_time.Text);
             
@@ -353,6 +370,11 @@ classdef Experiment %< handle
             %             for tr = 1:length(trials)
             %                 obj.Trials2keep(tr) = str2double(trials(tr).name.Text);
             %             end
+            
+            
+            obj.winLenRoiCorrelation = str2num(xmlstrct.GeneralProperty.Experiment.RoiCorrelation.winLen.Text);
+            obj.winHopRoiCorrelation = str2num(xmlstrct.GeneralProperty.Experiment.RoiCorrelation.winHop.Text);
+            obj.corrTypeRoiCorrelation = xmlstrct.GeneralProperty.Experiment.RoiCorrelation.corrType.Text;
             
         end
         

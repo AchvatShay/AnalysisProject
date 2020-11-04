@@ -3,18 +3,19 @@ function atogram_printer_event(outputPath, generalProperty, imagingData, BehaveD
     hold on;
     set(fig,'Units','normalized')
        
-    h = zeros(size(generalProperty.atogramColors,1),1);
+    
+    subplot1 = subplot(4,1,1:3);
+    hold on;
+    title({event});  
+    
+     h = zeros(size(generalProperty.atogramColors,1),1);
     for colorIndex = 1:length(generalProperty.atogramColors)
         h(colorIndex) = plot(NaN,NaN,'color',generalProperty.atogramColors{colorIndex});
     end
   
-    leg = legend(h, generalProperty.atogramLabels);
-    
-    set(leg,'Position', [0.1 + 0.1, 0.1 - 0.25, 0.05, 0.05])
-    
-    subplot1 = subplot(4,1,1:3);
-    hold on;
-    title({event});   
+    legend(h, generalProperty.atogramLabels);
+    legend('Location', 'best')
+
     
     subplot1.YGrid = 'on';
            

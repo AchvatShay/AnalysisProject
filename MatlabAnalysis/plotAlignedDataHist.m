@@ -206,7 +206,55 @@ axis tight;
 ylabel('Average', 'FontSize', 12);
 xlabel('Time [sec]', 'FontSize', 12);
 
-mysave(f(3), fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_allnrns']));
+mysave(f(3), fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_allnrns_map']));
+
+save(fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_allnrns_R.mat']), 'tglobalcrop', 'onsetdiffvalid',...
+    'eventTime', 'eventName', 'dataAlltimesAlcrop');
+
+% -------------------------------------------------------------------------------------------------
+
+f(4) = figure;
+
+s1 = subplot(2,1,1);
+hold on;
+for index_i = 1:length(i)
+    plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(i(index_i),1:end-max(onsetdiffvalid),:),3), 'k');
+end
+
+xlabel('Time [sec]', 'FontSize', 12);
+ylabel('Neurons', 'FontSize', 12);
+set(gca,'XTick', -2:2:7)
+xticks=get(gca,'XTick');
+for h=1:length(xticks)
+    if xticks(h) > 0
+        xticklabels{h} = [eventName '+' num2str(xticks(h)) ];
+    elseif xticks(h) == 0
+        xticklabels{h} = eventName;
+    else
+        xticklabels{h} = [eventName num2str(xticks(h)) ];
+    end
+end
+   
+set(gca,'XTickLabel',xticklabels);
+placeToneTime(0,3);
+colormap jet;
+title(get(f(4),'Children'), ['aligned Data ' firstlaststr ' ' eventName ' ' sfstr]);
+set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
+s2 = subplot(4,1,4);
+plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(mean(dataAlltimesAlcrop(i,1:end-max(onsetdiffvalid),:)),3),'k','LineWidth',2);
+set(gca,'XTick', -2:2:7)
+set(gca,'XTickLabel',xticklabels);
+placeToneTime(0,3);
+axis tight;
+ylabel('Average', 'FontSize', 12);
+xlabel('Time [sec]', 'FontSize', 12);
+
+linkaxes([s1, s2], 'x');
+        
+mysave(f(4), fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_allnrns_Plot']));
+
+
+% -------------------------------------------------------------------------------------------------
 
 
 for nrni = neurons2plotList
@@ -265,7 +313,7 @@ for nrni = neurons2plotList
 end
 
 if plotUnalignedData
-f(4) = figure;
+f(5) = figure;
 subplot(2,1,1);
 imagesc(t(findClosestDouble(t,1.5):end)-toneTime, 1:size(imagingData,1),mean(imagingData(i,findClosestDouble(t,1.5):end,validinds),3), [-.15 2]);
 xlabel('Time [sec]', 'FontSize', 12);
@@ -285,7 +333,7 @@ xlabel('Time [sec]', 'FontSize', 12);
 ylabel('Average', 'FontSize', 12);
 placeToneTime(0,3);
 
-mysave(f(4), fullfile(currfigs, ['unalignedData' eventName sfstr '_allnrns']));
+mysave(f(5), fullfile(currfigs, ['unalignedData' eventName sfstr '_allnrns']));
 end
 
 
