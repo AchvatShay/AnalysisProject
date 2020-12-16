@@ -26,29 +26,7 @@
 		</PelletPertubation>
 	</Condition>
 	<NeuronesToPut>
-        <Neuron><name>22</name></Neuron>
-        <Neuron><name>23</name></Neuron>
-        <Neuron><name>24</name></Neuron>
-        <Neuron><name>25</name></Neuron>
-        <Neuron><name>26</name></Neuron>
-        <Neuron><name>27</name></Neuron>
-        <Neuron><name>28</name></Neuron>
-        <Neuron><name>29</name></Neuron>
-        <Neuron><name>30</name></Neuron>
-        <Neuron><name>31</name></Neuron>
-        <Neuron><name>32</name></Neuron>
-        <Neuron><name>33</name></Neuron>
-        <Neuron><name>34</name></Neuron>
-        <Neuron><name>35</name></Neuron>
-        <Neuron><name>36</name></Neuron>
-        <Neuron><name>37</name></Neuron>
-        <Neuron><name>38</name></Neuron>
-        <Neuron><name>39</name></Neuron>
-        <Neuron><name>40</name></Neuron>
-        <Neuron><name>41</name></Neuron>
-        <Neuron><name>42</name></Neuron>
-        <Neuron><name>43</name></Neuron>
-        <Neuron><name>44</name></Neuron>
+      
 	</NeuronesToPut>
 	<TrialsToPut>
 		
@@ -281,25 +259,12 @@
         <Events2plotDelay>
 			<grab is_active='True' number='1' color='green_atogram'></grab>
 			<lift is_active='True' number='1' color='blue_atogram'></lift>
-			<supination is_active='True' number='1' color='light_purple'></supination>
-            <atmouth is_active='True' number='1' color='red'></atmouth>
-            <backto is_active='True' number='1' color='dark_grey'></backto>
-            <tone is_active='False' number='1' color='black'></tone>
+			<atmouth is_active='True' number='1' color='red'></atmouth>
+            <tone is_active='True' number='1' color='black'></tone>
 		</Events2plotDelay>
         <delay2events_start_time>0</delay2events_start_time>
         <delay2events_end_time>2</delay2events_end_time>
-        <behaveTimeDiff>
-            <Event>tone</Event>
-            <Event>lift</Event>
-            <Event>grab</Event>
-        </behaveTimeDiff>
     </visualization>
-    <RoiCorrelation>
-        <winLen>1</winLen>
-        <winHop>0.5</winHop>
-        <!-- reg for corr or par for parcorr -->
-        <corrType>reg</corrType>
-    </RoiCorrelation>
   </Experiment>    
 </GeneralProperty>
 

@@ -1,4 +1,8 @@
-function runAnalysis(outputPath, xmlfile, BdaTpaList, analysisName, runOnWhat)
+function runAnalysis(outputPath, xmlfile, BdaTpaList, analysisName, runOnWhat, structuralTreeLabels)
+if nargin < 6
+    structuralTreeLabels = [];
+end
+
 % mkNewFolder(outputPath);
 if ~exist('runOnWhat','var')
     runOnWhat = 'imaging';
@@ -8,6 +12,115 @@ generalProperty = Experiment(xmlfile);
 
 [imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
 switch runOnWhat
+    case 'RoiSplit'
+        load(BdaTpaList(1).roiListNamesPath, 'roiActivityNames', 'colorMatrix1', 'colorMatrix2',  'selectedROISplitDepth1', 'selectedROISplitDepth3');
+        cM1 = zeros(size(imagingData.roiNames, 1), 3);
+        cM2 = zeros(size(imagingData.roiNames, 1), 3);
+        split1 = zeros(size(imagingData.roiNames, 1), 1);
+        split2 = zeros(size(imagingData.roiNames, 1), 1);
+        
+        roiToExcludeFromTheTPA = [];
+        roiToExcludeFromTheTPA_indexing = 1;
+        for i = 1:size(imagingData.roiNames, 1)
+            locationCurrentROI = find(strcmp(roiActivityNames, sprintf('roi%05d',imagingData.roiNames(i, 1))));
+
+            if isempty(locationCurrentROI)
+                roiToExcludeFromTheTPA(roiToExcludeFromTheTPA_indexing) = i;
+                roiToExcludeFromTheTPA_indexing = roiToExcludeFromTheTPA_indexing + 1;
+                continue;
+            else
+                cM1(i, :) = colorMatrix1(locationCurrentROI, :);
+                cM2(i, :) = colorMatrix2(locationCurrentROI, :);
+                split1(i, :) = selectedROISplitDepth1(locationCurrentROI);
+                split2(i, :) = selectedROISplitDepth3(locationCurrentROI);
+            end
+
+        end
+
+        imagingData.samples(roiToExcludeFromTheTPA, :, :) = [];
+        imagingData.roiNames(roiToExcludeFromTheTPA, :) = [];
+        imagingData.loc(roiToExcludeFromTheTPA) = [];
+        cM2(roiToExcludeFromTheTPA, :) = [];
+        cM1(roiToExcludeFromTheTPA, :) = [];
+        split1(roiToExcludeFromTheTPA, :) = [];
+        split2(roiToExcludeFromTheTPA, :) = [];
+        
+        generalProperty.RoiSplit_d1 = cM1;
+        generalProperty.RoiSplit_d2 = cM2;
+        generalProperty.RoiSplit_I1 = split1;
+        generalProperty.RoiSplit_I2 = split2;
+        
+        feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
+    case 'RoiCorrelation'
+        load(BdaTpaList(1).roiListNamesPath, 'roiActivityNames','colorMatrix1', 'colorMatrix2', 'selectedROISplitDepth1');
+        
+        roiToExcludeFromTheTPA = [];
+        roiToExcludeFromTheTPA_indexing = 1;
+        roiLabels = zeros(1, size(imagingData.roiNames, 1));
+        cM1 = zeros(size(imagingData.roiNames, 1), 3);
+        cM2 = zeros(size(imagingData.roiNames, 1), 3);
+        
+        for i = 1:size(imagingData.roiNames, 1)
+            locationCurrentROI = find(strcmp(roiActivityNames, sprintf('roi%05d',imagingData.roiNames(i, 1))));
+
+            if isempty(locationCurrentROI)
+                roiToExcludeFromTheTPA(roiToExcludeFromTheTPA_indexing) = i;
+                roiToExcludeFromTheTPA_indexing = roiToExcludeFromTheTPA_indexing + 1;
+                continue;
+            else
+                roiLabels(i) = selectedROISplitDepth1(locationCurrentROI);
+                cM1(i, :) = colorMatrix1(locationCurrentROI, :);
+                cM2(i, :) = colorMatrix2(locationCurrentROI, :);
+            
+            end
+
+        end
+
+        imagingData.samples(roiToExcludeFromTheTPA, :, :) = [];
+        imagingData.roiNames(roiToExcludeFromTheTPA, :) = [];
+        imagingData.loc(roiToExcludeFromTheTPA) = [];
+        roiLabels(roiToExcludeFromTheTPA) = [];
+        cM2(roiToExcludeFromTheTPA, :) = [];
+        cM1(roiToExcludeFromTheTPA, :) = [];
+        
+        generalProperty.RoiSplit_d1 = cM1;
+        generalProperty.RoiSplit_d2 = cM2;
+      
+        generalProperty.roiLabels = roiLabels;
+        
+        [x_data, generalProperty] = createRoiCorrelationMatrix(imagingData, generalProperty);
+        imagingData.samples = x_data;
+        outputPath = [outputPath, '\', generalProperty.corrTypeRoiCorrelation, '\'];
+        mkdir(outputPath);
+        
+        feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);        
+        
+%         if (strcmp(analysisName, 'pcaTrajectories'))
+%             classesU = unique(roiLabels);
+%             for i_u = 1:length(classesU)
+%                 generalPropertyT = generalProperty;
+%                 imagingDataTemp.samples = imagingData.samples(roiLabels == classesU(i_u), :, :);
+%                 imagingDataTemp.roiNames = imagingData.roiNames(roiLabels == classesU(i_u), :);
+%                 imagingDataTemp.loc = imagingData.loc(roiLabels == classesU(i_u));
+%                 roiLabelsTemp = roiLabels(roiLabels == classesU(i_u));
+%                 cm2T = cM2(roiLabels == classesU(i_u), :);
+%                 cm1T = cM1(roiLabels == classesU(i_u), :);
+% 
+%                 generalPropertyT.RoiSplit_d1 = cm1T;
+%                 generalPropertyT.RoiSplit_d2 = cm2T;
+% 
+%                 generalPropertyT.roiLabels = roiLabelsTemp;
+% 
+%                 [x_dataTemp, generalPropertyT] = createRoiCorrelationMatrix(imagingDataTemp, generalPropertyT);
+%                 imagingDataTemp.samples = x_dataTemp;
+%                 outputPath = [outputPath, '\', generalPropertyT.corrTypeRoiCorrelation, '\', num2str(i_u),'\'];
+%                 mkdir(outputPath);
+% 
+%                 feval(analysisName,outputPath, generalPropertyT, imagingDataTemp, BehaveData);        
+%             end
+%         end
+%         
+        
     case 'NotindicativeNrns'
         if generalProperty.linearSVN
                 linstr = 'lin';
@@ -99,7 +212,44 @@ switch runOnWhat
             feval(analysisName,Notsignificantpath, generalProperty, imagingDataSignificant, BehaveData);
         end
     case 'imaging'
-        feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
+        if isempty(structuralTreeLabels)
+            feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
+        else
+            indexingROI = zeros(size(structuralTreeLabels.roiNames, 1), 1);
+            roi_i = 1;
+            roiToExcludeFromTheTPA = [];
+            roiToExcludeFromTheTPA_indexing = 1;
+            for i = 1:size(imagingData.roiNames, 1)
+                locationCurrentROI = find(strcmp(structuralTreeLabels.roiNames, sprintf('roi%05d',imagingData.roiNames(i, 1))));
+                
+                if isempty(locationCurrentROI)
+                    roiToExcludeFromTheTPA(roiToExcludeFromTheTPA_indexing) = i;
+                    roiToExcludeFromTheTPA_indexing = roiToExcludeFromTheTPA_indexing + 1;
+                    continue;
+                end
+                
+                indexingROI(roi_i) = locationCurrentROI;
+                roi_i = roi_i + 1;
+            end
+            
+            imagingData.samples(roiToExcludeFromTheTPA, :, :) = [];
+            imagingData.roiNames(roiToExcludeFromTheTPA, :) = [];
+            imagingData.loc(roiToExcludeFromTheTPA) = [];
+            
+            roiTableNew.roiNames = structuralTreeLabels.roiNames(indexingROI);
+            roiTableNew.eventsStr = structuralTreeLabels.eventsStr;
+            roiTableNew.labels = structuralTreeLabels.labels(indexingROI);
+            roiTableNew.labelsLUT = structuralTreeLabels.labelsLUT;
+            roiTableNew.cls = structuralTreeLabels.cls;
+            roiTableNew.activity.dataEvents = structuralTreeLabels.activity.dataEvents(indexingROI, :, :);
+            roiTableNew.activity.labels = structuralTreeLabels.activity.labels';
+            roiTableNew.activity.dataTrials = structuralTreeLabels.activity.dataTrials(indexingROI, :, :);
+            
+%             roiTableNew.activity.rawData.cluster_0 = roiTableNew.activity.rawData.cluster_0(indexingROI, :, :); 
+%             roiTableNew.activity.combData.cluster_0 = roiTableNew.activity.combData.cluster_0(indexingROI, :, :); 
+            
+            feval(analysisName,outputPath, generalProperty, imagingData, BehaveData, roiTableNew);
+        end
     case 'traj'
         
         if ~isfield(BehaveData, 'traj')

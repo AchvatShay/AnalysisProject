@@ -1,21 +1,26 @@
 function glmAnalysis(outputPath, generalProperty, imagingData, BehaveData)
 
 splinesFile{1} = 'splines0.5.csv';
-splinesFile{2} = 'splines2.csv';
+splinesFile{2} = 'splines0.25.csv';
+% splinesFile{3} = 'splines0.75.csv';
+splinesFile{3} = 'splines1.csv';
+% splinesFile{4} = 'splines2.csv';
+% splinesFile{1} = 'splines3.csv';
+% splinesFile{3} = 'splines0.1.csv';
 
 for f_i = 1:length(splinesFile)
     if ~exist(splinesFile{f_i}, 'file')
         error('Splines file does not exist!');
         % use this R code to create that file..
-        % require(stats);
-        % require(graphics)
-        % x <- seq.int(0, 1-1/30, 1/30)
-        % library(splines2)
-        % mat = bSpline(x, df = NULL, knots = NULL, degree = 7, intercept = TRUE,Boundary.knots = range(x, na.rm = TRUE))
-        % matplot(x, mat, type = "l", ylab = "scaled I-spline basis")
-        % write.csv(mat, file = 'splines2.csv')
-        % x <- seq.int(0, 1-1/60, 1/60)
-        % write.csv(mat, file = 'splines1.csv')
+%         require(stats);
+%         require(graphics)
+%         x <- seq.int(0, 1-1/30, 1/30)
+%         library(splines2)
+%         mat = bSpline(x, df = NULL, knots = NULL, degree = 7, intercept = TRUE,Boundary.knots = range(x, na.rm = TRUE))
+%         matplot(x, mat, type = "l", ylab = "scaled I-spline basis")
+%         write.csv(mat, file = 'splines2.csv')
+%         x <- seq.int(0, 1-1/60, 1/60)
+%         write.csv(mat, file = 'splines1.csv')
     end
     splinesFuns{f_i}=xlsread(splinesFile{f_i});
     splinesFuns{f_i} = splinesFuns{f_i}(2:end, :);
@@ -39,6 +44,7 @@ t = linspace(0, generalProperty.Duration, size(imagingData.samples,2)) - general
 ttraj = linspace(0, generalProperty.Duration, size(BehaveData.traj.data,2)) - generalProperty.ToneTime;
 
 INDICES = crossvalind('Kfold',size(imagingData.samples, 3),foldsNum);
+
 time_seg_i=1;
 timeinds = find(t >= timesegments(1,time_seg_i) & t <= timesegments(2,time_seg_i));
 timeinds_traj = find(ttraj >= timesegments(1,time_seg_i) & ttraj <= timesegments(2, time_seg_i));

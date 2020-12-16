@@ -23,7 +23,10 @@ switch lower(generalProperty.PelletPertubation)
         end
 
         embedding_order_3 = resDiffMap.embedding{runningOrder==3};
-        
+        figure;
+        plotTreeWithColors(resDiffMap.Trees{runningOrder==3}, labels);title('Tree of Trials');
+        figure;plotTreeWithColors(resDiffMap.Trees{runningOrder==2}, 1:size(X,2));title('Tree of Time');
+         figure;plotTreeWithColors(resDiffMap.Trees{runningOrder==1}, 1:size(X,1));title('Tree of Neurons');
         visualize2Dembedding(examinedInds, labels, prevcurlabs, prevCurrLUT, labelsLUT, generalProperty, ACC2D, eventsStr, embedding_order_3, outputPath, 'diffMap')
     case 'taste'
         [labelsTaste, examinedIndsTaste, eventsStrTaste, labelsLUTTaste] = getLabels4clusteringFromEventslist(BehaveData, ...

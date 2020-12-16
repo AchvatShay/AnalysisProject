@@ -1,7 +1,7 @@
 function EventsNamePrint()
  addpath('../');
  
-folderExperiment = 'D:\Shay\work\DB Mount\Dropbox (Technion Dropbox)\AnalysisResultsShay\Jackie\M27\2_8_18\';
+folderExperiment = '\\192.114.20.192\d\Maria\Analysis\M35\3_31_19_empty_BDA_TPA';
 
 listExperiments = dir(strcat(folderExperiment,'\BDA*'));
 
