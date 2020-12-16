@@ -119,6 +119,11 @@ classdef Experiment %< handle
         winHopRoiCorrelation = 0.5;
         corrTypeRoiCorrelation = 'corr';
         
+        RoiSplit_d1 = [];
+        RoiSplit_d2 = []; 
+        RoiSplit_I1 = [];
+        RoiSplit_I2 = []; 
+        roiLabels = [];
     end
     methods
         function obj = Experiment(xmlfile)            
@@ -298,6 +303,18 @@ classdef Experiment %< handle
                 obj.Events2plotDelay{end+1} = 'backto';
                 obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.color});
                 obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.number);
+            end
+            
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtotable.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'backtotable';
+                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtotable.Attributes.color});
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtotable.Attributes.number);
+            end
+            
+            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtoperch.Attributes.is_active)
+                obj.Events2plotDelay{end+1} = 'backtoperch';
+                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtoperch.Attributes.color});
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtoperch.Attributes.number);
             end
             
             obj.delay2events_start_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_start_time.Text);

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GeneralProperty>
+  <Experiment>
+	<name>shay</name> 
+	<Condition>
+		<Type>
+			<lick is_active='False'></lick>
+			<hand_reach is_active='True'></hand_reach>
+			<pedal is_active='False'></pedal>
+		</Type>
+		<Depth>100</Depth>
+		<ImagingSamplingRate>20</ImagingSamplingRate>
+		<BehavioralSamplingRate>200</BehavioralSamplingRate>
+        <BehavioralDelay>20</BehavioralDelay>
+		<ToneTime>4</ToneTime>
+		<Duration>12</Duration>
+		<Injection>
+			<None is_active='True'></None>
+			<Saline is_active='False'></Saline>
+			<CNO is_active='False'></CNO>
+		</Injection>
+        <PelletPertubation>
+			<None is_active='True'></None>
+			<Ommisions is_active='False'></Ommisions>
+			<Taste is_active='False'></Taste>
+		</PelletPertubation>
+	</Condition>
+	<NeuronesToPut>
+        
+	</NeuronesToPut>
+	<TrialsToPut>
+		
+    </TrialsToPut>
+    <analysisParams>
+        <startTimeGrabCountHis>4</startTimeGrabCountHis>
+        <endTimeGrabCountHis>6</endTimeGrabCountHis>
+        <!--1:20;56:70;71:71;1:end-->
+        <!--<TrailsToRun>3:3;6:6;13:14;23:26;29:30;32:32;34:42;46:51;57:57;59:61;66:69</TrailsToRun>-->
+        <TrailsToRun>1:end</TrailsToRun>
+        <do_Plot3DTraj>false</do_Plot3DTraj>
+        <plotTraj3D>
+            <startTime>4</startTime>
+            <endTime>6</endTime>
+            <trajLabels>
+                <Traj>			
+                    <name>lift</name>
+                    <color>blue_atogram</color>  
+                    <is_active>true</is_active>  
+                </Traj>
+                <Traj>			
+                    <name>grab</name>
+                    <color>green_atogram</color>  
+                    <is_active>true</is_active>  
+                </Traj>
+                <Traj>			
+                    <name>atmouth</name>
+                    <color>red</color>  
+                    <is_active>true</is_active>  
+                </Traj>
+           </trajLabels>
+        </plotTraj3D>
+        <orderAnalysis>
+            <!--choose master result file order for Order By master-->
+            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\Shahar\learning project\experiments\results\Den7\Order\4_12_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
+            <min_points_above_baseline>3</min_points_above_baseline>
+            <AlignedOrderByDataAccordingToEvent>
+                <EventName></EventName>
+                <EventNum></EventNum>
+            </AlignedOrderByDataAccordingToEvent>
+            <plot_start_time>0</plot_start_time>
+            <plot_end_time>8</plot_end_time>
+            <PearsonOnlyFromStartTime>5</PearsonOnlyFromStartTime><!--choose start time to compare pearson between master and self timing-->
+            <PearsonOnlyFromEndTime>7</PearsonOnlyFromEndTime><!--choose End time to compare pearson between master and self timing-->
+            <OrderMethod>peak</OrderMethod><!--choose the method running order by: peak or centerOfMass--> 
+            <centerOfMass>
+                <startTime>4</startTime>
+                <endTime>7</endTime>
+            </centerOfMass>
+        </orderAnalysis>
+        <FWHMAnalysis>
+            <min_points_above_baseline>3</min_points_above_baseline>
+            <min_points_under_FWHM>5</min_points_under_FWHM>
+            <data_downsamples_FWHM>3</data_downsamples_FWHM>
+            <EventName>tone</EventName>
+        </FWHMAnalysis>
+        <glm_facial_features_dim>20</glm_facial_features_dim>
+        <glm_energyTh>0.15</glm_energyTh>
+        <glmSegments>
+            <seg>
+                <start>-0.1</start>
+                <end>6</end>
+            </seg>            
+            <seg>
+                <start>-0.5</start>
+                <end>3</end>
+            </seg>
+        </glmSegments>
+        <glmKinematics>
+            <position>true</position>
+            <velosity>false</velosity>
+            <accelration>false</accelration>
+        </glmKinematics>
+        <glmBehaveEvents>
+            <event>
+                <name>tone</name>
+                <type>tone</type>
+            </event> 
+            <event>
+                <name>supination</name>
+                <type>supination</type>
+            </event>
+            <event>
+                <name>backtotable</name>
+                <type>backtotable</type>
+            </event>
+            <event>
+                <name>backtoperch</name>
+                <type>backtoperch</type>
+            </event>
+            <event>
+                <name>atmouth</name>
+                <type>atmouth</type>
+            </event> 
+            <event>
+                <name>lift</name>
+                <type>lift</type>
+            </event> 
+            <event>
+                <name>grab</name>
+                <type>grab</type>
+            </event>                       
+            <event>
+                <name>traj</name>
+                <type>kinematics</type>
+            </event>            
+            <event>
+                <name>leftface</name>
+                <type>facemap</type>
+            </event>
+            <event>
+                <name>rightface</name>
+                <type>facemap</type>
+            </event>
+            <event>
+                <name>success</name>
+                <type>reward</type>
+            </event>
+        </glmBehaveEvents>   
+        <pca_thEffDim>0.95</pca_thEffDim>
+        <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
+        <indicativeNrnsMeanStartTime>0</indicativeNrnsMeanStartTime>
+        <indicativeNrnsMeanEndTime>8</indicativeNrnsMeanEndTime>
+        <indicativePvalue>
+            <val>0.001</val>
+            <val>0.05</val>
+        </indicativePvalue> 
+        <significantNrns_maxbinnum>2</significantNrns_maxbinnum>
+        <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
+        <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
+        <locations_stripesNum>5</locations_stripesNum>
+        <indicativeAmplitudeStartTime>5</indicativeAmplitudeStartTime>
+        <indicativeAmplitudeEndTime>8</indicativeAmplitudeEndTime>
+        <significantPvalue>
+            <val>0.001</val>
+            <val>0.05</val>
+        </significantPvalue>        
+        <successLabel>success</successLabel> 
+        <failureLabel>failure</failureLabel>
+        <prevcurrlabels2cluster>
+            <cluster>			
+                <name>success</name>
+                <color>blue</color>
+                <color>cyan</color>
+            </cluster>
+            <cluster>			
+                <name>failure</name> 
+                <color>purpule</color>
+                <color>red</color>
+            </cluster>
+        </prevcurrlabels2cluster>  
+        <labels2cluster>
+            <cluster>			
+				<name>success</name>
+                <color>blue</color>                
+        </cluster>
+		<cluster>			
+				<name>failure</name>  
+                <color>red</color>                
+		</cluster>
+        </labels2cluster>   
+        <includeOmissions is_active='False'></includeOmissions>
+        <DetermineSucFailBy>
+			<BySuc is_active='False'></BySuc>
+			<ByFail is_active='False'></ByFail>
+			<Both is_active='True'></Both>
+		</DetermineSucFailBy>
+        <slidingWinLen>1</slidingWinLen>
+        <slidingWinHop>0.5</slidingWinHop>
+        <linearSVN is_active='True'></linearSVN>
+        <foldsNum>10</foldsNum>
+        <time2startCountGrabs>4</time2startCountGrabs>
+        <time2endCountGrabs>6</time2endCountGrabs> 
+        <startBehaveTime4trajectory>4</startBehaveTime4trajectory>
+        <endBehaveTime4trajectory>6</endBehaveTime4trajectory>
+        <NeuronesToPlot>
+             <Neuron>
+                <name>191</name>
+            </Neuron> 
+        </NeuronesToPlot>
+    </analysisParams>
+    <visualization> 
+        <bestpcatrajectories2plot>5</bestpcatrajectories2plot>
+        <visualization_time4confplot>
+            <time_stamp>-2.5</time_stamp>
+            <time_stamp>0</time_stamp>
+            <time_stamp>2</time_stamp>
+            <time_stamp>6</time_stamp>
+        </visualization_time4confplot>
+        <visualization_time4confplotNext>
+            <time_stamp>-2.5</time_stamp>
+        </visualization_time4confplotNext>
+        <visualization_conf_percent4acc>0.05</visualization_conf_percent4acc>
+        <viewparams1>0</viewparams1>
+        <viewparams2>0</viewparams2>
+        <legend Location='Best'></legend>
+        <labelsFontSize>14</labelsFontSize>
+        <startTime2plot>1.5</startTime2plot>
+       <TastesLabels>
+        <Taste>			
+            <name>success</name>
+            <color>cyan</color>  
+            <is_active>true</is_active>  
+        </Taste>
+        <Taste>			
+            <name>failure</name>
+            <color>purple</color>  
+            <is_active>true</is_active>  
+        </Taste>
+        <Taste>			
+            <name>nopellet</name>
+            <color>blue</color>  
+            <is_active>true</is_active>  
+        </Taste>
+       </TastesLabels>
+       
+        <AtogramLabels>
+            <Atogram>			
+                <name>lift</name>
+                <color>blue_atogram</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
+                <name>grab</name>
+                <color>green_atogram</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
+                <name>supination</name>
+                <color>light_purple</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
+                <name>atmouth</name>
+                <color>red</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+       </AtogramLabels>
+        <atogramStartTime>-2</atogramStartTime>
+        <atogramEndTime>4</atogramEndTime>
+        <Events2plot>
+			<grab is_active='True'></grab>
+			<lift is_active='True'></lift>
+			<atmouth is_active='True'></atmouth>
+            <lick is_active='True'></lick>
+		</Events2plot>
+        <Events2plotDelay>
+			<grab is_active='False' number='1' color='green_atogram'></grab>
+			<lift is_active='False' number='1' color='blue_atogram'></lift>
+			<supination is_active='False' number='1' color='light_purple'></supination>
+            <atmouth is_active='False' number='1' color='red'></atmouth>
+            <backto is_active='False' number='1' color='dark_grey'></backto>
+            <backtotable is_active='True' number='1' color='dark_grey'></backtotable>
+            <backtoperch is_active='True' number='1' color='dark_grey'></backtoperch>
+            <tone is_active='False' number='1' color='black'></tone>
+		</Events2plotDelay>
+        <delay2events_start_time>0</delay2events_start_time>
+        <delay2events_end_time>2</delay2events_end_time>
+        <behaveTimeDiff>
+            <Event>tone</Event>
+            <Event>lift</Event>
+            <Event>grab</Event>
+        </behaveTimeDiff>
+    </visualization>
+    <RoiCorrelation>
+        <winLen>1</winLen>
+        <winHop>0.5</winHop>
+        <!-- reg for corr or par for parcorr -->
+        <corrType>reg</corrType>
+    </RoiCorrelation>
+  </Experiment>    
+</GeneralProperty>
+
+

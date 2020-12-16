@@ -12,9 +12,8 @@ end
 if exist(fullfile(outputpath, [outputfile '.mat']), 'file')
     load(fullfile(outputpath, outputfile));
 else
-    
-    
-    
+    poolobj = parpool;
+ 
     for time_seg_i = 1:size(timesegments,2)
         
         timeinds = find(t >= timesegments(1,time_seg_i) & t <= timesegments(2,time_seg_i));
@@ -41,9 +40,8 @@ else
             
         end
         
-        
-        for nrni = 1:size(imagingData.samples, 1)
-            
+        indexFRunning = 1;
+        for nrni = 1:size(imagingData.samples, 1)           
             
             for fold_i = 1:foldsNum
                 
@@ -53,18 +51,49 @@ else
                 Yte = squeeze(Y_test{fold_i}(nrni, :, :));
                 
                 toc(tt);
-                [ glmmodelfull{time_seg_i}.x(:, nrni, fold_i ), glmmodelfull{time_seg_i}.x0(nrni, fold_i ), ...
-                    R2full_tr{time_seg_i}(nrni, fold_i ), R2full_te{time_seg_i}(nrni, fold_i)] = LassoCV(x_train{fold_i}, Ytr(:), foldsNum, x_test{fold_i}, Yte(:));
-                disp(mean(R2full_te{time_seg_i}(nrni, :),2));
+                F(indexFRunning) = parfeval(@LassoCV, 7, x_train{fold_i}, Ytr(:), foldsNum, x_test{fold_i}, Yte(:), fold_i, nrni, -1);
+                indexFRunning = indexFRunning + 1;
+%                 [ glmmodelfull{time_seg_i}.x(:, nrni, fold_i ), glmmodelfull{time_seg_i}.x0(nrni, fold_i ), ...
+%                     R2full_tr{time_seg_i}(nrni, fold_i ), R2full_te{time_seg_i}(nrni, fold_i)] = LassoCV(x_train{fold_i}, Ytr(:), foldsNum, x_test{fold_i}, Yte(:));
+%                 disp(mean(R2full_te{time_seg_i}(nrni, :),2));
             end
+        end
+        
+        for i_f = 1:indexFRunning-1
+            [completedIdx,x, x0, R2Tr, R2Te, fold_in, nrni, ~] = fetchNext(F);
             
+            glmmodelfull{time_seg_i}.x(:, nrni, fold_in ) = x;
+            glmmodelfull{time_seg_i}.x0(nrni,  fold_in ) = x0;
+            R2full_tr{time_seg_i}(nrni, fold_in) = R2Tr;
+            R2full_te{time_seg_i}(nrni, fold_in) = R2Te;
+        end
+        
+        indexFRunning = 1;
+        for nrni = 1:size(imagingData.samples, 1)
+        
             if ~(nanmean(R2full_te{time_seg_i}(nrni,:),2)>=energyTh)
                  for type_i = 1:length(types)
-                R2p_train{time_seg_i}(nrni, type_i, fold_i) = nan;
-                R2p_test{time_seg_i}(nrni, type_i, fold_i) = nan;
+                R2p_train{time_seg_i}(nrni, type_i, 1:foldsNum) = nan;
+                R2p_test{time_seg_i}(nrni, type_i, 1:foldsNum) = nan;
                  end
                 continue;
             end
+
+            for fold_i = 1:foldsNum
+                f = figure;
+                hold on;
+                subplot(2,1,1);
+                B = glmmodelfull{time_seg_i}.x(:, nrni, fold_i );
+                x0 = glmmodelfull{time_seg_i}.x0(nrni, fold_i);
+                imagesc(t(timeinds), 1:size(Y_test{fold_i},3), squeeze(Y_test{fold_i}(nrni, :, :))', [-.15,2]);
+                title('Data');
+                subplot(2,1,2);
+                imagesc(t(timeinds), 1:size(Y_test{fold_i},3), reshape(x_test{fold_i}*B + x0, size(squeeze(Y_test{fold_i}(nrni, :, :))))', [-.15,2]);
+                xlabel('Time [sec]');axis tight;ylabel('Trials');title('Model');
+                mysave(f, fullfile(outputpath, 'ModelPlot', num2str(fold_i), num2str(time_seg_i), num2str(nrni)));
+                close(f);
+            end
+            
             for fold_i = 1:foldsNum
                 tt = tic;
                 disp([time_seg_i/(length(timesegments)-1) nrni/size(imagingData.samples, 1) fold_i/foldsNum]);
@@ -73,18 +102,44 @@ else
                 
                 for type_i = 1:length(types)
                     binds = setdiff(1:size(x_train{fold_i},2), find(X_train{fold_i}.type==types(type_i)));
-                    [ glmmodelpart{time_seg_i, type_i}.x(:, nrni, fold_i ), glmmodelpart{time_seg_i}.x0(nrni, fold_i,type_i ), R2p_train{time_seg_i}(nrni, type_i, fold_i), R2p_test{time_seg_i}(nrni, type_i, fold_i)] = ...
-                        LassoCV(x_train{fold_i}(:, binds), Ytr(:), foldsNum, x_test{fold_i}(:, binds), Yte(:));
+                    
+                    P_F(indexFRunning) = parfeval(@LassoCV, 7, x_train{fold_i}(:, binds), Ytr(:), foldsNum, x_test{fold_i}(:, binds), Yte(:), fold_i, nrni, type_i);
+                    indexFRunning = indexFRunning + 1;
+%                     [ glmmodelpart{time_seg_i, type_i}.x(:, nrni, fold_i ), glmmodelpart{time_seg_i}.x0(nrni, fold_i,type_i ),
+%                      R2p_train{time_seg_i}(nrni, type_i, fold_i), R2p_test{time_seg_i}(nrni, type_i, fold_i)] = ...
+%                         LassoCV(x_train{fold_i}(:, binds), Ytr(:), foldsNum, x_test{fold_i}(:, binds), Yte(:));
                 end
-                
-            end
-            
-            
+            end            
         end
+        
+        for i_f = 1:indexFRunning-1
+            [completedIdx,x, x0, R2Tr, R2Te, fold_in, nrni, type_i] = fetchNext(P_F);
+
+            glmmodelpart{time_seg_i,  type_i}.x(:, nrni, fold_in) = x;
+            glmmodelpart{time_seg_i}.x0(nrni,  fold_in ,  type_i) = x0;
+            R2p_train{time_seg_i}(nrni, type_i, fold_in) = R2Tr;
+            R2p_test{time_seg_i}(nrni, type_i, fold_in) = R2Te;
+        end
+        
         
     end
     save(fullfile(outputpath, outputfile), 'R2p_test','glmmodelpart','glmmodelfull','R2full_te','R2full_tr','timesegments','eventsNames', 'eventsTypes', 'INDICES');
+
+    delete(poolobj)
+
+    if exist('P_F', 'var')
+        delete(P_F);
+    end
+
+    if exist('F', 'var')
+        delete(F);
+    end
 end
+
+typesU = unique(eventsTypes, 'stable');
+% typesU = unique(eventsTypes);
+plotGLMResults(typesU, timesegments, energyTh, R2full_te, R2p_test, outputpath, imagingData, generalProperty);
+
 return;
 Nrns = size(R2full_te{1},1);
 types = size(R2p_test{1},2);
