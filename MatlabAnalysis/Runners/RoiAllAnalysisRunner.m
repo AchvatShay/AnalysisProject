@@ -1,19 +1,22 @@
-function AllAnalysisRunner
+function RoiAllAnalysisRunner
 
 addpath('../');
 
-xmlfile = 'XmlByBoth.xml';
+xmlfile = 'RoiXmlByBoth.xml';
 
-folderAnimal = 'D:\Maria\Layer 2-3\Analysis\M26\\';
-trajpth = 'D:\Maria\Layer 2-3\Videos\M26\9_28_17';
-folderAnimalOutputPath='\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\M26\';
+folderAnimal = 'C:\Users\Jackie\Dropbox (Technion Dropbox)\Yara\Layer 5_Analysis\SM04\';
+trajpth = 'D:\Layer V\Videos\SM04\2019-08-18_SM04_handreach_behavior\DLC\';
+roiListNamesPath = '\\jackie-analysis\e\Shay\SM04\08_18_19_tuft_Final_Version\Analysis\N2\Structural_VS_Functional\25-11-20\Run2\no_behave\Pearson\SP\roiActivityRawData.mat';
+NeuronNumber = 'N2';
+
+folderAnimalOutputPath='\\jackie-analysis\e\Shay\SM04\';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
-specific_experiment = '9_28_17';
+specific_experiment = '08_18_19_tuft_Final_Version';
 
 listExperiments = dir (folderAnimal);
 
@@ -45,19 +48,20 @@ for index = 1: length(listExperiments)
                 end
                 BdaTpaList = getTrajFiles(BdaTpaList, trajpth, listExperiments(index).name);
 % 
-
-%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\atogram_printer');
+                BdaTpaList(1).roiListNamesPath = roiListNamesPath;
+                
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\', NeuronNumber ,'\atogram_printer');
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'atogram_printer', 'imaging');
-% % 
+
 
 %                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\FWHM_analysis');
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'FWHM_analysis', 'imaging');
 
-%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\pcaTrajectories');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\', NeuronNumber, '\pcaTrajectories');
 %                 mkNewFolder(outputPath);
-%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'imaging');
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'pcaTrajectories', 'RoiCorrelation');
 
 %                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\plotSingleNrnAcrossTrials');
 %                 mkNewFolder(outputPath);
@@ -76,10 +80,17 @@ for index = 1: length(listExperiments)
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'Pca2D', 'imaging');
 %                 
-%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\delay2events');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\', NeuronNumber ,'\delay2events');
 %                 mkNewFolder(outputPath);
-%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events', 'imaging');
-% 
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'delay2events', 'RoiSplit');
+
+
+                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\', NeuronNumber ,'\glmAnalysis');
+                mkNewFolder(outputPath);
+                runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysis', 'RoiSplit');
+                
+                
+                % 
 %                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\diffMap2D');
 %                 mkNewFolder(outputPath);
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'diffMap2D', 'imaging');
@@ -101,9 +112,9 @@ for index = 1: length(listExperiments)
 %                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'SingleNeuronAnalysis');
                 
                 
- outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\predictionIndicativeAmp');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'predictionIndicativeAmp');
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\predictionIndicativeAmp');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'predictionIndicativeAmp');
 
              
                 close all;

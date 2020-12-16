@@ -26,29 +26,7 @@
 		</PelletPertubation>
 	</Condition>
 	<NeuronesToPut>
-        <Neuron><name>22</name></Neuron>
-        <Neuron><name>23</name></Neuron>
-        <Neuron><name>24</name></Neuron>
-        <Neuron><name>25</name></Neuron>
-        <Neuron><name>26</name></Neuron>
-        <Neuron><name>27</name></Neuron>
-        <Neuron><name>28</name></Neuron>
-        <Neuron><name>29</name></Neuron>
-        <Neuron><name>30</name></Neuron>
-        <Neuron><name>31</name></Neuron>
-        <Neuron><name>32</name></Neuron>
-        <Neuron><name>33</name></Neuron>
-        <Neuron><name>34</name></Neuron>
-        <Neuron><name>35</name></Neuron>
-        <Neuron><name>36</name></Neuron>
-        <Neuron><name>37</name></Neuron>
-        <Neuron><name>38</name></Neuron>
-        <Neuron><name>39</name></Neuron>
-        <Neuron><name>40</name></Neuron>
-        <Neuron><name>41</name></Neuron>
-        <Neuron><name>42</name></Neuron>
-        <Neuron><name>43</name></Neuron>
-        <Neuron><name>44</name></Neuron>
+        
 	</NeuronesToPut>
 	<TrialsToPut>
 		
@@ -59,7 +37,7 @@
         <!--1:20;56:70;71:71;1:end-->
         <!--<TrailsToRun>3:3;6:6;13:14;23:26;29:30;32:32;34:42;46:51;57:57;59:61;66:69</TrailsToRun>-->
         <TrailsToRun>1:end</TrailsToRun>
-        <do_Plot3DTraj>true</do_Plot3DTraj>
+        <do_Plot3DTraj>false</do_Plot3DTraj>
         <plotTraj3D>
             <startTime>4</startTime>
             <endTime>6</endTime>
@@ -109,12 +87,12 @@
         <glm_energyTh>0.15</glm_energyTh>
         <glmSegments>
             <seg>
-                <start>-1</start>
-                <end>2</end>
+                <start>-0.1</start>
+                <end>6</end>
             </seg>            
             <seg>
-                <start>5</start>
-                <end>8</end>
+                <start>-0.5</start>
+                <end>3</end>
             </seg>
         </glmSegments>
         <glmKinematics>
@@ -126,23 +104,35 @@
             <event>
                 <name>tone</name>
                 <type>tone</type>
-            </event>    
+            </event> 
+            <event>
+                <name>supination</name>
+                <type>supination</type>
+            </event>
+            <event>
+                <name>backtotable</name>
+                <type>backtotable</type>
+            </event>
+            <event>
+                <name>backtoperch</name>
+                <type>backtoperch</type>
+            </event>
+            <event>
+                <name>atmouth</name>
+                <type>atmouth</type>
+            </event> 
             <event>
                 <name>lift</name>
-                <type>movement</type>
+                <type>lift</type>
             </event> 
             <event>
                 <name>grab</name>
-                <type>movement</type>
+                <type>grab</type>
             </event>                       
             <event>
                 <name>traj</name>
                 <type>kinematics</type>
             </event>            
-            <event>
-                <name>atmouth</name>
-                <type>atmouth</type>
-            </event>
             <event>
                 <name>leftface</name>
                 <type>facemap</type>
@@ -265,6 +255,11 @@
                 <is_active>true</is_active>  
             </Atogram>
             <Atogram>			
+                <name>supination</name>
+                <color>light_purple</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
                 <name>atmouth</name>
                 <color>red</color>  
                 <is_active>true</is_active>  
@@ -279,11 +274,13 @@
             <lick is_active='True'></lick>
 		</Events2plot>
         <Events2plotDelay>
-			<grab is_active='True' number='1' color='green_atogram'></grab>
-			<lift is_active='True' number='1' color='blue_atogram'></lift>
-			<supination is_active='True' number='1' color='light_purple'></supination>
-            <atmouth is_active='True' number='1' color='red'></atmouth>
-            <backto is_active='True' number='1' color='dark_grey'></backto>
+			<grab is_active='False' number='1' color='green_atogram'></grab>
+			<lift is_active='False' number='1' color='blue_atogram'></lift>
+			<supination is_active='False' number='1' color='light_purple'></supination>
+            <atmouth is_active='False' number='1' color='red'></atmouth>
+            <backto is_active='False' number='1' color='dark_grey'></backto>
+            <backtotable is_active='True' number='1' color='dark_grey'></backtotable>
+            <backtoperch is_active='True' number='1' color='dark_grey'></backtoperch>
             <tone is_active='False' number='1' color='black'></tone>
 		</Events2plotDelay>
         <delay2events_start_time>0</delay2events_start_time>

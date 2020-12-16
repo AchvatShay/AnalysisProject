@@ -2,7 +2,7 @@ function [X, x] = getFilteredBehaveData(successLabel, BehaveData, ...
     eventsnames, eventtypes,  ...
     splinesFuns, trialsinds, timeinds, timeindsTraj, generalProperty)
 
-types = unique(eventtypes);
+types = unique(eventtypes, 'stable');
 tsize = length(timeinds);
 X.filt = [];X.name = [];X.type = [];
 eventsOfBehave = fields(BehaveData);

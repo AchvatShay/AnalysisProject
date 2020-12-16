@@ -8,10 +8,12 @@ BDA_folders{1} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_19_2015\111920
 % BDA_folders{3} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_23_2015\11232015_1\';
 % BDA_folders{4} = '\\192.114.20.192\g\Yael\2pData\Analysis\SLC3\11_25_2015\11252015_1\';
 
-path2saveAllResults = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\All_11_18_11_22_11_23_11_25';
+% path2saveAllResults = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\All_11_18_11_22_11_23_11_25';
+path2saveAllResults = 'I:\Maria_revisions Neuron\Hadas_analysis4revision\hand_trajectories_analysis\';
+
 mkNewFolder(path2saveAllResults);
 
-path2loadIndividualResults = '\\192.114.20.141\i\Maria_revisions Neuron\Hadas_analysis4revision\SLC3\';
+path2loadIndividualResults = 'I:\Maria_revisions Neuron\Hadas_analysis4revision\hand_trajectories_analysis\';
 BdaTpaList=[];
 bdaCount = 1;
 for i = 1: length(BDA_folders)
@@ -27,6 +29,33 @@ for i = 1: length(BDA_folders)
 end
 dirs = dir(path2loadIndividualResults);
 
+%% conditional svm for hand traj
+Matlist=[];i=1;
+for k=3:length(dirs)
+    if  dirs(k).isdir
+        filedprime = dir( fullfile(path2loadIndividualResults, dirs(k).name, '/**/svmAccuracyConditionalTraj/acc_res_folds10lin_success_failure_contitional_contitional_on_success.mat') );
+        if isempty(filedprime)
+            continue;
+        end
+        for l=1:length(filedprime)
+        Matlist{1,i} = fullfile(filedprime(l).folder, filedprime(l).name);
+        i=i+1;
+        end
+    end
+end
+i=1;
+for k=3:length(dirs)
+    if  dirs(k).isdir
+        filedprime = dir( fullfile(path2loadIndividualResults, dirs(k).name, '/**/svmAccuracyConditionalTraj/acc_res_folds10lin_success_failure_contitional_contitional_on_fail.mat') );
+        if isempty(filedprime)
+            continue;
+        end
+        for l=1:length(filedprime)
+        Matlist{2,i} = fullfile(filedprime(l).folder, filedprime(l).name);i=i+1;
+        end
+    end
+end
+runAverageAnalysis(path2saveAllResults, xmlfile,BdaTpaList, Matlist, 'svmAccuracyConditional');
 
 %% svm
 Matlist=[];
@@ -36,7 +65,9 @@ for k=3:length(dirs)
         if isempty(filedprime)
             continue;
         end
-        Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
+        for l=1:length(filedprime)
+        Matlist{end+1} = fullfile(filedprime(l).folder, filedprime(l).name);
+        end
     end
 end
 runAverageAnalysis(path2saveAllResults, xmlfile,BdaTpaList, Matlist, 'svmAccuracy');
@@ -49,7 +80,9 @@ for k=3:length(dirs)
         if isempty(filedprime)
             continue;
         end
-        Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
+        for l=1:length(filedprime)
+        Matlist{end+1} = fullfile(filedprime(l).folder, filedprime(l).name);
+        end
     end
 end
 runAverageAnalysis(path2saveAllResults, xmlfile,BdaTpaList, Matlist, 'dprime');
@@ -74,7 +107,9 @@ for pii = 1:length(pvvalues)
             if isempty(filedprime)
                 continue;
             end
-            Matlist{end+1} = fullfile(filedprime.folder, filedprime.name);
+            for l=1:length(filedprime)
+        Matlist{end+1} = fullfile(filedprime(l).folder, filedprime(l).name);
+        end
         end
     end
     mkNewFolder([path2saveAllResults '/indicativeAllpvalue' num2str(pvvalues(pii))]);

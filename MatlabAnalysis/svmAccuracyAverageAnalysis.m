@@ -19,33 +19,36 @@ else
 end
 
 %% Acc averaged over experiments
-allAccTot = collectAcc([analysisRes.accSVM], [analysisRes.trialsNum], [analysisRes.chanceLevel]);
-plotAccRes(analysisRes(1).tmid-toneTime, allAccTot, [], allAccTot.chanceLevel, [], [], [], 0);
+allAccTot = collectAcc({analysisRes.tmid},[analysisRes.accSVM], [analysisRes.trialsNum], [analysisRes.chanceLevel]);
+plotAccRes(allAccTot.tmid-toneTime, allAccTot, [], allAccTot.chanceLevel, [], [], [], 0);
 mysave(gcf, fullfile(outputPath,[ 'AverageAnalysis_accuracy' foldstr linstr eventsStr]));
 allAccTotSEM = allAccTot;
 allAccTotSEM.raw.std=allAccTotSEM.raw.std/sqrt(length(analysisRes));
-plotAccRes(analysisRes(1).tmid-toneTime, allAccTotSEM, [], allAccTotSEM.chanceLevel, [], [], [], 0);
+plotAccRes(allAccTot.tmid-toneTime, allAccTotSEM, [], allAccTotSEM.chanceLevel, [], [], [], 0);
 mysave(gcf, fullfile(outputPath,[ 'AverageAnalysis_accuracy' foldstr linstr eventsStr '_SEM']));
 
 %% S/F Clustering - Linear Classifier (SVM) of previous and next trial
-allAccTotConseq = collectAcc([analysisRes.accSVMlinseq], [analysisRes.trialsNumseq], [analysisRes.chanceLevelseq]);
-allAccTotPrev = collectAcc([analysisRes.accSVMlinPrev], [analysisRes.trialsNumPrev], [analysisRes.chanceLevelPrev]);
+allAccTotConseq = collectAcc({analysisRes.tmid},[analysisRes.accSVMlinseq], [analysisRes.trialsNumseq], [analysisRes.chanceLevelseq]);
+allAccTotPrev = collectAcc({analysisRes.tmid},[analysisRes.accSVMlinPrev], [analysisRes.trialsNumPrev], [analysisRes.chanceLevelPrev]);
 
 chanceLevels = [allAccTotConseq.chanceLevel allAccTot.chanceLevel allAccTotPrev.chanceLevel];
-plotAccUnion(tmid, allAccTotConseq, allAccTot, allAccTotPrev, chanceLevels, 0, labelsFontSz);
+chanceLevels=ones(size(chanceLevels))*mean(chanceLevels);
+plotAccUnion(allAccTotConseq.tmid, allAccTotConseq, allAccTot, allAccTotPrev, chanceLevels, 0, labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyPrevNext' foldstr linstr eventsStr]));
 allAccTotConseqSEM = allAccTotConseq;
 allAccTotPrevSEM = allAccTotPrev;
 allAccTotConseqSEM.raw.std=allAccTotConseqSEM.raw.std/sqrt(length(analysisRes));
 allAccTotPrevSEM.raw.std=allAccTotPrevSEM.raw.std/sqrt(length(analysisRes));
-plotAccUnion(tmid, allAccTotConseqSEM, allAccTotSEM, allAccTotPrevSEM, chanceLevels, 0, labelsFontSz);
+plotAccUnion(allAccTotPrevSEM.tmid, allAccTotConseqSEM, allAccTotSEM, allAccTotPrevSEM, chanceLevels, 0, labelsFontSz);
 mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyPrevNext' foldstr linstr eventsStr '_SEM']));
+plotAccUnionITI(allAccTotPrevSEM.tmid-toneTime, allAccTotConseqSEM, allAccTotSEM, allAccTotPrevSEM, chanceLevels, 0, labelsFontSz);
+mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyPrevNextITI' foldstr linstr eventsStr '_SEM']));
 
 
 %% Fig. 1 - Mean and STD, Fig. 2 - Mean and 5% Confidence Interval
-[a1,a2]=plotAccUnionCurrNext(tmid, allAccTot, allAccTotPrev, chanceLevels(2:end), toneTime, labelsFontSz, xlimmin);
+[a1,a2]=plotAccUnionCurrNext(allAccTotPrevSEM.tmid, allAccTot, allAccTotPrev, chanceLevels(2:end), toneTime, labelsFontSz, xlimmin);
 mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyNext' foldstr linstr eventsStr]));
-[aleft,aright]=plotAccUnionCurrNext(tmid, allAccTot, allAccTotPrev, chanceLevels(2:end), 0, labelsFontSz, xlimmin);
+[aleft,aright]=plotAccUnionCurrNext(allAccTotPrevSEM.tmid, allAccTot, allAccTotPrev, chanceLevels(2:end), 0, labelsFontSz, xlimmin);
 cc=get(aleft,'Children');
 set(cc(1),'Visible','off');
 set(aleft,'XLim',[0,max(get(aleft,'XLim'))]);
@@ -76,8 +79,11 @@ for ti = 1:length(time4confplot)
 end
 
 %% Acc averaged over experiments - Next trial
-plotAccResFinalCI(analysisRes(1).tmid-toneTime, allAccTotPrev, allAccTotPrev.chanceLevel, {[] []}, [], 0, labelsFontSz, xlimmin, []);
+plotAccResFinalCI(allAccTotPrev.tmid-toneTime, allAccTotPrev, allAccTotPrev.chanceLevel, {[] []}, [], 0, labelsFontSz, xlimmin, []);
 mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracyNext' foldstr linstr eventsStr]));
+plotAccResFinalCI(allAccTotPrev.tmid-toneTime, allAccTot, allAccTot.chanceLevel, {[] []}, [], 0, labelsFontSz, xlimmin, []);
+mysave(gcf, fullfile(outputPath, ['AverageAnalysis_accuracy' foldstr linstr eventsStr '_by_trials']));
+
 % %% Accuracy with behave
 % plotAccResFinalCI(tmid, allAccTot,  chanceLevels(2), Sbehave, Fbehave, t, 0, labelsFontSz, xlimmin-toneTime)
 % mysave(gcf, fullfile(outputPath, 'accNoLegend'));

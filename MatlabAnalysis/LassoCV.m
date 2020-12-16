@@ -1,4 +1,4 @@
-function [x, x0, R2Tr, R2Te] = LassoCV(Atr, btr, foldsNum, Ate, bte)
+function [x, x0, R2Tr, R2Te, fold_i, nrni, type_i] = LassoCV(Atr, btr, foldsNum, Ate, bte, fold_i, nrni, type_i)
 [B,FitInfo] = lasso(Atr,btr,'CV',foldsNum,  'NumLambda',10);
 x = B(:, FitInfo.IndexMinMSE);
 x0 = FitInfo.Intercept(FitInfo.IndexMinMSE);
