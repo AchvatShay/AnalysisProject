@@ -1,6 +1,6 @@
 function plotGLMResults(typesU, timesegments, energyTh, R2full_te, R2p_test, outputpath, imagingData, generalProperty)
     for seg_i = 1:size(timesegments, 2)
-        inds{seg_i}=find(mean(R2full_te{seg_i},2)>energyTh);
+        inds{seg_i}=find(nanmean(R2full_te{seg_i},2) >= energyTh & nanmean(R2full_te{seg_i},2) <= 1);
 
         cont{seg_i}=max(0, 1-bsxfun(@rdivide, mean(R2p_test{seg_i}(inds{seg_i},:,:),3),mean(R2full_te{seg_i}(inds{seg_i},:),2)));
         cont{seg_i}=bsxfun(@rdivide, cont{seg_i}, sum(cont{seg_i},2));
@@ -92,7 +92,7 @@ function f = plotMeanCont(seg_i, cont, typesU, split, inds, colorMat)
     hold on;
     suptitle(['Contribution Averaged Across ROI''s',' Segment ' num2str(seg_i)]);
     
-    rowCount = ceil(length(classU) / 3);
+    rowCount = ceil((length(classU) + 1) / 3);
     
     if rowCount == 1
         rowCount = 2;

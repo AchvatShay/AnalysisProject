@@ -71,11 +71,11 @@ else
         indexFRunning = 1;
         for nrni = 1:size(imagingData.samples, 1)
         
-            if ~(nanmean(R2full_te{time_seg_i}(nrni,:),2)>=energyTh)
-                 for type_i = 1:length(types)
-                R2p_train{time_seg_i}(nrni, type_i, 1:foldsNum) = nan;
-                R2p_test{time_seg_i}(nrni, type_i, 1:foldsNum) = nan;
-                 end
+            if ~(nanmean(R2full_te{time_seg_i}(nrni,:),2)>= energyTh && nanmean(R2full_te{time_seg_i}(nrni,:),2) <= 1)
+                for type_i = 1:length(types)
+                    R2p_train{time_seg_i}(nrni, type_i, 1:foldsNum) = nan;
+                    R2p_test{time_seg_i}(nrni, type_i, 1:foldsNum) = nan;
+                end
                 continue;
             end
 
