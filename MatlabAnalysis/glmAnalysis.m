@@ -4,7 +4,7 @@ splinesFile{1} = 'splines0.5.csv';
 splinesFile{2} = 'splines0.25.csv';
 % splinesFile{3} = 'splines0.75.csv';
 splinesFile{3} = 'splines1.csv';
-% splinesFile{4} = 'splines2.csv';
+splinesFile{4} = 'splines2.csv';
 % splinesFile{1} = 'splines3.csv';
 % splinesFile{3} = 'splines0.1.csv';
 

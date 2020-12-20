@@ -65,6 +65,11 @@ else
             glmmodelfull{time_seg_i}.x(:, nrni, fold_in ) = x;
             glmmodelfull{time_seg_i}.x0(nrni,  fold_in ) = x0;
             R2full_tr{time_seg_i}(nrni, fold_in) = R2Tr;
+            
+            if R2Te > 1
+                R2Te = 0;
+            end
+            
             R2full_te{time_seg_i}(nrni, fold_in) = R2Te;
         end
         
@@ -118,6 +123,11 @@ else
             glmmodelpart{time_seg_i,  type_i}.x(:, nrni, fold_in) = x;
             glmmodelpart{time_seg_i}.x0(nrni,  fold_in ,  type_i) = x0;
             R2p_train{time_seg_i}(nrni, type_i, fold_in) = R2Tr;
+            
+            if R2Te > 1
+                R2Te = 0;
+            end
+            
             R2p_test{time_seg_i}(nrni, type_i, fold_in) = R2Te;
         end
         
