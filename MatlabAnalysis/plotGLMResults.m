@@ -39,7 +39,7 @@ function plotGLMResults(typesU, timesegments, energyTh, R2full_te, R2p_test, out
     end
 
     roiNamesL = imagingData.roiNames(:, 1);
-    save(fullfile(outputpath, 'glmResultsSummary'), 'cont', 'inds', 'roiNamesL');   
+    save(fullfile(outputpath, 'glmResultsSummary'), 'cont', 'inds', 'roiNamesL', 'typesU');   
 end
 
 function f = plotRHistogram(seg_i, R2full_te, imagingData, RoiSplit)
