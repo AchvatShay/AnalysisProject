@@ -285,9 +285,9 @@ classdef Experiment %< handle
             obj.Events2plotDelayColor={};
             
             for k = 1:length(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event)
-                obj.Events2plotDelay{end+1} = xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Name;                
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Number);
+                obj.Events2plotDelay{end+1} = xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Name.Text;                
+                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Color.Text});
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Number.Text);
             end
            
             obj.delay2events_start_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_start_time.Text);
