@@ -124,6 +124,8 @@ classdef Experiment %< handle
         RoiSplit_I1 = [];
         RoiSplit_I2 = []; 
         roiLabels = [];
+		
+		 %eventsTimeDiffEvents = {'lift', 'grab'};
     end
     methods
         function obj = Experiment(xmlfile)            
@@ -133,8 +135,13 @@ classdef Experiment %< handle
             obj.glm_facial_features_dim = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_facial_features_dim.Text);
             obj.glm_energyTh = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glm_energyTh.Text);
             for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg)
-                obj.glmSeg(1,k) = str2double(   xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.start.Text);
-                obj.glmSeg(2,k) = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.end.Text);
+                if length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg) == 1
+                    obj.glmSeg(1,k) = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg.start.Text);
+                    obj.glmSeg(2,k) = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg.end.Text);
+                else
+                    obj.glmSeg(1,k) = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.start.Text);
+                    obj.glmSeg(2,k) = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.end.Text);
+                end
             end
             if strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.glmKinematics.position.Text, 'true')
             obj.glmKinematics_pos = true;
@@ -267,56 +274,22 @@ classdef Experiment %< handle
             for k = 1:length(xmlstrct.GeneralProperty.Experiment.visualization.behaveTimeDiff.Event)
                 obj.behaveTimeDiff(k) = {xmlstrct.GeneralProperty.Experiment.visualization.behaveTimeDiff.Event{k}.Text};
             end
+			
+			%for k = 1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.eventsTimeDiff.val)
+             %   obj.eventsTimeDiffEvents{k} = xmlstrct.GeneralProperty.Experiment.analysisParams.eventsTimeDiff.val{k}.Text;
+            %end
             
             % visualization of delay to events
             obj.Events2plotDelay={};
             obj.Events2plotDelayNumber={};
             obj.Events2plotDelayColor={};
-            if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'tone';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.tone.Attributes.number);
-            end
-            if  str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.lift.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'lift';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.lift.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.lift.Attributes.number);
-            end
-            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.grab.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'grab';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.grab.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.grab.Attributes.number);
-            end
-            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'atmouth';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.atmouth.Attributes.number);
-            end
             
-            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.supination.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'supination';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.supination.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.supination.Attributes.number);
+            for k = 1:length(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event)
+                obj.Events2plotDelay{end+1} = xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Name;                
+                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Color});
+                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.Event{k}.Number);
             end
-            
-            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'backto';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backto.Attributes.number);
-            end
-            
-            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtotable.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'backtotable';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtotable.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtotable.Attributes.number);
-            end
-            
-            if str2bool(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtoperch.Attributes.is_active)
-                obj.Events2plotDelay{end+1} = 'backtoperch';
-                obj.Events2plotDelayColor{end+1} = getColors({xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtoperch.Attributes.color});
-                obj.Events2plotDelayNumber{end+1} = str2double(xmlstrct.GeneralProperty.Experiment.visualization.Events2plotDelay.backtoperch.Attributes.number);
-            end
-            
+           
             obj.delay2events_start_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_start_time.Text);
             obj.delay2events_end_time = str2double(xmlstrct.GeneralProperty.Experiment.visualization.delay2events_end_time.Text);
             

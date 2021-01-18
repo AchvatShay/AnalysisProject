@@ -111,8 +111,8 @@ function f = plotMeanCont(seg_i, cont, typesU, split, inds, colorMat)
         if sum(locationL) == 1
             M = cont{seg_i}(locationL,:);
         else
-            M = mean(cont{seg_i}(locationL,:));
-            S=std(cont{seg_i}(locationL, :))/sqrt(size(cont{seg_i}(locationL, :),1)-1);
+            M = nanmean(cont{seg_i}(locationL,:));
+            S=std(cont{seg_i}(locationL, :), 'omitnan')/sqrt(size(cont{seg_i}(locationL, :),1)-1);
             errorbar(1:length(M),M,S,'LineStyle','none','Color','k');
         end
         
@@ -127,8 +127,8 @@ function f = plotMeanCont(seg_i, cont, typesU, split, inds, colorMat)
     end
     
     subplot(rowCount,3,length(classU)+1);
-    M=mean(cont{seg_i});
-    S=std(cont{seg_i})/sqrt(size(cont{seg_i},1)-1);
+    M=nanmean(cont{seg_i});
+    S=std(cont{seg_i}, 'omitnan')/sqrt(size(cont{seg_i},1)-1);
     bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
     errorbar(1:length(M),M,S,'LineStyle','none','Color','k')
     title(['ROI"s All']);
@@ -143,8 +143,8 @@ function f = plotMeanContAll(seg_i, cont, typesU)
     suptitle(['Contribution Averaged Across ROI''s',' Segment ' num2str(seg_i)]);
 
     subplot(2,1,1);
-    M=mean(cont{seg_i});
-    S=std(cont{seg_i})/sqrt(size(cont{seg_i},1)-1);
+    M=nanmean(cont{seg_i});
+    S=std(cont{seg_i}, 'omitnan')/sqrt(size(cont{seg_i},1)-1);
     bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
     errorbar(1:length(M),M,S,'LineStyle','none','Color','k')
     title(['ROI"s All']);

@@ -13,7 +13,7 @@ if exist(fullfile(outputpath, [outputfile '.mat']), 'file')
     load(fullfile(outputpath, outputfile));
 else
     poolobj = parpool;
- 
+    glmmodelpart = {};
     for time_seg_i = 1:size(timesegments,2)
         
         timeinds = find(t >= timesegments(1,time_seg_i) & t <= timesegments(2,time_seg_i));
@@ -95,8 +95,25 @@ else
                 subplot(2,1,2);
                 imagesc(t(timeinds), 1:size(Y_test{fold_i},3), reshape(x_test{fold_i}*B + x0, size(squeeze(Y_test{fold_i}(nrni, :, :))))', [-.15,2]);
                 xlabel('Time [sec]');axis tight;ylabel('Trials');title('Model');
-                mysave(f, fullfile(outputpath, 'ModelPlot', num2str(fold_i), num2str(time_seg_i), num2str(nrni)));
+                mysave(f, fullfile(outputpath, 'ModelPlot', [num2str(fold_i) '_' num2str(time_seg_i) '_' num2str(nrni)]));
                 close(f);
+                
+                f = figure;
+                hold on;
+                
+                for in = 1:size(Y_test{fold_i}, 3)
+                    subplot(size(Y_test{fold_i}, 3),1,in);
+                    hold on;
+                    B = glmmodelfull{time_seg_i}.x(:, nrni, fold_i );
+                    x0 = glmmodelfull{time_seg_i}.x0(nrni, fold_i);
+                    plot(squeeze(Y_test{fold_i}(nrni, :, in))', 'k');   
+                    testR = reshape(x_test{fold_i}*B + x0, size(squeeze(Y_test{fold_i}(nrni, :, :))))';
+                    plot(testR(in, :), 'r');
+                end
+                
+                mysave(f, fullfile(outputpath, 'ModelPlotTrace', [num2str(fold_i) '_' num2str(time_seg_i) '_' num2str(nrni)]));
+                close(f);
+                
             end
             
             for fold_i = 1:foldsNum
@@ -133,17 +150,20 @@ else
         
         
     end
-    save(fullfile(outputpath, outputfile), 'R2p_test','glmmodelpart','glmmodelfull','R2full_te','R2full_tr','timesegments','eventsNames', 'eventsTypes', 'INDICES');
-
-    delete(poolobj)
+    save(fullfile(outputpath, outputfile), 'R2p_test','glmmodelpart','glmmodelfull','R2full_te','R2full_tr','timesegments','eventsNames', 'eventsTypes', 'INDICES', 'generalProperty');
 
     if exist('P_F', 'var')
+        cancel(P_F);
         delete(P_F);
     end
 
     if exist('F', 'var')
+         cancel(F);
         delete(F);
     end
+    
+    delete(poolobj)
+
 end
 
 typesU = unique(eventsTypes, 'stable');

@@ -50,6 +50,23 @@ switch runOnWhat
         generalProperty.RoiSplit_I1 = split1;
         generalProperty.RoiSplit_I2 = split2;
         
+        if ~isempty(BdaTpaList(1).predictor)
+            load(BdaTpaList(1).predictor, 'predictor');
+            BehaveData.treadmil_speed.data = predictor.speed;
+            BehaveData.treadmil_accel.data = predictor.accel;
+            
+            BehaveData.treadmil_rest.data = predictor.rest;
+            BehaveData.treadmil_walk.data = predictor.walk;
+            
+            BehaveData.treadmil_posaccel.data = predictor.posaccel;
+            BehaveData.treadmil_negaccel.data = predictor.negaccel;
+            
+            BehaveData.treadmil_posaccel_t.indicator = predictor.posaccel;
+            BehaveData.treadmil_negaccel_t.indicator = predictor.negaccel;
+            
+            BehaveData.treadmil_x_location.data = predictor.x_location;
+        end
+        
         feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
     case 'RoiCorrelation'
         load(BdaTpaList(1).roiListNamesPath, 'roiActivityNames','colorMatrix1', 'colorMatrix2', 'selectedROISplitDepth1');

@@ -180,7 +180,7 @@ for k = 1:length(BdaTpaList)
         handFrontCol = [2, 3];
         handSideCol = [5, 6];
     end
-    
+        
     BehaveData.traj.data(1,:,k) = C(:,handFrontCol(1));
     BehaveData.traj.data(2,:,k) = C(:,handFrontCol(2));
     BehaveData.traj.data(3,:,k) = C(:,handSideCol(1));
@@ -196,6 +196,7 @@ for k = 1:length(BdaTpaList)
     clear C;
     
 end
+
 T = size(BehaveData.traj.data,2);
     filefacemap = fullfile(fileparts(fileparts(BdaTpaList(1).traj)),'facemap.mat');
     if exist(filefacemap, 'file')
@@ -203,6 +204,14 @@ T = size(BehaveData.traj.data,2);
 
         BehaveData.faceMapR = reshape(res.proc.motSVD{2}.', size(res.proc.motSVD{2},2), T, []);
         BehaveData.faceMapL = reshape(res.proc.motSVD{3}.', size(res.proc.motSVD{3},2), T, []);
+    end
+    
+    filehandmap = fullfile(fileparts(fileparts(BdaTpaList(1).traj)),'handmap.mat');
+    if exist(filehandmap, 'file')
+        res = load(filehandmap);
+
+        BehaveData.handMapR = reshape(res.proc.motSVD{2}.', size(res.proc.motSVD{2},2), T, []);
+        BehaveData.handMapL = reshape(res.proc.motSVD{3}.', size(res.proc.motSVD{3},2), T, []);
     end
 end
 

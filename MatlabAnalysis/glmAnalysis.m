@@ -1,15 +1,23 @@
 function glmAnalysis(outputPath, generalProperty, imagingData, BehaveData)
 
-splinesFile{1} = 'splines0.5.csv';
-splinesFile{2} = 'splines0.25.csv';
-% splinesFile{3} = 'splines0.75.csv';
-splinesFile{3} = 'splines1.csv';
-splinesFile{4} = 'splines2.csv';
+splinesFile{1}.file = 'splines0.5.csv';
+splinesFile{1}.delay = [0];
+
+splinesFile{2}.file = 'splines0.25.csv';
+splinesFile{2}.delay = [0];
+
+splinesFile{3}.file = 'splines1.csv';
+splinesFile{3}.delay = [0];
+
+splinesFile{4}.file = 'splines2.csv';
+splinesFile{4}.delay = [0];
+
+
 % splinesFile{1} = 'splines3.csv';
 % splinesFile{3} = 'splines0.1.csv';
 
 for f_i = 1:length(splinesFile)
-    if ~exist(splinesFile{f_i}, 'file')
+    if ~exist(splinesFile{f_i}.file, 'file')
         error('Splines file does not exist!');
         % use this R code to create that file..
 %         require(stats);
@@ -22,9 +30,10 @@ for f_i = 1:length(splinesFile)
 %         x <- seq.int(0, 1-1/60, 1/60)
 %         write.csv(mat, file = 'splines1.csv')
     end
-    splinesFuns{f_i}=xlsread(splinesFile{f_i});
-    splinesFuns{f_i} = splinesFuns{f_i}(2:end, :);
-    splinesFuns{f_i} = splinesFuns{f_i}(:, 2:end);
+    splinesFuns{f_i}.func=xlsread(splinesFile{f_i}.file);
+    splinesFuns{f_i}.func = splinesFuns{f_i}.func(2:end, :);
+    splinesFuns{f_i}.func = splinesFuns{f_i}.func(:, 2:end);
+    splinesFuns{f_i}.delay = splinesFile{f_i}.delay;
 end
 t = linspace(0, generalProperty.Duration, size(imagingData.samples, 2));
 % figure;
