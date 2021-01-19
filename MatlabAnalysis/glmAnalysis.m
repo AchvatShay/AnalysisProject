@@ -1,16 +1,16 @@
 function glmAnalysis(outputPath, generalProperty, imagingData, BehaveData)
 
 splinesFile{1}.file = 'splines0.5.csv';
-splinesFile{1}.delay = [0];
+splinesFile{1}.delay = generalProperty.glmDelay;
 
 splinesFile{2}.file = 'splines0.25.csv';
-splinesFile{2}.delay = [0];
+splinesFile{2}.delay = generalProperty.glmDelay;
 
 splinesFile{3}.file = 'splines1.csv';
-splinesFile{3}.delay = [0];
+splinesFile{3}.delay = generalProperty.glmDelay;
 
 splinesFile{4}.file = 'splines2.csv';
-splinesFile{4}.delay = [0];
+splinesFile{4}.delay = generalProperty.glmDelay;
 
 
 % splinesFile{1} = 'splines3.csv';

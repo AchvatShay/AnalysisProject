@@ -114,6 +114,7 @@ classdef Experiment %< handle
         glm_facial_features_dim = 20;
         indicativeAmplitudeStartTime=5;
         indicativeAmplitudeEndTime=8;
+        glmDelay = [0];
         
         winLenRoiCorrelation = 1;
         winHopRoiCorrelation = 0.5;
@@ -143,6 +144,16 @@ classdef Experiment %< handle
                     obj.glmSeg(2,k) = str2double( xmlstrct.GeneralProperty.Experiment.analysisParams.glmSegments.seg{k}.end.Text);
                 end
             end
+            
+            for k=1:length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmDelays.Delay)
+                if length(xmlstrct.GeneralProperty.Experiment.analysisParams.glmDelays.Delay) == 1
+                    obj.glmDelay(1) = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.glmDelays.Delay.Text);
+                else
+                    obj.glmDelay(k) = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.glmDelays.Delay{k}.Text);
+                end
+            end
+            
+            
             if strcmp(xmlstrct.GeneralProperty.Experiment.analysisParams.glmKinematics.position.Text, 'true')
             obj.glmKinematics_pos = true;
             end

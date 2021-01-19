@@ -90,8 +90,17 @@ for ei = 1:length(eventsnames)
         for sp_i = 1:length(splinesFuns)
             for k = 1:size(splinesFuns{sp_i}.func, 2)
                 for j = 1:length(splinesFuns{sp_i}.delay)
-                    sp_del = [zeros(splinesFuns{sp_i}.delay(j)*generalProperty.ImagingSamplingRate,1) ; splinesFuns{sp_i}.func(:, k)];
-                    X.filt{end+1} = filter(sp_del, 1, indicatorMat.').';
+                    delayF = abs(splinesFuns{sp_i}.delay(j)*generalProperty.ImagingSamplingRate);
+                    if splinesFuns{sp_i}.delay(j) > 0
+                        indicatorMatDelay = [zeros(size(indicatorMat, 1), delayF), indicatorMat(:, 1:(end-delayF))];
+                    elseif splinesFuns{sp_i}.delay(j) < 0
+                        indicatorMatDelay = [indicatorMat(:, (delayF+1):end), zeros(size(indicatorMat, 1), delayF)];
+                    else
+                        indicatorMatDelay = indicatorMat;
+                    end
+                        
+                    sp_del = splinesFuns{sp_i}.func(:, k);              
+                    X.filt{end+1} = filter(sp_del, 1, indicatorMatDelay.').';
                     X.name{end+1} = eventsnames{ei};
                     X.type(end+1) = find(strcmp(eventtypes{ei}, types));
                     sp_del = [];
@@ -113,8 +122,17 @@ for ei = 1:length(eventsnames)
         for sp_i = 1:length(splinesFuns)
             for k = 1:size(splinesFuns{sp_i}.func, 2)
                 for j = 1:length(splinesFuns{sp_i}.delay)
-                    sp_del = [zeros(splinesFuns{sp_i}.delay(j)*generalProperty.ImagingSamplingRate,1) ; splinesFuns{sp_i}.func(:, k)];              
-                    X.filt{end+1} = filter(sp_del, 1, indicatorMat.').';
+                    delayF = abs(splinesFuns{sp_i}.delay(j)*generalProperty.ImagingSamplingRate);
+                    if splinesFuns{sp_i}.delay(j) > 0
+                        indicatorMatDelay = [zeros(size(indicatorMat, 1), delayF), indicatorMat(:, 1:(end-delayF))];
+                    elseif splinesFuns{sp_i}.delay(j) < 0
+                        indicatorMatDelay = [indicatorMat(:, (delayF+1):end), zeros(size(indicatorMat, 1), delayF)];
+                    else
+                        indicatorMatDelay = indicatorMat;
+                    end
+                        
+                    sp_del = splinesFuns{sp_i}.func(:, k);              
+                    X.filt{end+1} = filter(sp_del, 1, indicatorMatDelay.').';
                     X.name{end+1} = eventsnames{ei};
                     X.type(end+1) = find(strcmp(eventtypes{ei}, types));
                     sp_del = [];
@@ -136,8 +154,17 @@ for ei = 1:length(eventsnames)
         for sp_i = 1:length(splinesFuns)
             for k = 1:size(splinesFuns{sp_i}.func, 2)
                 for j = 1:length(splinesFuns{sp_i}.delay)
-                    sp_del = [zeros(splinesFuns{sp_i}.delay(j)*generalProperty.ImagingSamplingRate,1) ; splinesFuns{sp_i}.func(:, k)];              
-                    X.filt{end+1} = filter(sp_del, 1, indicatorMat.').';
+                    delayF = abs(splinesFuns{sp_i}.delay(j)*generalProperty.ImagingSamplingRate);
+                    if splinesFuns{sp_i}.delay(j) > 0
+                        indicatorMatDelay = [zeros(size(indicatorMat, 1), delayF), indicatorMat(:, 1:(end-delayF))];
+                    elseif splinesFuns{sp_i}.delay(j) < 0
+                        indicatorMatDelay = [indicatorMat(:, (delayF+1):end), zeros(size(indicatorMat, 1), delayF)];
+                    else
+                        indicatorMatDelay = indicatorMat;
+                    end
+                        
+                    sp_del = splinesFuns{sp_i}.func(:, k);              
+                    X.filt{end+1} = filter(sp_del, 1, indicatorMatDelay.').';
                     X.name{end+1} = eventsnames{ei};
                     X.type(end+1) = find(strcmp(eventtypes{ei}, types));
                     sp_del = [];

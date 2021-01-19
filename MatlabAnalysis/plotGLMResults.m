@@ -2,7 +2,7 @@ function plotGLMResults(typesU, timesegments, energyTh, R2full_te, R2p_test, out
     for seg_i = 1:size(timesegments, 2)
         inds{seg_i}=find(nanmean(R2full_te{seg_i},2) >= energyTh & nanmean(R2full_te{seg_i},2) <= 1);
 
-        cont{seg_i}=max(0, 1-bsxfun(@rdivide, mean(R2p_test{seg_i}(inds{seg_i},:,:),3),mean(R2full_te{seg_i}(inds{seg_i},:),2)));
+        cont{seg_i}=max(0, 1-bsxfun(@rdivide, nanmean(R2p_test{seg_i}(inds{seg_i},:,:),3),nanmean(R2full_te{seg_i}(inds{seg_i},:),2)));
         cont{seg_i}=bsxfun(@rdivide, cont{seg_i}, sum(cont{seg_i},2));
 
         f = plotMeanCont(seg_i, cont, typesU, generalProperty.RoiSplit_I1, inds{seg_i}, generalProperty.RoiSplit_d1);
@@ -48,7 +48,7 @@ function f = plotRHistogram(seg_i, R2full_te, imagingData, RoiSplit)
     title('R^2 For ROI"s Full Model');
     
     for k=1:(size(R2full_te{seg_i},1))
-        binH(k) = mean(R2full_te{seg_i}(k,:),2);
+        binH(k) = nanmean(R2full_te{seg_i}(k,:),2);
     end
     
     [sortBin, sortIndex] = sort(binH);
@@ -74,7 +74,7 @@ function f = plotPerRoiCont(seg_i, cont, imagingData, RoiSplit, inds, R2full_te,
         bar(cont{seg_i}(k,:), 'FaceColor',[230,230,250] ./ 255);
         title({'', [sprintf('{\\color[rgb]{%f,%f,%f}', RoiSplit(inds(k), 1), ...
             RoiSplit(inds(k), 2), RoiSplit(inds(k), 3)) ,...
-            'ROI ' num2str(imagingData.roiNames(inds(k), 1)) ' R^2=' num2str(mean(R2full_te{seg_i}(inds(k),:),2)) , '}']});
+            'ROI ' num2str(imagingData.roiNames(inds(k), 1)) ' R^2=' num2str(nanmean(R2full_te{seg_i}(inds(k),:),2)) , '}']});
 
         set(gca,'XTick',1:length(typesU));
         xtickangle(90);
@@ -127,10 +127,19 @@ function f = plotMeanCont(seg_i, cont, typesU, split, inds, colorMat)
     end
     
     subplot(rowCount,3,length(classU)+1);
-    M=nanmean(cont{seg_i});
-    S=std(cont{seg_i}, 'omitnan')/sqrt(size(cont{seg_i},1)-1);
-    bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
-    errorbar(1:length(M),M,S,'LineStyle','none','Color','k')
+    
+    if size(cont{seg_i}, 1) > 1
+        M=nanmean(cont{seg_i});
+        S=std(cont{seg_i}, 'omitnan')/sqrt(size(cont{seg_i},1)-1);
+        bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
+        errorbar(1:length(M),M,S,'LineStyle','none','Color','k')
+
+    else
+        M = cont{seg_i};
+        bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
+        
+    end
+  
     title(['ROI"s All']);
     set(gca,'XTick',1:length(typesU));
     xtickangle(90);
@@ -143,10 +152,18 @@ function f = plotMeanContAll(seg_i, cont, typesU)
     suptitle(['Contribution Averaged Across ROI''s',' Segment ' num2str(seg_i)]);
 
     subplot(2,1,1);
-    M=nanmean(cont{seg_i});
-    S=std(cont{seg_i}, 'omitnan')/sqrt(size(cont{seg_i},1)-1);
-    bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
-    errorbar(1:length(M),M,S,'LineStyle','none','Color','k')
+    if size(cont{seg_i}, 1) > 1
+        M=nanmean(cont{seg_i});
+        S=std(cont{seg_i}, 'omitnan')/sqrt(size(cont{seg_i},1)-1);
+        bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
+        errorbar(1:length(M),M,S,'LineStyle','none','Color','k')
+
+    else
+        M = cont{seg_i};
+        bar(M, 'FaceColor',[230,230,250] ./ 255);hold all;
+        
+    end
+  
     title(['ROI"s All']);
     set(gca,'XTick',1:length(typesU));
     xtickangle(90);
