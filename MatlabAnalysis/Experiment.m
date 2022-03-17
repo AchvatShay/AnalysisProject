@@ -125,7 +125,11 @@ classdef Experiment %< handle
         RoiSplit_I1 = [];
         RoiSplit_I2 = []; 
         roiLabels = [];
-		
+        
+        RoiSpiltTextType1 = '';        
+        RoiSpiltTextType2 = '';
+        
+		RunRoiWithSpilt = false;
 		 %eventsTimeDiffEvents = {'lift', 'grab'};
     end
     methods
@@ -228,9 +232,7 @@ classdef Experiment %< handle
            
             obj.orderMethod = xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.OrderMethod.Text;
             obj.centerOfMassStartTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.startTime.Text);
-            obj.centerOfMassEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.endTime.Text);
-        
-            
+            obj.centerOfMassEndTime = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.orderAnalysis.centerOfMass.endTime.Text);           
             
             obj.startTimeGrabCountHis = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.startTimeGrabCountHis.Text);
             obj.endTimeGrabCountHis = str2double(xmlstrct.GeneralProperty.Experiment.analysisParams.endTimeGrabCountHis.Text);
@@ -385,6 +387,15 @@ classdef Experiment %< handle
             obj.winHopRoiCorrelation = str2num(xmlstrct.GeneralProperty.Experiment.RoiCorrelation.winHop.Text);
             obj.corrTypeRoiCorrelation = xmlstrct.GeneralProperty.Experiment.RoiCorrelation.corrType.Text;
             
+            obj.RunRoiWithSpilt = str2bool(xmlstrct.GeneralProperty.Experiment.RoiSplitTypes.runWithSplit.Text);
+            
+            if obj.RunRoiWithSpilt
+                obj.RoiSpiltTextType1 = xmlstrct.GeneralProperty.Experiment.RoiSplitTypes.type1.index.Text;
+                obj.RoiSplit_d1 = getColors({xmlstrct.GeneralProperty.Experiment.RoiSplitTypes.type1.color.Text});
+
+                obj.RoiSpiltTextType2 = xmlstrct.GeneralProperty.Experiment.RoiSplitTypes.type2.index.Text;
+                obj.RoiSplit_d2 = getColors({xmlstrct.GeneralProperty.Experiment.RoiSplitTypes.type2.color.Text});
+            end
         end
         
         

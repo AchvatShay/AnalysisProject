@@ -84,41 +84,53 @@ switch runOnWhat
         
         feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
     case 'RoiCorrelation'
-        load(BdaTpaList(1).roiListNamesPath, 'roiActivityNames','colorMatrix1', 'colorMatrix2', 'selectedROISplitDepth1');
+        if ~generalProperty.RunRoiWithSpilt       
+            load(BdaTpaList(1).roiListNamesPath, 'roiActivityNames','colorMatrix1', 'colorMatrix2', 'selectedROISplitDepth1');
         
-        roiToExcludeFromTheTPA = [];
-        roiToExcludeFromTheTPA_indexing = 1;
-        roiLabels = zeros(1, size(imagingData.roiNames, 1));
-        cM1 = zeros(size(imagingData.roiNames, 1), 3);
-        cM2 = zeros(size(imagingData.roiNames, 1), 3);
-        
-        for i = 1:size(imagingData.roiNames, 1)
-            locationCurrentROI = find(strcmp(roiActivityNames, sprintf('roi%05d',imagingData.roiNames(i, 1))));
+            roiToExcludeFromTheTPA = [];
+            roiToExcludeFromTheTPA_indexing = 1;
+            roiLabels = zeros(1, size(imagingData.roiNames, 1));
+            cM1 = zeros(size(imagingData.roiNames, 1), 3);
+            cM2 = zeros(size(imagingData.roiNames, 1), 3);
 
-            if isempty(locationCurrentROI)
-                roiToExcludeFromTheTPA(roiToExcludeFromTheTPA_indexing) = i;
-                roiToExcludeFromTheTPA_indexing = roiToExcludeFromTheTPA_indexing + 1;
-                continue;
-            else
-                roiLabels(i) = selectedROISplitDepth1(locationCurrentROI);
-                cM1(i, :) = colorMatrix1(locationCurrentROI, :);
-                cM2(i, :) = colorMatrix2(locationCurrentROI, :);
-            
+            for i = 1:size(imagingData.roiNames, 1)
+                locationCurrentROI = find(strcmp(roiActivityNames, sprintf('roi%05d',imagingData.roiNames(i, 1))));
+
+                if isempty(locationCurrentROI)
+                    roiToExcludeFromTheTPA(roiToExcludeFromTheTPA_indexing) = i;
+                    roiToExcludeFromTheTPA_indexing = roiToExcludeFromTheTPA_indexing + 1;
+                    continue;
+                else
+                    roiLabels(i) = selectedROISplitDepth1(locationCurrentROI);
+                    cM1(i, :) = colorMatrix1(locationCurrentROI, :);
+                    cM2(i, :) = colorMatrix2(locationCurrentROI, :);
+
+                end
+
             end
 
-        end
+            imagingData.samples(roiToExcludeFromTheTPA, :, :) = [];
+            imagingData.roiNames(roiToExcludeFromTheTPA, :) = [];
+            imagingData.loc(roiToExcludeFromTheTPA) = [];
+            roiLabels(roiToExcludeFromTheTPA) = [];
+            cM2(roiToExcludeFromTheTPA, :) = [];
+            cM1(roiToExcludeFromTheTPA, :) = [];
 
-        imagingData.samples(roiToExcludeFromTheTPA, :, :) = [];
-        imagingData.roiNames(roiToExcludeFromTheTPA, :) = [];
-        imagingData.loc(roiToExcludeFromTheTPA) = [];
-        roiLabels(roiToExcludeFromTheTPA) = [];
-        cM2(roiToExcludeFromTheTPA, :) = [];
-        cM1(roiToExcludeFromTheTPA, :) = [];
-        
-        generalProperty.RoiSplit_d1 = cM1;
-        generalProperty.RoiSplit_d2 = cM2;
-      
-        generalProperty.roiLabels = roiLabels;
+            generalProperty.RoiSplit_d1 = cM1;
+            generalProperty.RoiSplit_d2 = cM2;
+
+            generalProperty.roiLabels = roiLabels;
+        else
+            generalProperty.roiLabels = imagingData.roiNames(:, 1);
+            totalroicount = size(imagingData.roiNames, 1);
+            obj.RoiSplit_I1 = zeros(1, totalroicount);
+            obj.RoiSplit_I2 = zeros(1, totalroicount);
+
+            obj.RoiSplit_I1(getROIsIndexAccordingToString(generalProperty.RoiSpiltTextType1, 1:totalroicount) == 1) = 1;
+            obj.RoiSplit_I1(getROIsIndexAccordingToString(generalProperty.RoiSpiltTextType2, 1:totalroicount) == 1) = 2;
+            obj.RoiSplit_I2(getROIsIndexAccordingToString(generalProperty.RoiSpiltTextType1, 1:totalroicount) == 1) = 1;
+            obj.RoiSplit_I2(getROIsIndexAccordingToString(generalProperty.RoiSpiltTextType2, 1:totalroicount) == 1) = 2;
+        end
         
         [x_data, generalProperty] = createRoiCorrelationMatrix(imagingData, generalProperty);
         imagingData.samples = x_data;
