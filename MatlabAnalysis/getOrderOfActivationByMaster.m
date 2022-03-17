@@ -9,6 +9,15 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         ordermatrix.error = abs(selfBymaster.selfLocation - selfBymaster.masterLocation);
         ordermatrix.std = std(ordermatrix.error);
          
+        self_start_p = findClosestDouble(self.timing,generalProperty.pearsonOnlyFromStartTime);
+        self_end_p = findClosestDouble(self.timing,generalProperty.pearsonOnlyFromEndTime);
+       
+        
+        emd_timing_allTime = emd_calc(self.timing', selfBymaster.masterTiming');
+        emd_timing_PartTime = emd_calc(self.timing(self_start_p:self_end_p)', selfBymaster.masterTiming(self_start_p:self_end_p)');
+        
+        save(fullfile(outputPath, ['OrderAndTimingByMAster_EMD_Timing', self_eventName, 'By', self_alignedEventName, 'Method_', generalProperty.orderMethod, '.mat']), 'emd_timing_allTime', 'emd_timing_PartTime');
+        
         X_order = [selfBymaster.selfLocation', selfBymaster.masterLocation'];
         [kendall_r_order{index_events}, kendall_p_order] = corr(X_order, 'type', 'kendall');
         [Pearson_r_order{index_events}, Pearson_p_order] = corr(X_order, 'type', 'Pearson');
@@ -20,8 +29,6 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         [Pearson_r_t{index_events}, Pearson_p_t] = corr(X_timing, 'type', 'Pearson');
         [Spearman_r_t{index_events}, Spearman_p_t] = corr(X_timing, 'type', 'Spearman');
         
-        self_start_p = findClosestDouble(self.timing,generalProperty.pearsonOnlyFromStartTime);
-        self_end_p = findClosestDouble(self.timing,generalProperty.pearsonOnlyFromEndTime);
         X_timing_sec = [self.timing(self_start_p:self_end_p)', selfBymaster.masterTiming(self_start_p:self_end_p)'];
         [kendall_r_t_sec{index_events}, kendall_p_t_sec] = corr(X_timing_sec, 'type', 'kendall');
         [Pearson_r_t_sec{index_events}, Pearson_p_t_sec] = corr(X_timing_sec, 'type', 'Pearson');
@@ -95,13 +102,10 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         [lineIndex, currentCol] = find(strcmp(excelDataRaw, 'Timing-partial'));
         excelDataRaw{lineIndex, currentCol+1} = generalProperty.pearsonOnlyFromStartTime;
         
-        [b,~,~] = glmfit(selfBymaster.selfLocation',selfBymaster.masterLocation');
-
-        yhat = b(1) + (b(2).* (selfBymaster.selfLocation'));
-        SEyhat = sqrt(sum((selfBymaster.masterLocation'-yhat).^ 2) ./ (n-2));
-        CI = abs(tinv(alphaval/2, n-2)) * SEyhat .* sqrt(0.5 + ((selfBymaster.selfLocation' - mean(selfBymaster.selfLocation)) .^ 2) ./ ((n-2) * var(selfBymaster.selfLocation)));
-        ci_up = yhat + CI;
-        ci_down = yhat - CI;
+        mdl = fitglm(selfBymaster.selfLocation',selfBymaster.masterLocation');
+        [yhat,yci] = predict(mdl, selfBymaster.selfLocation');
+        ci_up = yci(:,2);
+        ci_down = yci(:,1);
         
         neuronsOutOfBorderIndex = find(selfBymaster.masterLocation' > ci_up | selfBymaster.masterLocation' < ci_down);
         neuronsInsideOfBorderIndex = find(selfBymaster.masterLocation' <= ci_up & selfBymaster.masterLocation' >= ci_down);
@@ -178,7 +182,7 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
 %         placeToneTime(toneTime, 3);
         xlim([tNew(findClosestDouble(tNew, generalProperty.alignedOrderPlot_start_time)),tNew(findClosestDouble(tNew, generalProperty.alignedOrderPlot_end_time))]);
         ylim([1, size(self.MeanData, 1)]);
-        title('Order By Self');
+        title(sprintf('Order By Self, emd self vs master timing = %f', emd_timing_allTime));
         
         legend(gca, {'Master Timing','Self Timing'})
         
@@ -200,18 +204,18 @@ function [kendall_r_order, Pearson_r_order, Spearman_r_order, kendall_r_t, Pears
         [sortX, I] = sort(selfBymaster.selfLocation);
         x = selfBymaster.selfLocation';
         
-        lo = yhat - CI;
-        hi = (yhat + CI);
+        lo = yci(:,1);
+        hi = yci(:,2);
         
-        hp = patch([x(I); x(I(end:-1:1)); x(1)], [lo(I); hi(I(end:-1:1)); lo(1)], 'r');
+        hp = patch([x(I); x(I(end:-1:1)); x(I(1))], [lo(I); hi(I(end:-1:1)); lo(I(1))], 'r');
         hl = line(x,yhat);
         set(hp, 'facecolor', [1 0.8 0.8], 'edgecolor', 'none');
-        set(hl, 'color', 'r', 'marker', 'x');
+        set(hl, 'color', 'r');
         
         sc = scatter(selfBymaster.selfLocation, selfBymaster.masterLocation, 'black', '*');
         ylabel('By Master','FontSize',10);
         xlabel('By Self','FontSize',10);
-        title('Order in self vs master for each neuron');
+        title(sprintf('Order in self vs master for each neuron, R2 = %f', mdl.Rsquared.Adjusted));
         dcm_obj = datacursormode(fig);
         set(dcm_obj,'UpdateFcn',@getRealNeuronNameCursor)      
         sc.UserData = [selfBymaster.neuronesNames', selfBymaster.masterLocation'];

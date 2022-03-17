@@ -1,4 +1,4 @@
-function doGlmAnalysisHist(BehaveData, timesegments, t, ttraj, foldsNum, INDICES, imagingData, ...
+function doGlmAnalysisHistTemp(BehaveData, timesegments, t, ttraj, foldsNum, INDICES, imagingData, ...
     generalProperty, splinesFuns, eventsNames, eventsTypes, outputpath, outputfile, isprev, energyTh)
 
 if isprev
@@ -15,11 +15,11 @@ else
     
     LassoFunction = @LassoCVGLM;
     
-%     distribution = 'inverse gaussian';
-%     linkFunction = -2;
+    distribution = 'inverse gaussian';
+    linkFunction = -2;
     
-    distribution = 'normal';
-    linkFunction = 'identity';
+    %     distribution = 'normal';
+    %     linkFunction = 'identity';
     
     glmmodelpart = {};
     
@@ -57,28 +57,41 @@ else
         end
         R2full_tr{time_seg_i} = nan(Nnrns, foldsNum);
         R2full_te{time_seg_i} = nan(Nnrns, foldsNum);
-        for nrni = 1:Nnrns
-            lmda = [];
-            for fold_i = 1:foldsNum
+        
+        lam = nan(length(Nnrns), 1);
+            
+        for fold_i = 1:foldsNum
+            indexFRunning = 1;
                 
+            for nrni = 1:Nnrns
                 tt = tic;
                 disp([time_seg_i/(length(timesegments)-1) nrni/Nnrns fold_i/foldsNum]);
                 Ytr = squeeze(Y_train{fold_i}(nrni, :, :));
                 Yte = squeeze(Y_test{fold_i}(nrni, :, :));
                 
-                [x, x0, R2Tr, R2Te, fold_in, ~, ~, lmda] = LassoFunction(x_train{fold_i}, Ytr(:), foldsNum, x_test{fold_i}, Yte(:), fold_i, nrni, -1, distribution, linkFunction, lmda);
-                glmmodelfull{time_seg_i}.x(:, nrni, fold_in ) = x; %#ok<AGROW>
-                glmmodelfull{time_seg_i}.x0(nrni,  fold_in ) = x0; %#ok<AGROW>
-                R2full_tr{time_seg_i}(nrni, fold_in) = R2Tr;
-                
-                if R2Te > 1
-                    R2Te = 0;
-                end
-                
-                R2full_te{time_seg_i}(nrni, fold_in) = R2Te;
+                F(indexFRunning) = parfeval(LassoFunction, 8, x_train{fold_i}, Ytr(:), foldsNum, x_test{fold_i}, Yte(:), fold_i, nrni, -1, distribution, linkFunction, lam(nrni));
+                indexFRunning = indexFRunning + 1;
+                    
                 toc(tt);
             end
-            R2full_te{time_seg_i}(nrni, :)
+            
+            for i_f = 1:indexFRunning-1
+                [completedIdx, x_c, x0_c, R2Tr_c, R2Te_c, fold_in, cur_nrni, ~, curLam] = fetchNext(F);
+                lam(cur_nrni) = curLam;
+            
+                glmmodelfull{time_seg_i}.x(:, cur_nrni, fold_in ) = x_c; %#ok<AGROW>
+                glmmodelfull{time_seg_i}.x0(cur_nrni,  fold_in ) = x0_c; %#ok<AGROW>
+                R2full_tr{time_seg_i}(cur_nrni, fold_in) = R2Tr_c;
+                
+                if R2Te_c > 1
+                    R2Te_c = 0;
+                end
+                
+                R2full_te{time_seg_i}(cur_nrni, fold_in) = R2Te_c;
+            end
+             
+            cancel(F);
+            delete(F);
         end
         
         R2p_train{time_seg_i} = nan(Nnrns, length(types), foldsNum);

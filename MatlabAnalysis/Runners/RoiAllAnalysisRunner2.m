@@ -1,11 +1,11 @@
-function RoiAllAnalysisRunner
+function RoiAllAnalysisRunner2
 
 addpath('../');
 
 xmlfile = 'RoiXmlByBoth.xml';
 
 
-folderAnimalOutputPath='\\jackie-analysis10\e\Shay\OTF21\10.1.22_Tuft_treadmill';
+folderAnimalOutputPath='\\jackie-analysis\e\Shay\CT35\22_01_12-Treadmill-tuft';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
@@ -14,14 +14,14 @@ folderAnimalOutputPath='\\jackie-analysis10\e\Shay\OTF21\10.1.22_Tuft_treadmill'
 % use specific_experiment = '';
 
 trajpth = '';
-BDAfolder = '\\jackie-analysis10\f\LayerV\Analysis\OTF21\10.1.22_Tuft_treadmill_glm\Running';
-TPAfolder = '\\jackie-analysis10\f\LayerV\Analysis\OTF21\10.1.22_Tuft_treadmill_glm\Running';
+BDAfolder = '\\jackie-analysis\F\LayerV\Analysis\CT35\22_01_12-Treadmill-tuft_glm\Running';
+TPAfolder = '\\jackie-analysis\F\LayerV\Analysis\CT35\22_01_12-Treadmill-tuft_glm\Running';
 
 
-roiListNamesPath = '\\jackie-analysis10\e\Shay\OTF21\10.1.22_Tuft_treadmill\Analysis\N1\Structural_VS_Functional\final\Run1\no_behave\Pearson\SP\roiActivityRawData.mat';
+roiListNamesPath = '\\jackie-analysis\e\Shay\CT35\22_01_12-Treadmill-tuft\Analysis\N2\Structural_VS_Functional\final\Run1\no_behave\Pearson\SP\roiActivityRawData.mat';
 % roiListNamesPath = '';
-predictor = '\\jackie-analysis10\f\LayerV\Analysis\OTF21\10.1.22_Tuft_treadmill_glm\Running\predictor_Running.mat';
-NeuronNumber = 'N1';
+predictor = '\\jackie-analysis\F\LayerV\Analysis\CT35\22_01_12-Treadmill-tuft_glm\Running\predictor_Running.mat';
+NeuronNumber = 'N2';
 
 
 BdaFiles = dir([BDAfolder, '\BDA*.mat']);
@@ -42,6 +42,6 @@ BdaTpaList(1).roiListNamesPath = roiListNamesPath;
 BdaTpaList(1).predictor = predictor;
 BdaTpaList(1).trialsToIncluse = trialsInclude;
 
-outputPath = strcat(folderAnimalOutputPath, '\Analysis\', NeuronNumber ,'\glmAnalysis_Running_new');
+outputPath = strcat(folderAnimalOutputPath, '\Analysis\', NeuronNumber ,'\glmAnalysis_Running_newLasso');
 mkNewFolder(outputPath);
 runAnalysis(outputPath, xmlfile, BdaTpaList, 'glmAnalysisTreadMil', 'RoiSplit');

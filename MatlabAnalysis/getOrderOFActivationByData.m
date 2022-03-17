@@ -44,11 +44,16 @@ function results = getOrderOFActivationByData(outputPath, generalProperty, imagi
         
         currData = imagingData.samples(:, :, trails_list);
         
-        [~, ~, order_loctions_neurons, neurons_order_index, meanDat, ~, ~] = getNeuronsActivationOrder(t, currData, toneTime, minPointsForSettingActivity, onsetdiffvalid, generalProperty.orderMethod, generalProperty.centerOfMassStartTime, generalProperty.centerOfMassEndTime);
+        [~, ~, order_loctions_neurons, neurons_order_index,dataAlltimesAl, ~, ~] = getNeuronsActivationOrder(t, currData, toneTime, minPointsForSettingActivity, onsetdiffvalid, generalProperty.orderMethod, generalProperty.centerOfMassStartTime, generalProperty.centerOfMassEndTime, generalProperty.ImagingSamplingRate, outputPath);
         
         tNew= linspace(-max(onsetdiffvalid)*t(2), t(end), size(imagingData.samples,2)+max(onsetdiffvalid));
         
         save_data_roi_names = imagingData.roiNames(neurons_order_index,1);       
+        
+        for tr_index = 1:size(dataAlltimesAl, 3)
+            
+        end
+        
         
         zerosValues = length(find(order_loctions_neurons == 0));
         if (zerosValues ~= 0)

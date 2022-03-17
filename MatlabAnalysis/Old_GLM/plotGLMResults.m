@@ -21,21 +21,21 @@ function plotGLMResults(typesU, timesegments, energyTh, R2full_te, R2p_test, out
 
     %     suptitle(sprintf('Segment %d', seg_i));
         mysave(f, fullfile(outputpath, sprintf('NeuronAll_ts%d_Contribute_colo1', seg_i)));
-       close(f);
+        close(f);
 
         f = plotPerRoiCont(seg_i, cont, imagingData, generalProperty.RoiSplit_d2, inds{seg_i}, R2full_te, typesU);        
 
     %     suptitle(sprintf('Segment %d', seg_i));
         mysave(f, fullfile(outputpath, sprintf('NeuronAll_ts%d_Contribute_colo2', seg_i)));
-       close(f);
+        close(f);
         
         f = plotRHistogram(seg_i, R2full_te, imagingData, generalProperty.RoiSplit_d1);
         mysave(f, fullfile(outputpath, sprintf('NeuronAll_ts%d_R2_colo1', seg_i)));
-       close(f);
+        close(f);
         
         f = plotRHistogram(seg_i, R2full_te, imagingData, generalProperty.RoiSplit_d2);
         mysave(f, fullfile(outputpath, sprintf('NeuronAll_ts%d_R2_colo2', seg_i)));
-       close(f);
+        close(f);
     end
 
     roiNamesL = imagingData.roiNames(:, 1);

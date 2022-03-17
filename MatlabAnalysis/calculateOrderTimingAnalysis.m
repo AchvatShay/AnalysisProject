@@ -4,14 +4,11 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
     endIndexStr = num2str(endIndex);
     Pearson_r_t_index = 1;
     
-    [b,~,~] = glmfit(self_timing(:)', master_timing(:)');
-    yhat = b(1) + (b(2).* (self_timing));
+    mdl = fitglm(self_timing(:)', master_timing(:)');
+    [yhat, yCI] = predict(mdl, self_timing');
     n = length(self_timing);
     alphaval = 0.05;
-        
-    SEyhat = sqrt(sum((master_timing'-yhat).^ 2) ./ (n-2));
-    CI = abs(tinv(alphaval/2, n-2)) * SEyhat .* sqrt(0.5 + ((self_timing - mean(self_timing)) .^ 2) ./ ((n-2) * var(self_timing)));
-    
+          
     fig = figure;
     
     fig.Position(4) = 700;
@@ -21,15 +18,15 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
     hold on;
     ylabel('By Master','FontSize',10);
     xlabel('By Self','FontSize',10);
-    title('Timing in self vs master for each neuron');
+    title(sprintf('Timing in self vs master for each neuron R2 = %f', mdl.Rsquared.Adjusted));
   
     [~, I] = sort(self_timing);
     x = self_timing';
 
-    lo = yhat - CI;
-    hi = (yhat + CI);
+    lo = yCI(:,1);
+    hi = yCI(:,2);
 
-    hp = patch([x(I); x(I(end:-1:1)); x(1)], [lo(I)'; hi(I(end:-1:1))'; lo(1)], 'r');
+    hp = patch([x(I); x(I(end:-1:1)); x(1)], [lo(I); hi(I(end:-1:1)); lo(1)], 'r');
     hl = line(x,yhat);
     set(hp, 'facecolor', [1 0.8 0.8], 'edgecolor', 'none');
     set(hl, 'color', 'r', 'marker', 'x');
@@ -44,7 +41,7 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
     locationOfMinDiff = find((hi-lo) == min(hi-lo));
    
     %ADD TTEST2 and Pearson
-    [h_all, p_all] = ttest2(self_timing(locationOfMinDiff(1) : endIndex)', master_timing(locationOfMinDiff(1) : endIndex)');
+    [emd_value] = emd_calc(self_timing(locationOfMinDiff(1) : endIndex)', master_timing(locationOfMinDiff(1) : endIndex)');
     [PearsonResults_all, ~] = corr([self_timing(locationOfMinDiff(1) : endIndex)', master_timing(locationOfMinDiff(1) : endIndex)'], 'type', 'Pearson');
     rsem = sqrt(mean((self_timing(locationOfMinDiff(1) : endIndex)-master_timing(locationOfMinDiff(1) : endIndex)).^2));    
     Pearson_all = PearsonResults_all(1, 2);
@@ -56,7 +53,7 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
     
     legend(gca, {'Self Timing','Master Timing', 'Start Point For Significant Change'})
     
-    message = sprintf(['T test form order :' num2str(locationOfMinDiff(1)) ' to end.\nh=' num2str(h_all) ',p=' num2str(p_all) ' Pearson:' num2str(Pearson_all) ' RSEM:' num2str(rsem)]);
+    message = sprintf(['EMD :' num2str(locationOfMinDiff(1)) ' to end.\nEMD=' num2str(emd_value) 'Pearson:' num2str(Pearson_all) ' RSEM:' num2str(rsem)]);
     annotation('textbox',[subp.Position(1), subp.Position(2) - 0.2, 0.10, 0.10],'String', message);
     
     mysave(fig, fullfile(outputPath, ['activation_timing_SelfVSMaster_type1'  eventName 'By' alignedEventName 'Method_' orderMethod '_plot']));
@@ -99,13 +96,13 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
     legend(gca, {'Self Timing','Master Timing', 'Start Point For Significant Change'})
     
     %ADD TTEST2 AND PEARSON
-    [h_all, p_all] = ttest2(self_timing(timingOutOfBound(1) : endIndex)', master_timing(timingOutOfBound(1) : endIndex)');
+    [emd_value] = emd_calc(self_timing(timingOutOfBound(1) : endIndex)', master_timing(timingOutOfBound(1) : endIndex)');
     [PearsonResults_all, ~] = corr([self_timing(timingOutOfBound(1) : endIndex)', master_timing(timingOutOfBound(1) : endIndex)'], 'type', 'Pearson');
     rsem = sqrt(mean((self_timing(timingOutOfBound(1) : endIndex)-master_timing(timingOutOfBound(1) : endIndex)).^2));    
   
     Pearson_all = PearsonResults_all(1, 2);
     
-    message = sprintf(['T test form order :' num2str(timingOutOfBound(1)) ' to end.\nh=' num2str(h_all) ',p=' num2str(p_all) ' Pearson:' num2str(Pearson_all) ' RSEM:' num2str(rsem)]);
+    message = sprintf(['EMD order :' num2str(timingOutOfBound(1)) ' to end.\nEMD=' num2str(emd_value) ' Pearson:' num2str(Pearson_all) ' RSEM:' num2str(rsem)]);
        
     annotation('textbox',[subp.Position(1), subp.Position(2) - 0.2, 0.10, 0.10],'String', message);
     
@@ -117,23 +114,9 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
     
         [PearsonResults, ~] = corr(X_timing, 'type', 'Pearson');
         [kendallResults, ~] = corr(X_timing, 'type', 'kendall');
-        [h(Pearson_r_t_index), p(Pearson_r_t_index)] = ttest2(self_timing(startIndex : endIndex)', master_timing(startIndex : endIndex)');
+        [emd_value(Pearson_r_t_index)] = emd_calc(self_timing(startIndex : endIndex)', master_timing(startIndex : endIndex)');
         rsemAll(Pearson_r_t_index) = sqrt(mean((self_timing(startIndex : endIndex)-master_timing(startIndex : endIndex)).^2));
         
-%         figure;
-%         hold on;
-%         
-%         plot(self_timing(startIndex : endIndex), 1:size(self_timing(startIndex : endIndex), 2), 'color', 'black', 'lineWidth', 1.5);
-%         plot(master_timing(startIndex : endIndex), 1:size(master_timing(startIndex : endIndex), 2), 'color', 'red', 'lineWidth', 1.5);
-%         plot(self_timing(startIndex : endIndex) + rsemAll(Pearson_r_t_index), 1:size(self_timing(startIndex : endIndex), 2), 'color', 'blue', 'lineWidth', 1.5);
-%         
-%         legend(gca, {'Self Timing','Master Timing', 'Self after fix with rsem'})
-%         [h_all_fix, p_all_fix] = ttest2((self_timing(startIndex : endIndex) + rsemAll(Pearson_r_t_index))', master_timing(startIndex : endIndex)');
-%         text(self_timing(startIndex), size(self_timing, 2), ['Ttest Befor self fix:h=' num2str(h(Pearson_r_t_index)) ',p=' num2str(p(Pearson_r_t_index))]);
-%         text(self_timing(startIndex), size(self_timing, 2), ['Ttest After self fix:h=' num2str(h_all_fix) ',p=' num2str(p_all_fix)]);
-%     
-%         mysave(fig, fullfile(outputPath, ['activation_timing_SelfVSMaster_window' [num2str(startIndex) '-' endIndexStr] '_' eventName 'By' alignedEventName 'Method_' orderMethod '_plot']));        
-%         
         kendall_r_t(Pearson_r_t_index) = kendallResults(1, 2);
         Pearson_r_t(Pearson_r_t_index) = PearsonResults(1, 2);
         categoricalTimingRCorr{Pearson_r_t_index} = [num2str(startIndex) '-' endIndexStr];
@@ -191,10 +174,9 @@ function calculateOrderTimingAnalysis(self_timing, self_neuronsName, master_timi
         
     ylabel('Pvalue','FontSize',10);
     xlabel('Neurons By Order Included','FontSize',10);
-    title('T test for paired samples, Blue=equal means, Red=unequal means');     
+    title('EMD');     
     
-    b = bar(plotXRCorr(h == 0), p(h == 0), 'blue');
-    b = bar(plotXRCorr(h ~= 0), p(h ~= 0), 'red');
+    b = bar(plotXRCorr, emd_value, 'blue');
     
     sp_4 = subplot(2, 4, 5:8);
     hold on;

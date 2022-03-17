@@ -12,6 +12,19 @@ generalProperty = Experiment(xmlfile);
 
 [imagingData, BehaveData] = loadData(BdaTpaList, generalProperty);
 switch runOnWhat
+    case 'treadmill_run'
+        if ~isempty(BdaTpaList(1).predictor)
+            load(BdaTpaList(1).predictor, 'predictor');
+            
+            behaveTypes = fieldnames(predictor);
+            for b_i = 1:length(behaveTypes)
+                subT = fieldnames(predictor.(behaveTypes{b_i}));
+                for b_i2 = 1:length(subT)
+                    BehaveData.(sprintf('treadmil_%s', behaveTypes{b_i})).(subT{b_i2}).data = predictor.(behaveTypes{b_i}).(subT{b_i2})(BdaTpaList(1).trialsToIncluse, :);
+                end
+            end
+        end
+        feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);
     case 'RoiSplit'
         load(BdaTpaList(1).roiListNamesPath, 'roiActivityNames', 'colorMatrix1', 'colorMatrix2',  'selectedROISplitDepth1', 'selectedROISplitDepth3');
         cM1 = zeros(size(imagingData.roiNames, 1), 3);
@@ -52,19 +65,21 @@ switch runOnWhat
         
         if ~isempty(BdaTpaList(1).predictor)
             load(BdaTpaList(1).predictor, 'predictor');
-            BehaveData.treadmil_speed.data = predictor.speed;
-            BehaveData.treadmil_accel.data = predictor.accel;
             
-            BehaveData.treadmil_rest.data = predictor.rest;
-            BehaveData.treadmil_walk.data = predictor.walk;
-            
-            BehaveData.treadmil_posaccel.data = predictor.posaccel;
-            BehaveData.treadmil_negaccel.data = predictor.negaccel;
-            
-            BehaveData.treadmil_posaccel_t.indicator = predictor.posaccel;
-            BehaveData.treadmil_negaccel_t.indicator = predictor.negaccel;
-            
-            BehaveData.treadmil_x_location.data = predictor.x_location;
+            behaveTypes = fieldnames(predictor);
+            for b_i = 1:length(behaveTypes)
+                subT = fieldnames(predictor.(behaveTypes{b_i}));
+                for b_i2 = 1:length(subT)
+                    BehaveData.(sprintf('treadmil_%s', behaveTypes{b_i})).(subT{b_i2}).data = predictor.(behaveTypes{b_i}).(subT{b_i2})(BdaTpaList(1).trialsToIncluse, :);
+                end
+            end
+           
+%             BehaveData.faceMapR = BehaveData.faceMapR(:, :, BdaTpaList(1).trialsToIncluse);
+%             BehaveData.faceMapL = BehaveData.faceMapL(:, :, BdaTpaList(1).trialsToIncluse);
+%             
+%             BehaveData.handMapR = BehaveData.handMapR(:, :, BdaTpaList(1).trialsToIncluse);
+%             BehaveData.handMapL = BehaveData.handMapL(:, :, BdaTpaList(1).trialsToIncluse);
+%         
         end
         
         feval(analysisName,outputPath, generalProperty, imagingData, BehaveData);

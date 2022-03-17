@@ -9,11 +9,11 @@
 			<pedal is_active='False'></pedal>
 		</Type>
 		<Depth>100</Depth>
-		<ImagingSamplingRate>20</ImagingSamplingRate>
-		<BehavioralSamplingRate>200</BehavioralSamplingRate>
-        <BehavioralDelay>20</BehavioralDelay>
+		<ImagingSamplingRate>30</ImagingSamplingRate>
+		<BehavioralSamplingRate>10</BehavioralSamplingRate>
+        <BehavioralDelay>0</BehavioralDelay>
 		<ToneTime>4</ToneTime>
-		<Duration>12</Duration>
+		<Duration>30</Duration>
 		<Injection>
 			<None is_active='True'></None>
 			<Saline is_active='False'></Saline>
@@ -85,66 +85,94 @@
         </FWHMAnalysis>
         <glm_facial_features_dim>20</glm_facial_features_dim>
         <glm_energyTh>0.15</glm_energyTh>
+        <glmDelays>
+            <Delay>0</Delay>
+            <Delay>0.5</Delay>
+            <Delay>-0.5</Delay>
+        </glmDelays>
         <glmSegments>
             <seg>
-                <start>-0.1</start>
-                <end>6</end>
-            </seg>            
-            <seg>
-                <start>-0.5</start>
-                <end>3</end>
+                <start>-4</start>
+                <end>26</end>
             </seg>
         </glmSegments>
         <glmKinematics>
-            <position>true</position>
+            <position>false</position>
             <velosity>false</velosity>
             <accelration>false</accelration>
         </glmKinematics>
         <glmBehaveEvents>
             <event>
-                <name>tone</name>
-                <type>tone</type>
-            </event> 
-            <event>
-                <name>supination</name>
-                <type>supination</type>
+                <name>treadmil_onset</name>
+                <type>onset</type>
             </event>
             <event>
-                <name>backtotable</name>
-                <type>backtotable</type>
-            </event>
+                <name>treadmil_offset</name>
+                <type>offset</type>
+            </event>  
             <event>
-                <name>backtoperch</name>
-                <type>backtoperch</type>
-            </event>
-            <event>
-                <name>atmouth</name>
-                <type>atmouth</type>
+                <name>treadmil_speed_p2</name>
+                <type>speedP2</type>
             </event> 
             <event>
-                <name>lift</name>
-                <type>lift</type>
+                <name>treadmil_speed_p3</name>
+                <type>speedP3</type>
+            </event> 
+             <event>
+                <name>treadmil_accel_p2</name>
+                <type>accelP2</type>
             </event> 
             <event>
-                <name>grab</name>
-                <type>grab</type>
-            </event>                       
+                <name>treadmil_accel_p3</name>
+                <type>accelP3</type>
+            </event> 
+            <event>
+                <name>treadmil_speed</name>
+                <type>speed</type>
+            </event> 
+            <event>
+                <name>treadmil_accel</name>
+                <type>accel</type>
+            </event>
+            
+            <event>
+                <name>treadmil_walk</name>
+                <type>walk</type>
+            </event>
+           
+            <event>
+                <name>treadmil_rest</name>
+                <type>rest</type>
+            </event>
+
+            <event>
+                <name>treadmil_posaccel</name>
+                <type>posaccel</type>
+            </event>
+            <event>
+                <name>treadmil_negaccel</name>
+                <type>negaccel</type>
+            </event>
+
+            <event>
+                <name>treadmil_xLocation</name>
+                <type>xLocation</type>
+            </event>
+            <!--
             <event>
                 <name>traj</name>
-                <type>kinematics</type>
-            </event>            
+                <type>traj</type>
+            </event>
+           
             <event>
-                <name>leftface</name>
-                <type>facemap</type>
+                <name>righthand</name>
+                <type>handmap</type>
             </event>
             <event>
-                <name>rightface</name>
-                <type>facemap</type>
+                <name>lefthand</name>
+                <type>handmap</type>
             </event>
-            <event>
-                <name>success</name>
-                <type>reward</type>
-            </event>
+            -->
         </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
@@ -274,17 +302,61 @@
             <lick is_active='True'></lick>
 		</Events2plot>
         <Events2plotDelay>
-			<grab is_active='False' number='1' color='green_atogram'></grab>
-			<lift is_active='False' number='1' color='blue_atogram'></lift>
-			<supination is_active='False' number='1' color='light_purple'></supination>
-            <atmouth is_active='False' number='1' color='red'></atmouth>
-            <backto is_active='False' number='1' color='dark_grey'></backto>
-            <backtotable is_active='True' number='1' color='dark_grey'></backtotable>
-            <backtoperch is_active='True' number='1' color='dark_grey'></backtoperch>
-            <tone is_active='False' number='1' color='black'></tone>
+            <!--
+            <Event>
+                <Name>lift</Name>
+                <Color>blue_atogram</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>grab</Name>
+                <Color>green_atogram</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>supination</Name>
+                <Color>light_purple</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>atmouth</Name>
+                <Color>red</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>backto</Name>
+                <Color>dark_grey</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>backtotable</Name>
+                <Color>dark_grey</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>backtoperch</Name>
+                <Color>dark_grey</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>tone</Name>
+                <Color>black</Color>
+                <Number>1</Number>
+            </Event>
+            -->
+            <Event>
+                <Name>onset</Name>
+                <Color>black</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>offset</Name>
+                <Color>black</Color>
+                <Number>1</Number>
+            </Event>
 		</Events2plotDelay>
-        <delay2events_start_time>0</delay2events_start_time>
-        <delay2events_end_time>2</delay2events_end_time>
+        <delay2events_start_time>-4</delay2events_start_time>
+        <delay2events_end_time>24</delay2events_end_time>
         <behaveTimeDiff>
             <Event>tone</Event>
             <Event>lift</Event>

@@ -1,12 +1,12 @@
-function AllAnalysisRunner
+function OrderAnalysisRunner
 
 addpath('../');
 
 xmlfile = 'XmlByBoth.xml';
 
-folderAnimal = 'E:\Dropbox (Technion Dropbox)\Shahar\success- failure project\PT neurons\Den7\8_13_17\';
+folderAnimal = '\\jackie-analysis\e\Shahar\Den7\8_13_17\';
 trajpth = '';
-folderAnimalOutputPath='E:\Dropbox (Technion Dropbox)\AnalysisResultsShay\Test3';
+folderAnimalOutputPath='\\jackie-analysis\e\Shahar\Den7\Results\';
 % if you want to run only one date from the animal experiments change the 
 % value here to the date you want. but if you want all dates in the foulder
 % use specific_experiment = '';
@@ -58,10 +58,10 @@ for index = 1: length(listExperiments)
                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'getOrderOfActivationByFileMat', 'imaging');
                  
 %                 Cross validation of Current Date
-                outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\crossValidationOrderAnalysis');
-                mkNewFolder(outputPath);
-                runAnalysis(outputPath, xmlfile, BdaTpaList, 'crossValidationOrderAnalysis', 'imaging');
-                
+%                 outputPath = strcat(folderAnimalOutputPath , '\' , listExperiments(index).name ,'\Analysis\crossValidationOrderAnalysis');
+%                 mkNewFolder(outputPath);
+%                 runAnalysis(outputPath, xmlfile, BdaTpaList, 'crossValidationOrderAnalysis', 'imaging');
+%                 
                 close all;
                 BdaTpaList = [];
             end

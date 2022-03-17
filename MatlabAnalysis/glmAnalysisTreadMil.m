@@ -1,4 +1,4 @@
-function glmAnalysis(outputPath, generalProperty, imagingData, BehaveData)
+function glmAnalysisTreadMil(outputPath, generalProperty, imagingData, BehaveData)
 
 splinesFile{1}.file = 'splines0.5.csv';
 splinesFile{1}.delay = generalProperty.glmDelay;
@@ -6,15 +6,11 @@ splinesFile{1}.delay = generalProperty.glmDelay;
 splinesFile{2}.file = 'splines0.25.csv';
 splinesFile{2}.delay = generalProperty.glmDelay;
 
-%splinesFile{3}.file = 'splines1.csv';
-%splinesFile{3}.delay = generalProperty.glmDelay;
-
-splinesFile{3}.file = 'splines2.csv';
+splinesFile{3}.file = 'splines1.csv';
 splinesFile{3}.delay = generalProperty.glmDelay;
 
-
-% splinesFile{1} = 'splines3.csv';
-% splinesFile{3} = 'splines0.1.csv';
+splinesFile{4}.file = 'splines2.csv';
+splinesFile{4}.delay = generalProperty.glmDelay;
 
 for f_i = 1:length(splinesFile)
     if ~exist(splinesFile{f_i}.file, 'file')
@@ -30,6 +26,7 @@ for f_i = 1:length(splinesFile)
 %         x <- seq.int(0, 1-1/60, 1/60)
 %         write.csv(mat, file = 'splines1.csv')
     end
+    
     splinesFuns{f_i}.func=xlsread(splinesFile{f_i}.file);
     splinesFuns{f_i}.func = splinesFuns{f_i}.func(2:end, :);
     splinesFuns{f_i}.func = splinesFuns{f_i}.func(:, 2:end);

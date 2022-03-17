@@ -216,6 +216,10 @@ save(fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr '_allnrns_R.
 no_color = zeros(size(roiNames, 1), 3);
 f(4) = plotAlignedWithLines(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
     firstlaststr, sfstr, no_color, 'black');
+
+f(5) = plotAlignedWithLinesAllTr(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
+    firstlaststr, sfstr, no_color, 'black');
+
 % -------------------------------------------------------------------------------------------------
 
 
@@ -275,7 +279,7 @@ for nrni = neurons2plotList
 end
 
 if plotUnalignedData
-f(5) = figure;
+f(6) = figure;
 subplot(2,1,1);
 imagesc(t(findClosestDouble(t,1.5):end)-toneTime, 1:size(imagingData,1),mean(imagingData(i,findClosestDouble(t,1.5):end,validinds),3), [-.15 2]);
 xlabel('Time [sec]', 'FontSize', 12);
@@ -285,7 +289,7 @@ set(gca,'XTick', -2:2:8)
 
 placeToneTime(0,3);
 colormap jet;
-title(get(f(4),'Children'), ['Unaligned Data ' firstlaststr ' ' eventName ' ' sfstr]);
+title(get(f(6),'Children'), ['Unaligned Data ' firstlaststr ' ' eventName ' ' sfstr]);
 set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
 
 subplot(4,1,4);
@@ -295,20 +299,80 @@ xlabel('Time [sec]', 'FontSize', 12);
 ylabel('Average', 'FontSize', 12);
 placeToneTime(0,3);
 
-mysave(f(5), fullfile(currfigs, ['unalignedData' eventName sfstr '_allnrns']));
+mysave(f(6), fullfile(currfigs, ['unalignedData' eventName sfstr '_allnrns']));
 end
 
 
 % -------------------------------------------------------------------------------------------------
 
-f(6) = plotAlignedWithLines(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
+f(7) = plotAlignedWithLines(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
     firstlaststr, sfstr, generalProperty.RoiSplit_d1, 'depth1');
 
 
-f(7) = plotAlignedWithLines(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
+f(8) = plotAlignedWithLines(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
     firstlaststr, sfstr, generalProperty.RoiSplit_d2, 'depth2');
 % -------------------------------------------------------------------------------------------------
 
+end
+
+function f = plotAlignedWithLinesAllTr(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...
+    firstlaststr, sfstr, colorMat, depthType)
+    f = figure;
+
+    colorU = unique(colorMat, 'rows');
+    
+    for k = 1:size(colorU, 1)
+        colorIndexing(k, :) = (ismember(colorMat, colorU(k, :), 'rows'));
+    end
+    
+    s1 = subplot(2,1,1);
+    hold on;
+    for index_i = 1:size(dataAlltimesAlcrop, 3)       
+        h = plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(dataAlltimesAlcrop(i,1:end-max(onsetdiffvalid),index_i), 1), 'Color', [0,0,0]);
+        
+    end
+
+    xlabel('Time [sec]', 'FontSize', 12);
+    ylabel('Neurons', 'FontSize', 12);
+    set(gca,'XTick', -2:2:7)
+    xticks=get(gca,'XTick');
+    for h=1:length(xticks)
+        if xticks(h) > 0
+            xticklabels{h} = [eventName '+' num2str(xticks(h)) ];
+        elseif xticks(h) == 0
+            xticklabels{h} = eventName;
+        else
+            xticklabels{h} = [eventName num2str(xticks(h)) ];
+        end
+    end
+
+    set(gca,'XTickLabel',xticklabels);
+    placeToneTime(0,3);
+    colormap jet;
+    title(get(f,'Children'), ['aligned Data ' firstlaststr ' ' eventName ' ' sfstr]);
+    set(gca,'Position',[0.1300    0.4095    0.7750    0.5155]);
+    s2 = subplot(4,1,4);
+    
+    hold on;
+    plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(mean(dataAlltimesAlcrop(i,1:end-max(onsetdiffvalid),:)),3),'k','LineWidth',2);
+    
+    for k = 1:size(colorIndexing, 1)
+        plot(tglobalcrop(1:end-max(onsetdiffvalid))-eventTime, mean(mean(dataAlltimesAlcrop(i(colorIndexing(k, i)),1:end-max(onsetdiffvalid),:)),3), 'Color', colorU(k, :),'LineWidth',2);
+    end 
+    
+    set(gca,'XTick', -2:2:7)
+    set(gca,'XTickLabel',xticklabels);
+    placeToneTime(0,3);
+    axis tight;
+    ylabel('Average', 'FontSize', 12);
+    xlabel('Time [sec]', 'FontSize', 12);
+
+    linkaxes([s1, s2], 'x');
+
+    dcm_obj = datacursormode(f);
+    set(dcm_obj,'UpdateFcn',{@myupdatefcnAligned})
+
+    mysave(f, fullfile(currfigs, ['alignedData' firstlaststr eventName sfstr depthType '_allnrns_Plot_Tr']));
 end
 
 function f = plotAlignedWithLines(currfigs, i, tglobalcrop, onsetdiffvalid, eventTime, dataAlltimesAlcrop, roiNames, eventName,...

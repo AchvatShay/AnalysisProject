@@ -1,14 +1,13 @@
 function [x, x0, R2Tr, R2Te, fold_i, nrni, type_i, lam] = LassoCV(Atr, btr, foldsNum, Ate, bte, fold_i, nrni, type_i, ~, ~, lam)
-if isempty(lam) || isnan(lam)
-    [B,FitInfo] = lasso(Atr,btr,'CV',foldsNum,  'NumLambda',10, 'Options', statset('UseParallel',true));
+if isempty(lam)
+    [B,FitInfo] = lasso(Atr,btr,'CV',foldsNum,  'NumLambda',10);
     lam = FitInfo.Lambda(FitInfo.IndexMinMSE);
-    x = B(:, FitInfo.IndexMinMSE);
-    x0 = FitInfo.Intercept(FitInfo.IndexMinMSE);
 else    
-    [x,FitInfo] = lasso(Atr,btr,'Lambda',lam);
-    x0 = FitInfo.Intercept;
+    [B,FitInfo] = lasso(Atr,btr,'Lambda',lam);
 end
 
+x = B(:, FitInfo.IndexMinMSE);
+x0 = FitInfo.Intercept(FitInfo.IndexMinMSE);
 meanYtr = mean(btr);
 %R2Tr = mean((Atr*x + x0 - mean(btr)).^2)/var(bte);
 R2Tr = var(Atr*x + x0)/var(btr);

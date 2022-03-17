@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GeneralProperty>
   <Experiment>
-	<name>shay</name> 
+	<name>kurtam</name> 
 	<Condition>
 		<Type>
 			<lick is_active='False'></lick>
@@ -10,10 +10,10 @@
 		</Type>
 		<Depth>100</Depth>
 		<ImagingSamplingRate>30</ImagingSamplingRate>
-		<BehavioralSamplingRate>200</BehavioralSamplingRate>
+		<BehavioralSamplingRate>30</BehavioralSamplingRate>
         <BehavioralDelay>0</BehavioralDelay>
 		<ToneTime>4</ToneTime>
-		<Duration>12</Duration>
+		<Duration>16</Duration>
 		<Injection>
 			<None is_active='True'></None>
 			<Saline is_active='False'></Saline>
@@ -37,7 +37,7 @@
         <!--1:20;56:70;71:71;1:end-->
         <!--<TrailsToRun>3:3;6:6;13:14;23:26;29:30;32:32;34:42;46:51;57:57;59:61;66:69</TrailsToRun>-->
         <TrailsToRun>1:end</TrailsToRun>
-        <do_Plot3DTraj>true</do_Plot3DTraj>
+        <do_Plot3DTraj>false</do_Plot3DTraj>
         <plotTraj3D>
             <startTime>4</startTime>
             <endTime>6</endTime>
@@ -61,7 +61,7 @@
         </plotTraj3D>
         <orderAnalysis>
             <!--choose master result file order for Order By master-->
-            <orderActivationFileLocation>\\jackie-analysis\e\Shahar\Den7\Results\3_27_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
+            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\Shahar\learning project\experiments\results\Den7\Order\4_12_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
             <min_points_above_baseline>3</min_points_above_baseline>
             <AlignedOrderByDataAccordingToEvent>
                 <EventName></EventName>
@@ -92,52 +92,87 @@
         </glmDelays>
         <glmSegments>
             <seg>
-                <start>-1</start>
-                <end>2</end>
-            </seg>            
-            <seg>
-                <start>5</start>
-                <end>8</end>
+                <start>-4</start>
+                <end>12</end>
             </seg>
         </glmSegments>
         <glmKinematics>
-            <position>true</position>
+            <position>false</position>
             <velosity>false</velosity>
             <accelration>false</accelration>
         </glmKinematics>
         <glmBehaveEvents>
             <event>
-                <name>tone</name>
-                <type>tone</type>
-            </event>    
+                <name>treadmil_onset</name>
+                <type>onset</type>
+            </event>
             <event>
-                <name>lift</name>
-                <type>movement</type>
+                <name>treadmil_offset</name>
+                <type>offset</type>
+            </event>  
+            <event>
+                <name>treadmil_speed_p2</name>
+                <type>speedP2</type>
             </event> 
             <event>
-                <name>grab</name>
-                <type>movement</type>
-            </event>                       
+                <name>treadmil_speed_p3</name>
+                <type>speedP3</type>
+            </event> 
+             <event>
+                <name>treadmil_accel_p2</name>
+                <type>accelP2</type>
+            </event> 
+            <event>
+                <name>treadmil_accel_p3</name>
+                <type>accelP3</type>
+            </event> 
+            <event>
+                <name>treadmil_speed</name>
+                <type>speed</type>
+            </event> 
+            <event>
+                <name>treadmil_accel</name>
+                <type>accel</type>
+            </event>
+            
+            <event>
+                <name>treadmil_walk</name>
+                <type>walk</type>
+            </event>
+           
+            <event>
+                <name>treadmil_rest</name>
+                <type>rest</type>
+            </event>
+
+            <event>
+                <name>treadmil_posaccel</name>
+                <type>posaccel</type>
+            </event>
+            <event>
+                <name>treadmil_negaccel</name>
+                <type>negaccel</type>
+            </event>
+
+            <event>
+                <name>treadmil_xLocation</name>
+                <type>xLocation</type>
+            </event>
+            <!--
             <event>
                 <name>traj</name>
-                <type>kinematics</type>
-            </event>            
+                <type>traj</type>
+            </event>
+           
             <event>
-                <name>atmouth</name>
-                <type>atmouth</type>
+                <name>righthand</name>
+                <type>handmap</type>
             </event>
             <event>
-                <name>leftface</name>
-                <type>facemap</type>
+                <name>lefthand</name>
+                <type>handmap</type>
             </event>
-            <event>
-                <name>rightface</name>
-                <type>facemap</type>
-            </event>
-            <event>
-                <name>success</name>
-                <type>reward</type>
-            </event>
+            -->
         </glmBehaveEvents>   
         <pca_thEffDim>0.95</pca_thEffDim>
         <indicativeNrns_maxbinnum>2</indicativeNrns_maxbinnum>
@@ -248,6 +283,11 @@
                 <is_active>true</is_active>  
             </Atogram>
             <Atogram>			
+                <name>supination</name>
+                <color>light_purple</color>  
+                <is_active>true</is_active>  
+            </Atogram>
+            <Atogram>			
                 <name>atmouth</name>
                 <color>red</color>  
                 <is_active>true</is_active>  
@@ -262,7 +302,8 @@
             <lick is_active='True'></lick>
 		</Events2plot>
         <Events2plotDelay>
-			<Event>
+            <!--
+            <Event>
                 <Name>lift</Name>
                 <Color>blue_atogram</Color>
                 <Number>1</Number>
@@ -302,9 +343,20 @@
                 <Color>black</Color>
                 <Number>1</Number>
             </Event>
+            -->
+            <Event>
+                <Name>onset</Name>
+                <Color>black</Color>
+                <Number>1</Number>
+            </Event>
+            <Event>
+                <Name>offset</Name>
+                <Color>black</Color>
+                <Number>1</Number>
+            </Event>
 		</Events2plotDelay>
-        <delay2events_start_time>0</delay2events_start_time>
-        <delay2events_end_time>2</delay2events_end_time>
+        <delay2events_start_time>-4</delay2events_start_time>
+        <delay2events_end_time>24</delay2events_end_time>
         <behaveTimeDiff>
             <Event>tone</Event>
             <Event>lift</Event>

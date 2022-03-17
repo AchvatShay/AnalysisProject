@@ -168,36 +168,34 @@ switch generalProperty.DetermineSucFailBy
 end
 if isfield(BdaTpaList, 'traj')
     
-for k = 1:length(BdaTpaList)
-    C = xlsread(BdaTpaList(k).traj);
-    
-    if (generalProperty.do_Plot3DTraj)
-        [~, ~, excelDataRaw] = xlsread(BdaTpaList(k).traj);
-    
-        [~, handFrontCol] = find(strcmp(excelDataRaw, 'HandFront'));   
-        [~, handSideCol] = find(strcmp(excelDataRaw, 'HandSide'));
-    else
-        handFrontCol = [2, 3];
-        handSideCol = [5, 6];
+    for k = 1:length(BdaTpaList)
+        C = xlsread(BdaTpaList(k).traj);
+
+        if (generalProperty.do_Plot3DTraj)
+            [~, ~, excelDataRaw] = xlsread(BdaTpaList(k).traj);
+
+            [~, handFrontCol] = find(strcmp(excelDataRaw, 'HandFront'));   
+            [~, handSideCol] = find(strcmp(excelDataRaw, 'HandSide'));
+        else
+            handFrontCol = [2, 3];
+            handSideCol = [5, 6];
+        end
+
+        BehaveData.traj.data(1,:,k) = C(:,handFrontCol(1));
+        BehaveData.traj.data(2,:,k) = C(:,handFrontCol(2));
+        BehaveData.traj.data(3,:,k) = C(:,handSideCol(1));
+        BehaveData.traj.data(4,:,k) = C(:,handSideCol(2));
+
+        if length(handFrontCol) > 2
+    %         likelhood
+            BehaveData.traj.data(5,:,k) = C(:,handFrontCol(3));
+            BehaveData.traj.data(6,:,k) = C(:,handSideCol(3));
+        end
+        clear C;
+
     end
         
-    BehaveData.traj.data(1,:,k) = C(:,handFrontCol(1));
-    BehaveData.traj.data(2,:,k) = C(:,handFrontCol(2));
-    BehaveData.traj.data(3,:,k) = C(:,handSideCol(1));
-    BehaveData.traj.data(4,:,k) = C(:,handSideCol(2));
-    
-    if length(handFrontCol) > 2
-%         likelhood
-        BehaveData.traj.data(5,:,k) = C(:,handFrontCol(3));
-        BehaveData.traj.data(6,:,k) = C(:,handSideCol(3));
-    end
-            
-    
-    clear C;
-    
-end
-
-T = size(BehaveData.traj.data,2);
+    T = size(BehaveData.traj.data,2);
     filefacemap = fullfile(fileparts(fileparts(BdaTpaList(1).traj)),'facemap.mat');
     if exist(filefacemap, 'file')
         res = load(filefacemap);
@@ -213,6 +211,8 @@ T = size(BehaveData.traj.data,2);
         BehaveData.handMapR = reshape(res.proc.motSVD{2}.', size(res.proc.motSVD{2},2), T, []);
         BehaveData.handMapL = reshape(res.proc.motSVD{3}.', size(res.proc.motSVD{3},2), T, []);
     end
+else
+    BehaveData.traj.data = zeros(4, size(imagingData.samples, 2), size(imagingData.samples, 3));
 end
 
 

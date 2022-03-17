@@ -60,24 +60,13 @@ for ei = 1:length(eventsnames)
             X.type(end+1) = find(strcmp(eventtypes{ei}, types));
 
         end
-    elseif strcmp(eventsnames{ei}, 'treadmil_speed') || strcmp(eventsnames{ei}, 'treadmil_x_location') || ...
-           strcmp(eventsnames{ei}, 'treadmil_accel') || strcmp(eventsnames{ei}, 'treadmil_posaccel') || ...
-           strcmp(eventsnames{ei}, 'treadmil_speed') || strcmp(eventsnames{ei}, 'treadmil_x_location') || ...
-           strcmp(eventsnames{ei}, 'treadmil_negaccel') || strcmp(eventsnames{ei}, 'treadmil_rest') || ...
-           strcmp(eventsnames{ei}, 'treadmil_walk')
-        datatraj = BehaveData.(eventsnames{(ei)}).data(:, timeinds)';
-        t = linspace(0, 1, tsize);
-        ttraj = linspace(0, 1, size(timeinds, 2));
-        for T = 1:length(trialsinds)
-            if trialsinds(T) == true                   
-               tread_sampled(:, T) = interp1(ttraj, datatraj(:, T), t);  
-            end
-        end
-        tread_sampled = tread_sampled(:,trialsinds == true);
-        indicatorMat = (tread_sampled(:,:))';
-        X.filt{end+1} = indicatorMat;
-        X.name{end+1} = [eventsnames{ei}];
-        X.type(end+1) = find(strcmp(eventtypes{ei}, types));
+    elseif contains(eventsnames{ei}, 'treadmil_')
+        fNames = fieldnames(BehaveData.(eventsnames{(ei)}));
+        for b_i = 1:length(fNames)
+            X.filt{end+1} = BehaveData.(eventsnames{(ei)}).(fNames{b_i}).data(trialsinds == true, timeinds);
+            X.name{end+1} = [eventsnames{ei}];
+            X.type(end+1) = find(strcmp(eventtypes{ei}, types));
+        end      
     elseif strcmp(eventsnames{ei}, 'tone')
         t = linspace(0, generalProperty.Duration, size(BehaveData.(eventsOfBehave{1}).indicator,2))-generalProperty.ToneTime;
         indicatorMat = zeros(sum(trialsinds), length(t));

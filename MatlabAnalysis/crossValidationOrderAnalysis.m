@@ -14,6 +14,8 @@ function crossValidationOrderAnalysis(outputPath, generalProperty, imagingData, 
     master_imagingData.roiNames = imagingData.roiNames(:,:);
 
     fields = fieldnames(BehaveData);
+    
+    fields(strcmp(fields, 'traj')) = [];
     for b_i = 1:length(fields)
         master_BehaveData.(fields{b_i}).indicator = BehaveData.(fields{b_i}).indicator(:, :);
         master_BehaveData.(fields{b_i}).eventTimeStamps = BehaveData.(fields{b_i}).eventTimeStamps(:);
@@ -34,6 +36,8 @@ function crossValidationOrderAnalysis(outputPath, generalProperty, imagingData, 
 
         
         fields = fieldnames(BehaveData);
+        
+        fields(strcmp(fields, 'traj')) = [];
         for b_i = 1:length(fields)
             self_BehaveData.(fields{b_i}).indicator = BehaveData.(fields{b_i}).indicator(unselectedIndex, :);
             self_BehaveData.(fields{b_i}).eventTimeStamps = BehaveData.(fields{b_i}).eventTimeStamps(unselectedIndex);
@@ -55,22 +59,22 @@ function crossValidationOrderAnalysis(outputPath, generalProperty, imagingData, 
     for eventI = 1:length(kendall_r_order_final)
         [~, ~, excelDataRaw] = xlsread('OrderAndTimingTemplate.xlsx');
         [line, currentCol] = find(strcmp(excelDataRaw, 'Pearson-order'));
-        excelDataRaw{line, currentCol+1} = Pearson_r_order_final{eventI};
+        excelDataRaw{line, currentCol+1} = sprintf('%f-%f',Pearson_r_order_final{eventI});
         
         [line, currentCol] = find(strcmp(excelDataRaw, 'Kendall-order'));
-        excelDataRaw{line, currentCol+1} = kendall_r_order_final{eventI};
+        excelDataRaw{line, currentCol+1} = sprintf('%f-%f',kendall_r_order_final{eventI});
         
         [line, currentCol] = find(strcmp(excelDataRaw, 'Spearman-order'));
-        excelDataRaw{line, currentCol+1} = Spearman_r_order_final{eventI};
+        excelDataRaw{line, currentCol+1} = sprintf('%f-%f',Spearman_r_order_final{eventI});
         
         [line, currentCol] = find(strcmp(excelDataRaw, 'Pearson-timing'));
-        excelDataRaw{line, currentCol+1} = Pearson_r_t_final{eventI};
+        excelDataRaw{line, currentCol+1} = sprintf('%f-%f',Pearson_r_t_final{eventI});
         
         [line, currentCol] = find(strcmp(excelDataRaw, 'Kendall-timing'));
-        excelDataRaw{line, currentCol+1} = kendall_r_t_final{eventI};
+        excelDataRaw{line, currentCol+1} = sprintf('%f-%f',kendall_r_t_final{eventI});
         
         [line, currentCol] = find(strcmp(excelDataRaw, 'Spearman-timing'));
-        excelDataRaw{line, currentCol+1} = Spearman_r_t_final{eventI};
+        excelDataRaw{line, currentCol+1} = sprintf('%f-%f',Spearman_r_t_final{eventI});
         
         filenameExcel = fullfile(outputPath, ['OrderAndTimingByMAster_analysisResults', num2str(eventI), 'By', generalProperty.alignedOrderByDataAccordingToEvent_eventName, '.xlsx']);
         xlswrite(filenameExcel,excelDataRaw);

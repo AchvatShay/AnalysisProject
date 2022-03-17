@@ -11,7 +11,7 @@
 		<Depth>100</Depth>
 		<ImagingSamplingRate>30</ImagingSamplingRate>
 		<BehavioralSamplingRate>200</BehavioralSamplingRate>
-        <BehavioralDelay>0</BehavioralDelay>
+        <BehavioralDelay>20</BehavioralDelay>
 		<ToneTime>4</ToneTime>
 		<Duration>12</Duration>
 		<Injection>
@@ -26,7 +26,7 @@
 		</PelletPertubation>
 	</Condition>
 	<NeuronesToPut>
-        
+      
 	</NeuronesToPut>
 	<TrialsToPut>
 		
@@ -61,7 +61,7 @@
         </plotTraj3D>
         <orderAnalysis>
             <!--choose master result file order for Order By master-->
-            <orderActivationFileLocation>\\jackie-analysis\e\Shahar\Den7\Results\3_27_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
+            <orderActivationFileLocation>E:\Dropbox (Technion Dropbox)\Shahar\learning project\experiments\results\Den7\Order\4_12_17_1\Analysis\getOrderOFActivationByData\activation_order__success_failureBy_toneMethod_peak.mat</orderActivationFileLocation>
             <min_points_above_baseline>3</min_points_above_baseline>
             <AlignedOrderByDataAccordingToEvent>
                 <EventName></EventName>
@@ -85,11 +85,6 @@
         </FWHMAnalysis>
         <glm_facial_features_dim>20</glm_facial_features_dim>
         <glm_energyTh>0.15</glm_energyTh>
-        <glmDelays>
-            <Delay>0</Delay>
-            <Delay>0.5</Delay>
-            <Delay>-0.5</Delay>
-        </glmDelays>
         <glmSegments>
             <seg>
                 <start>-1</start>
@@ -151,33 +146,31 @@
         <significantNrnsMeanStartTime>0</significantNrnsMeanStartTime>
         <significantNrnsMeanEndTime>8</significantNrnsMeanEndTime>
         <locations_stripesNum>5</locations_stripesNum>
-        <indicativeAmplitudeStartTime>5</indicativeAmplitudeStartTime>
-        <indicativeAmplitudeEndTime>8</indicativeAmplitudeEndTime>
         <significantPvalue>
             <val>0.001</val>
             <val>0.05</val>
         </significantPvalue>        
-        <successLabel>success</successLabel> 
-        <failureLabel>failure</failureLabel>
+        <successLabel>failureprinted</successLabel> 
+        <failureLabel>failure_reg</failureLabel>
         <prevcurrlabels2cluster>
             <cluster>			
-                <name>success</name>
+                <name>failureprinted</name>
                 <color>blue</color>
                 <color>cyan</color>
             </cluster>
             <cluster>			
-                <name>failure</name> 
+                <name>failure_reg</name> 
                 <color>purpule</color>
                 <color>red</color>
             </cluster>
         </prevcurrlabels2cluster>  
         <labels2cluster>
             <cluster>			
-				<name>success</name>
+				<name>failureprinted</name>
                 <color>blue</color>                
         </cluster>
 		<cluster>			
-				<name>failure</name>  
+				<name>failure_reg</name>  
                 <color>red</color>                
 		</cluster>
         </labels2cluster>   
@@ -220,7 +213,7 @@
         <startTime2plot>1.5</startTime2plot>
        <TastesLabels>
         <Taste>			
-            <name>success</name>
+            <name>failureprinted</name>
             <color>cyan</color>  
             <is_active>true</is_active>  
         </Taste>
@@ -262,61 +255,14 @@
             <lick is_active='True'></lick>
 		</Events2plot>
         <Events2plotDelay>
-			<Event>
-                <Name>lift</Name>
-                <Color>blue_atogram</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>grab</Name>
-                <Color>green_atogram</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>supination</Name>
-                <Color>light_purple</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>atmouth</Name>
-                <Color>red</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>backto</Name>
-                <Color>dark_grey</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>backtotable</Name>
-                <Color>dark_grey</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>backtoperch</Name>
-                <Color>dark_grey</Color>
-                <Number>1</Number>
-            </Event>
-            <Event>
-                <Name>tone</Name>
-                <Color>black</Color>
-                <Number>1</Number>
-            </Event>
+			<grab is_active='True' number='1' color='green_atogram'></grab>
+			<lift is_active='True' number='1' color='blue_atogram'></lift>
+			<atmouth is_active='True' number='1' color='red'></atmouth>
+            <tone is_active='True' number='1' color='black'></tone>
 		</Events2plotDelay>
         <delay2events_start_time>0</delay2events_start_time>
         <delay2events_end_time>2</delay2events_end_time>
-        <behaveTimeDiff>
-            <Event>tone</Event>
-            <Event>lift</Event>
-            <Event>grab</Event>
-        </behaveTimeDiff>
     </visualization>
-    <RoiCorrelation>
-        <winLen>1</winLen>
-        <winHop>0.5</winHop>
-        <!-- reg for corr or par for parcorr -->
-        <corrType>reg</corrType>
-    </RoiCorrelation>
   </Experiment>    
 </GeneralProperty>
 
